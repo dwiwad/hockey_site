@@ -1,0 +1,43 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environment
+venv/
+.env
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*~
+
+# macOS system files
+.DS_Store
+
+# Jupyter Notebook checkpoints (if you use them)
+.ipynb_checkpoints/
+
+# Log files and SQLite DBs
+*.log
+*.sqlite3
+
+# Static site build folders (optional)
+public/
+dist/
+build/
+
+# Node modules (if using JS)
+node_modules/
+
+# Files for testing or temporary output
+tmp/
+output/
+*.bak
+
+# Secrets and config
+.env
+.env.*
+config.yaml
+
