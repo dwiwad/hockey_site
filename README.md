@@ -5,7 +5,7 @@ This project is a personal hockey data website built using primarily Python.
 ## Goals
 
 - 📊 Static blog-style analysis of NHL teams, players, games, and historical trends
-- 🖥🖥️  Live game dashboards using the NHL API that track the "shape of the game" with my novel metrics of Depth, Physicality, Defensive Success, etc.
+- 🖥  Live game dashboards using the NHL API that track the "shape of the game" with my novel metrics of Depth, Physicality, Defensive Success, etc.
 - 📁 Separate pages for:
 	- Blog Posts (static analyses)
 	- Live Dashboards
@@ -14,7 +14,7 @@ This project is a personal hockey data website built using primarily Python.
 
 ## Status
 
-As of 06/26/2026 this project is in extremely early development.Currently focused on setting up the backend file structure and version control.
+As of 06/26/2026 this project is in extremely early development. Currently focused on setting up the backend file structure and version control.
 
 ## Tech Stack (Planned)
 
