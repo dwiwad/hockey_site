@@ -30,6 +30,7 @@ As of 06/26/2026 this project is in extremely early development. Currently focus
 	- [ ] About me page
 	- [ ] Blog page
 	- [ ] Dashboard page
+	- [ ] Data storage for my static analysis and live blog code
 - [ ] Add placeholder HTML frontend pages
 	- [ ] About me page                           
         - [ ] Blog page
