@@ -27,14 +27,14 @@ As of 06/26/2026 this project is in extremely early development. Currently focus
 ### June 26, 2025 - build the MVP
 
 - [ ] Set up the basic website structure backend
-	- [ ] About me page
-	- [ ] Blog page
-	- [ ] Dashboard page
+	- [X] About me page
+	- [X] Blog page
+	- [X] Dashboard page
 	- [ ] Data storage for my static analysis and live blog code
 - [ ] Add placeholder HTML frontend pages
-	- [ ] About me page                           
-        - [ ] Blog page
-        - [ ] Dashboard page
+	- [X] About me page
+	- [ ] Blog page
+	- [ ] Dashboard page
 - [ ] Build one static blog post in the blog page
 	- [ ] My historical analysis weight, height, age, and country composition
 	- [ ] Stretch: Write a second post detailing the creation and validation of my depth metric
