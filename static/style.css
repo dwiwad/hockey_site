@@ -10,7 +10,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
-    background-color: #f6f8fa;
+    background-color: #fbf8f1ff;
     height: 100vh;
     justify-content: center;
     align-items: center;
@@ -19,35 +19,61 @@ body {
 
 /* HEADER */
 .site-header {
-    background-color: #005fcb; /* blue */
+    background-color: #041e42ff; /* Oilers blue */
     color: white;
-    padding: 2rem;
+    padding-top: 4rem;
     text-align: center;
 }
 
 .site-header h1 {
     margin: 0;
-    font-size: 2.5rem;
+    font-size: 3.5rem;
+}
+
+.site-header p {
+    margin-top: 3rem;
+    font-size: 1.5rem;
+    padding-bottom: 2rem;
 }
 
 /* MAIN CONTENT CENTERING */
 .center-wrapper {
-    height: calc(100vh - 150px); /* subtract header height-ish */
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    gap: 2rem; /* <-- adds vertical space between boxes */
+    padding: 2rem 0;
 }
 
+
 /* CONTENT BOX */
-.centered {
-    text-align: center;
-    max-width: 600px;
+.card-row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 2rem; /* space between the cards */
+    padding: 2rem;
+    flex-wrap: wrap; /* allows them to stack on small screens */
+}
+
+.card {
+    width: 200px;         /* fixed width */
+    height: 250px;        /* fixed height (optional) */
     padding: 2rem;
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* optional: spreads out content evenly */
 }
 
+/* FOOTER */
+.site-footer {
+    padding-top: 1rem;
+    text-align: center;
+}
 /* ==========================================================================
    ABOUT PAGE STYLES
    ========================================================================== */
