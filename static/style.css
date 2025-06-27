@@ -3,6 +3,38 @@
    ========================================================================== */
    
 /* ==========================================================================
+   SITE NAV HEADER STYLES
+   ========================================================================== */
+.site-nav-header {
+    background-color: #041e42; /* Oilers blue */
+    color: white;
+    padding: 1rem 2rem;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.site-title a {
+    color: white;
+    text-decoration: none;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.site-nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 1.5rem;
+    font-size: 1.1rem;
+}
+
+
+/* ==========================================================================
    INDEX PAGE STYLES
    ========================================================================== */
 
@@ -61,6 +93,7 @@ body {
     height: 250px;        /* fixed height (optional) */
     padding: 2rem;
     background-color: white;
+    color: #041e42ff; 
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     text-align: left;
@@ -98,7 +131,8 @@ body {
 }
 
 .sub-main h1 {
-    margin: 0;
+    margin: 3rem;
+    color: #041e42ff; 
     font-size: 3.5rem;
     text-align: center;
 }
@@ -106,6 +140,35 @@ body {
    BLOG PAGE STYLES
    ========================================================================== */
    
+.blog-card-row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 2rem; /* space between the cards */
+    padding: 2rem;
+    flex-wrap: wrap; /* allows them to stack on small screens */
+}
+
+.blog-card {
+    width: 300px;         /* fixed width */
+    height: 250px;        /* fixed height (optional) */
+    padding: 2rem;
+    background-color: white;
+    color: #041e42ff; 
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* optional: spreads out content evenly */
+}
+
+.blog-card h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+
 /* ==========================================================================
    DASHBOARD PAGE STYLES
    ========================================================================== */

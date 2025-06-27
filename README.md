@@ -14,7 +14,7 @@ This project is a personal hockey data website built using primarily Python.
 
 ## Status
 
-As of 06/26/2026 this project is in extremely early development. Currently focused on setting up the backend file structure and version control.
+As of 06/26/2026 this project is in extremely early development. Currently focused on design and standing up the skeleton.
 
 ## Tech Stack (Planned)
 
@@ -22,6 +22,15 @@ As of 06/26/2026 this project is in extremely early development. Currently focus
 - HTML/CSS/JS for front end (Jinja2)
 
 ## To-Do and Working History
+
+### June XX, 2025 - Design Work and one Dash
+
+- [ ] Build the button for the landing cards
+- [ ] Build the button for the blog cards
+- [ ] Choose and implement a font
+- [X] Make it so the nav site title points home
+- [ ] Connect it to the NHL API for live dashboarding
+	- [ ] Perhaps a page that just pulls the last oilers game of the season and displays data
 
 ### June 26, 2025 - build the MVP
 
@@ -36,12 +45,7 @@ As of 06/26/2026 this project is in extremely early development. Currently focus
 	- [X] Blog page
 	- [X] Dashboard page
 - [ ] Build one static blog post in the blog page
-	- [ ] My historical analysis weight, height, age, and country composition
-	- [ ] Stretch: Write a second post detailing the creation and validation of my depth metric
-- [ ] Connect it to the NHL API for live dashboarding
-	- [ ] Perhaps a page that just pulls the last oilers game of the season and displays data
-- [ ] Set up hosting
-
+	- [ ] Standup one Blog post; My historical analysis weight, height, age, and country composition
 
 ## Author
 
