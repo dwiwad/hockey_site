@@ -25,7 +25,7 @@ As of 06/26/2026 this project is in extremely early development. Currently focus
 
 ### June 26, 2025 - build the MVP
 
-- [ ] Set up the basic website structure backend
+- [X] Set up the basic website structure backend
     - [X] Landing page
 	- [X] About page
 	- [X] Blog page
