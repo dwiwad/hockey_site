@@ -77,7 +77,31 @@ body {
 /* ==========================================================================
    ABOUT PAGE STYLES
    ========================================================================== */
-   
+
+/* HEADER */
+.sub-header {
+    background-color: #041e42ff; /* Oilers blue */
+    color: white;
+    padding: 2rem;
+    text-align: left;
+}
+
+.sub-header h1 {
+    margin: 0;
+    font-size: 3.5rem;
+}
+
+.sub-header p {
+    margin-top: 3rem;
+    font-size: 1.5rem;
+    padding-bottom: 2rem;
+}
+
+.sub-main h1 {
+    margin: 0;
+    font-size: 3.5rem;
+    text-align: center;
+}
 /* ==========================================================================
    BLOG PAGE STYLES
    ========================================================================== */
