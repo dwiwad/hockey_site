@@ -3,6 +3,7 @@
 This project is a personal hockey data website built using primarily Python, HTML, and CSS.
 
 Homepage site preview:
+
 ![Site preview](static/images/homepage.png)
 
 ## Goals
@@ -37,6 +38,9 @@ As of 06/26/2026 this project is in extremely early development. Currently focus
 - [ ] Build the button for the landing cards
 - [ ] Build the button for the blog cards
 - [ ] Choose and implement a font
+- [ ] Write and implement the about me page
+    - [ ] Writing
+    - [ ] Circular masked photo
 - [X] Make it so the nav site title points home
 
 ### June 26, 2025 - build the MVP
