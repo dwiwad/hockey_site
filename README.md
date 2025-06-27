@@ -2,6 +2,9 @@
 
 This project is a personal hockey data website built using primarily Python, HTML, and CSS.
 
+Homepage site preview:
+![Site preview](static/images/homepage.png)
+
 ## Goals
 
 - 📊 Static blog-style analysis of NHL teams, players, games, and historical trends
