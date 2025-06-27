@@ -1,6 +1,6 @@
 # Hockey Analytics Website
 
-This project is a personal hockey data website built using primarily Python.
+This project is a personal hockey data website built using primarily Python, HTML, and CSS.
 
 ## Goals
 
@@ -23,14 +23,18 @@ As of 06/26/2026 this project is in extremely early development. Currently focus
 
 ## To-Do and Working History
 
-### June XX, 2025 - Design Work and one Dash
+### June XX, 2025 - Standup some content
+- [ ] Build one static blog post in the blog page
+	- [ ] My historical analysis weight, height, age, and country composition
+- [ ] Connect it to the NHL API for live dashboarding
+	- [ ] Perhaps a page that just pulls the last oilers game of the season and displays data
+
+### June 27, 2025 - Design Work
 
 - [ ] Build the button for the landing cards
 - [ ] Build the button for the blog cards
 - [ ] Choose and implement a font
 - [X] Make it so the nav site title points home
-- [ ] Connect it to the NHL API for live dashboarding
-	- [ ] Perhaps a page that just pulls the last oilers game of the season and displays data
 
 ### June 26, 2025 - build the MVP
 
@@ -44,8 +48,6 @@ As of 06/26/2026 this project is in extremely early development. Currently focus
 	- [X] About page
 	- [X] Blog page
 	- [X] Dashboard page
-- [ ] Build one static blog post in the blog page
-	- [ ] Standup one Blog post; My historical analysis weight, height, age, and country composition
 
 ## Author
 
