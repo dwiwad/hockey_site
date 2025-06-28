@@ -4,7 +4,7 @@ This project is a personal hockey data website built using primarily Python, HTM
 
 Homepage site preview:
 
-![Site preview](static/images/homepage.png)
+![Site preview](static/images/homepage2.png)
 
 ## Goals
 
