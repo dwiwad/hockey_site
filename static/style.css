@@ -107,6 +107,28 @@ body {
     padding-top: 1rem;
     text-align: center;
 }
+
+.card-button {
+  background-color: #FF4C00;
+  color: white;
+  padding: 10px 32px;
+  border: none;
+  border-radius: 8px; 
+  cursor: pointer;
+  font-size: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  line-height: 1.2;
+  margin-top: 0.5rem;
+  align-self: flex-start; /* Ensures it aligns left if .card is flex-column */
+  transition: all 0.2s ease-in-out;
+  align-self: flex-start;
+}
+
+.card-button a {
+    color: white;
+    text-decoration: none;
+}
+
 /* ==========================================================================
    ABOUT PAGE STYLES
    ========================================================================== */
@@ -141,6 +163,7 @@ body {
 .about-card-meta {
     display: flex;
     justify-content: center;
+    padding-bottom: 6rem;
 }
 
 .about-card {
@@ -195,6 +218,26 @@ body {
     font-size: 1.5rem;
 }
 
+.blog-button {
+  background-color: #FF4C00;
+  color: white;
+  padding: 10px 72px;
+  border: none;
+  border-radius: 8px; 
+  cursor: pointer;
+  font-size: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  line-height: 1.2;
+  margin-top: 0.5rem;
+  align-self: flex-start; /* Ensures it aligns left if .card is flex-column */
+  transition: all 0.2s ease-in-out;
+  align-self: flex-start;
+}
+
+.blog-button a {
+    color: white;
+    text-decoration: none;
+}
 
 /* ==========================================================================
    DASHBOARD PAGE STYLES

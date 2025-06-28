@@ -35,11 +35,11 @@ As of 06/26/2026 this project is in extremely early development. Currently focus
 
 ### June 27, 2025 - Design Work
 
-- [ ] Build the button for the landing cards
-- [ ] Build the button for the blog cards
+- [X] Build the button for the landing cards
+- [X] Build the button for the blog cards
 - [ ] Choose and implement a font
 - [ ] Write and implement the about me page
-    - [ ] Writing
+    - [X] Writing
     - [ ] Circular masked photo
 - [X] Make it so the nav site title points home
 
