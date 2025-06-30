@@ -1,0 +1,294 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Jun 30 11:57:35 2025
+
+# CODE TO START BUILDING SOME TIME SERIES DESCRIPTIVES
+
+@author: dylanwiwad
+"""
+# ----------------------------------------------------------------------
+#
+# LIBRARIES
+#
+# ----------------------------------------------------------------------
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# ----------------------------------------------------------------------
+#
+# READ IN THE DATA
+#
+# ----------------------------------------------------------------------
+
+roster = pd.read_csv("~/hockey_site/templates/blog/historical_player_analysis_072025/rosters.csv")
+
+# ----------------------------------------------------------------------
+#
+# COUNTRY COUNTS BY YEAR
+#
+# ----------------------------------------------------------------------
+
+# Get the simple counts of country by season
+country_year_df = roster.groupby(['season', 'birth_country']).size().reset_index(name='count')
+
+# Add in total players per season
+country_year_df['total_players'] = country_year_df.groupby('season')['count'].transform('sum')
+
+# Add in proportions
+country_year_df['country_prop'] = (country_year_df['count'] / country_year_df['total_players'])
+
+# Split season into a nice labelled variable
+def split_and_hyphenate(number):
+    s_number = str(number)
+    # Example: Split into first 3 and remaining digits
+    part1 = s_number[:4]
+    part2 = s_number[4:]
+    return f"{part1}-{part2}"
+
+# Apply the function to create a new column
+country_year_df['season_label'] = country_year_df['season'].apply(split_and_hyphenate)
+
+# Clean up the countries into groupings
+def map_country_group(country):
+    if country == 'CAN':
+        return 'Canada'
+    elif country == 'USA':
+        return 'USA'
+    elif country in ['SWE', 'FIN', 'NOR', 'DNK']:
+        return 'Scandinavia'
+    elif country in ['CZE', 'SVK']:
+        return 'Central Europe'
+    elif country in ['RUS', 'BLR', 'UKR', 'KAZ']:
+        return 'Former USSR'
+    elif country in ['DEU', 'AUT', 'SUI']:  # Germany, Austria, Switzerland
+        return 'Western Europe'
+    elif country in ['FRA', 'GBR', 'IRL', 'NLD', 'BEL']:
+        return 'Other Europe'
+    else:
+        return 'Other'
+
+# Apply dataframe dataframe
+country_year_df['country_group'] = country_year_df['birth_country'].apply(map_country_group)
+
+palette = {
+    'Canada': '#FF0000',
+    'USA': '#0A3161',
+    'Scandinavia': 'goldenrod',
+    'Central Europe': 'darkgreen',
+    'Former USSR': 'purple',
+    'Western Europe': 'orange',
+    'Other Europe': 'gray',
+    'Other': 'lightgray'
+}
+
+# Get the max season
+latest_season = country_year_df['season'].max()
+
+# Compute total proportion for each group in the latest season
+latest_order = (
+    country_year_df[country_year_df['season'] == latest_season]
+    .groupby('country_group')['country_prop']
+    .sum()
+    .sort_values(ascending=False)
+    .index
+    .tolist()
+)
+
+# Convert to categorical to enforce order
+country_year_df['country_group'] = pd.Categorical(
+    country_year_df['country_group'],
+    categories=latest_order,
+    ordered=True
+)
+
+plt.figure(figsize=(12, 6))
+
+sns.lineplot(
+    x="season_label", 
+    y="country_prop", 
+    hue="country_group", 
+    data=country_year_df,
+    palette=palette
+)
+
+# Rotate and reduce number of x-ticks
+ax = plt.gca()
+labels = country_year_df['season_label'].unique()
+tick_indices = list(range(0, len(labels), 25))
+ax.set_xticks(tick_indices)
+ax.set_xticklabels(labels[tick_indices], rotation=0)
+
+plt.xlabel("Season")
+plt.ylabel("Proportion of Players")
+plt.title("Proportion of NHL Players by Country Group Over Time")
+plt.tight_layout()
+plt.legend(title="Country Group", loc='center left')  # Adjust location if needed
+plt.show()
+
+# TRY TO MAKE A FIVETHIRTYEIGHT OR OTHERWISE NARRATIVE STYLED PLOT
+# Set a clean aesthetic style
+sns.set(style="whitegrid")
+
+# Restrict to only top 5 country groups in 2024–2025
+latest_season = country_year_df['season'].max()
+top_groups = (
+    country_year_df[country_year_df['season'] == latest_season]
+    .groupby('country_group')['country_prop']
+    .sum()
+    .sort_values(ascending=False)
+    .head(5)
+    .index
+    .tolist()
+)
+
+# Filter data to only include these groups
+filtered_df = country_year_df[country_year_df['country_group'].isin(top_groups)].copy()
+
+# Set order explicitly
+filtered_df['country_group'] = pd.Categorical(
+    filtered_df['country_group'],
+    categories=top_groups,
+    ordered=True
+)
+
+# Define a clean, journalistic color palette
+palette = {
+    'Canada': '#FF0000',       # red
+    'USA': '#0A3161',          # blue
+    'Scandinavia': '#2a9d8f',  # teal
+    'Former USSR': '#8d99ae',  # grayish blue
+    'Central Europe': '#f4a261' # warm orange
+}
+
+# Plot
+plt.figure(figsize=(12, 7))
+sns.lineplot(
+    data=filtered_df,
+    x="season_label",
+    y="country_prop",
+    hue="country_group",
+    palette=palette,
+    linewidth=2.5,
+    ci=None
+)
+
+# De-emphasize spines
+sns.despine()
+
+# Only every Nth x-tick
+labels = filtered_df['season_label'].unique()
+tick_indices = list(range(0, len(labels), 10))
+plt.xticks(ticks=tick_indices, labels=labels[tick_indices], rotation=0)
+
+# Labels and title
+plt.title("Canada Still Leads, But the U.S. Is Catching Up in the NHL", 
+          fontsize=18, weight='bold', y=1.08)
+plt.suptitle(
+    "Over the past 50 years, American players have surged to near parity with Canadians,\nwhile international representation grows modestly.",
+    fontsize=13, y=0.93)  # move it higher (default is ~0.98)
+plt.xlabel("")
+plt.ylabel("Share of NHL Players", fontsize=12)
+plt.legend(title="", frameon=False, loc='upper right')
+#plt.grid(axis='y', linestyle='--', alpha=0.3)
+plt.grid(False)
+
+# Padding
+#plt.tight_layout()
+
+# Save and Show
+plt.savefig("nhl_player_nationalities_trend.png", dpi=300)
+plt.show()
+
+# ANOTHER VERSION
+fig, ax = plt.subplots(figsize=(12, 7))
+
+# Plot
+sns.lineplot(
+    data=filtered_df,
+    x="season_label",
+    y="country_prop",
+    hue="country_group",
+    palette=palette,
+    linewidth=2.5,
+    ax=ax,
+    ci=None
+)
+
+# Style
+sns.despine()
+ax.grid(False)
+
+# X-tick labels
+labels = filtered_df['season_label'].unique()
+tick_indices = list(range(0, len(labels), 10))
+ax.set_xticks(tick_indices)
+ax.set_xticklabels(labels[tick_indices], rotation=0)
+
+# Axis labels
+ax.set_xlabel("")
+ax.set_ylabel("Share of NHL Players", fontsize=12)
+
+# Calculate left margin in figure coords
+left_x = ax.get_position().x0
+
+# Reserve more space at the top for the titles
+plt.subplots_adjust(top=0.85)  # moves the plot down, freeing top 15% of figure height
+
+# Title (main)
+fig.suptitle(
+    "Canada Still Leads, But the U.S. Is Catching Up in the NHL",
+    fontsize=18,
+    weight='bold',
+    x=left_x,
+    ha='left',
+    y=.97  # Top of reserved space
+)
+
+# Subtitle
+fig.text(
+    left_x,
+    0.87,  # Slightly below the main title
+    "Over the past 50 years, American players have surged to near parity with Canadians,\n"
+    "while international representation grows modestly.",
+    fontsize=13,
+    ha='left'
+)
+
+# Legend
+ax.legend(title="", frameon=False, loc='upper right')
+plt.savefig("nhl_player_nationalities_trend.png", dpi=300, transparent=True)
+plt.show()
+
+# ----------------------------------------------------------------------
+#
+# WITHIN CANADA, PROVINCE HEATMAPS
+#
+# ----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+#
+# HEAT MAP OF BIRTH CITIES GLOBALLY
+#
+# ----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+#
+# HEIGHT BY YEAR
+#
+# ----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+#
+# WEIGHT BY YEAR
+#
+# ----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
+#
+# AGE BY YEAR
+#
+# ----------------------------------------------------------------------
+

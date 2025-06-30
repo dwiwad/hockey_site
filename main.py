@@ -41,15 +41,6 @@ async def blog(request: Request):
     return templates.TemplateResponse("blog/index.html", {"request": request})
 
 # -----------------------------------------------------------------------
-# Route: Player history Blog Page Page ('/blog/historical_player_analysis.html')
-# Loads templates/blog/historical_player_analysis.html
-# -----------------------------------------------------------------------
-
-@app.get("/blog/historical_player_analysis", response_class = HTMLResponse)
-async def blog_hist_analysis_post(request: Request):
-    return templates.TemplateResponse("blog/historical_player_analysis.html", {"request": request})
-
-# -----------------------------------------------------------------------
 # Route: Dashboard page ('/dashboard')
 # Loads templates/dashboard.html
 # -----------------------------------------------------------------------
@@ -58,7 +49,17 @@ async def blog_hist_analysis_post(request: Request):
 async def dashboard(request: Request):
     return templates.TemplateResponse("dashboard.html", {"request": request})
 
+# -----------------------------------------------------------------------
+# Route: Player history Blog Page Page ('/blog/historical_player_analysis.html')
+# Loads templates/blog/historical_player_analysis.html
+# -----------------------------------------------------------------------
 
+@app.get("/blog/historical_player_analysis_072025", response_class=HTMLResponse)
+async def blog_hist_analysis_post(request: Request):
+    return templates.TemplateResponse(
+        "blog/historical_player_analysis_072025/nhl-player-demographics.html",
+        {"request": request}
+    )
 
 
 
