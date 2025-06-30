@@ -251,6 +251,20 @@ body {
     font-size: 1.5rem;
 }
 
+.toggle-btn {
+  padding: 0.5rem 1rem;
+  background-color: #FF4C00;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.toggle-btn:hover {
+  background-color: #FF4C00;
+}
+
 /* ==========================================================================
    DASHBOARD PAGE STYLES
    ========================================================================== */
