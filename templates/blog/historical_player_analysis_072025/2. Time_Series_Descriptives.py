@@ -16,6 +16,23 @@ Created on Mon Jun 30 11:57:35 2025
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import os
+
+# Hardcoded project root (adjust if you move the repo)
+PROJECT_ROOT = "/Users/dylanwiwad/hockey_site"
+
+def save_figure(filename):
+    output_dir = os.path.join(
+        PROJECT_ROOT,
+        "static/images/blog/historical_player_analysis_072025"
+    )
+    # Ensure the output directory exists
+    os.makedirs(output_dir, exist_ok=True)
+    # Full path to save the image
+    output_path = os.path.join(output_dir, filename)
+    # Save the figure
+    plt.savefig(output_path, dpi=300, transparent=True)
+    print(f"✅ Saved: {output_path}")
 
 # ----------------------------------------------------------------------
 #
@@ -104,30 +121,6 @@ country_year_df['country_group'] = pd.Categorical(
     ordered=True
 )
 
-plt.figure(figsize=(12, 6))
-
-sns.lineplot(
-    x="season_label", 
-    y="country_prop", 
-    hue="country_group", 
-    data=country_year_df,
-    palette=palette
-)
-
-# Rotate and reduce number of x-ticks
-ax = plt.gca()
-labels = country_year_df['season_label'].unique()
-tick_indices = list(range(0, len(labels), 25))
-ax.set_xticks(tick_indices)
-ax.set_xticklabels(labels[tick_indices], rotation=0)
-
-plt.xlabel("Season")
-plt.ylabel("Proportion of Players")
-plt.title("Proportion of NHL Players by Country Group Over Time")
-plt.tight_layout()
-plt.legend(title="Country Group", loc='center left')  # Adjust location if needed
-plt.show()
-
 # TRY TO MAKE A FIVETHIRTYEIGHT OR OTHERWISE NARRATIVE STYLED PLOT
 # Set a clean aesthetic style
 sns.set(style="whitegrid")
@@ -163,46 +156,7 @@ palette = {
     'Central Europe': '#f4a261' # warm orange
 }
 
-# Plot
-plt.figure(figsize=(12, 7))
-sns.lineplot(
-    data=filtered_df,
-    x="season_label",
-    y="country_prop",
-    hue="country_group",
-    palette=palette,
-    linewidth=2.5,
-    ci=None
-)
-
-# De-emphasize spines
-sns.despine()
-
-# Only every Nth x-tick
-labels = filtered_df['season_label'].unique()
-tick_indices = list(range(0, len(labels), 10))
-plt.xticks(ticks=tick_indices, labels=labels[tick_indices], rotation=0)
-
-# Labels and title
-plt.title("Canada Still Leads, But the U.S. Is Catching Up in the NHL", 
-          fontsize=18, weight='bold', y=1.08)
-plt.suptitle(
-    "Over the past 50 years, American players have surged to near parity with Canadians,\nwhile international representation grows modestly.",
-    fontsize=13, y=0.93)  # move it higher (default is ~0.98)
-plt.xlabel("")
-plt.ylabel("Share of NHL Players", fontsize=12)
-plt.legend(title="", frameon=False, loc='upper right')
-#plt.grid(axis='y', linestyle='--', alpha=0.3)
-plt.grid(False)
-
-# Padding
-#plt.tight_layout()
-
-# Save and Show
-plt.savefig("nhl_player_nationalities_trend.png", dpi=300)
-plt.show()
-
-# ANOTHER VERSION
+# PLOT
 fig, ax = plt.subplots(figsize=(12, 7))
 
 # Plot
@@ -212,7 +166,7 @@ sns.lineplot(
     y="country_prop",
     hue="country_group",
     palette=palette,
-    linewidth=2.5,
+    linewidth=3.5,
     ax=ax,
     ci=None
 )
@@ -222,14 +176,17 @@ sns.despine()
 ax.grid(False)
 
 # X-tick labels
-labels = filtered_df['season_label'].unique()
-tick_indices = list(range(0, len(labels), 10))
-ax.set_xticks(tick_indices)
-ax.set_xticklabels(labels[tick_indices], rotation=0)
+# Get unique season labels every 15 steps
+tick_labels = filtered_df['season_label'].unique()[::15]
+
+# Set ticks and labels using actual string values
+ax.set_xticks(tick_labels)
+ax.set_xticklabels(tick_labels, rotation=0, fontsize=14)
+ax.tick_params(axis='y', labelsize=14)
 
 # Axis labels
 ax.set_xlabel("")
-ax.set_ylabel("Share of NHL Players", fontsize=12)
+ax.set_ylabel("Share of NHL Players", fontsize=18)
 
 # Calculate left margin in figure coords
 left_x = ax.get_position().x0
@@ -239,8 +196,8 @@ plt.subplots_adjust(top=0.85)  # moves the plot down, freeing top 15% of figure 
 
 # Title (main)
 fig.suptitle(
-    "Canada Still Leads, But the U.S. Is Catching Up in the NHL",
-    fontsize=18,
+    "Canada still leads, but the U.S. is catching up in the NHL",
+    fontsize=20,
     weight='bold',
     x=left_x,
     ha='left',
@@ -253,13 +210,13 @@ fig.text(
     0.87,  # Slightly below the main title
     "Over the past 50 years, American players have surged to near parity with Canadians,\n"
     "while international representation grows modestly.",
-    fontsize=13,
+    fontsize=14,
     ha='left'
 )
 
 # Legend
-ax.legend(title="", frameon=False, loc='upper right')
-plt.savefig("nhl_player_nationalities_trend.png", dpi=300, transparent=True)
+ax.legend(title="", frameon=False, loc='upper right', fontsize=14)
+save_figure("nhl_player_nationalities_trend.png")
 plt.show()
 
 # ----------------------------------------------------------------------
