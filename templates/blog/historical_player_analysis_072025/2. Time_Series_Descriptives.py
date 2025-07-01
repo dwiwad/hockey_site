@@ -360,7 +360,7 @@ ax.fill_between(
     mean - std,
     mean + std,
     color='#041e42ff',
-    alpha=0.15,
+    alpha=0.25,
     label="± 1 std. dev."
 )
 
@@ -407,6 +407,15 @@ fig.text(
     "Over the past 107 years, NHL players have steadily gotten taller,\ngrowing from 176.2cm to 186.8cm (+5.99%).",
     fontsize=14,
     ha='left'
+)
+
+fig.text(
+    0.9,          # far right
+    0.01,          # near bottom
+    "Data: Mean +/- 1 Standard Deviation", 
+    fontsize=10, 
+    style='italic', 
+    ha='right'
 )
 
 # Optional: remove legend if not needed
@@ -518,6 +527,100 @@ save_figure("nhl_player_weight_trend.png")
 plt.show()
 
 
+# CLEAN Weight
+
+# Clean and prepare weight data
+weight_df = roster[['season', 'weight_lb']].dropna().copy()
+weight_df['season_label'] = height_df['season'].apply(split_and_hyphenate)
+
+# Map seasons to x-axis position
+season_labels = height_df['season_label'].unique()
+season_to_index = {label: i for i, label in enumerate(season_labels)}
+weight_df['x_pos'] = weight_df['season_label'].map(season_to_index)
+
+# Compute mean and std deviation per season
+grouped = weight_df.groupby('season_label')['weight_lb']
+mean = grouped.mean()
+std = grouped.std()
+x_vals = [season_to_index[s] for s in mean.index]
+
+# PLOT
+sns.set(style="whitegrid")
+fig, ax = plt.subplots(figsize=(12, 7))
+
+# Fill between (mean ± std)
+ax.fill_between(
+    x_vals,
+    mean - std,
+    mean + std,
+    color='#041e42ff',
+    alpha=0.25,
+    label="± 1 std. dev."
+)
+
+# Plot mean line
+ax.plot(
+    x_vals,
+    mean,
+    color='#FF4C00',
+    linewidth=3.5,
+    label="Mean Weight"
+)
+
+# Clean up plot
+sns.despine()
+ax.grid(False)
+
+# X-axis ticks and labels
+tick_indices = list(range(0, len(season_labels), 15))
+tick_labels = [season_labels[i] for i in tick_indices]
+ax.set_xticks(tick_indices)
+ax.set_xticklabels(tick_labels, rotation=0, fontsize=14)
+
+# Y-axis styling
+ax.tick_params(axis='y', labelsize=14)
+ax.set_ylabel("Weight (lbs)", fontsize=18)
+ax.set_xlabel("")
+
+# Titles
+left_x = ax.get_position().x0
+plt.subplots_adjust(top=0.85)
+
+fig.suptitle(
+    "NHL Player weights rose for a long time, but have begun to decline",
+    fontsize=20,
+    weight='bold',
+    x=left_x,
+    ha='left',
+    y=0.97
+)
+
+fig.text(
+    left_x,
+    0.87,
+    "Average weight rose from 171.4lbs to a peak of 205.4lbs (+19.8%) in the 2005-2006 season,\nand have since declined 2.2% to 200.7lbs.",
+    fontsize=14,
+    ha='left'
+)
+
+fig.text(
+    0.9,          # far right
+    0.01,          # near bottom
+    "Data: Mean +/- 1 Standard Deviation", 
+    fontsize=10, 
+    style='italic', 
+    ha='right'
+)
+
+# Optional: remove legend if not needed
+ax.legend().remove()
+
+# Save and show
+save_figure("nhl_player_weight_trend_clean.png")
+plt.show()
+
+
+
 # ----------------------------------------------------------------------
 #
 # AGE BY YEAR
@@ -617,6 +720,101 @@ ax.legend().remove()
 # Save and show
 save_figure("nhl_player_age_trend.png")
 plt.show()
+
+# Clean and calculate age
+age_df = roster[['season', 'birth_date']].dropna().copy()
+age_df['birth_date'] = pd.to_datetime(age_df['birth_date'])
+age_df['reference_date'] = pd.to_datetime(age_df['season'].astype(str).str[:4] + '-01-01')
+age_df['age'] = (age_df['reference_date'] - age_df['birth_date']).dt.days / 365.25
+
+# Format season label and assign x-axis numeric positions
+age_df['season_label'] = age_df['season'].apply(split_and_hyphenate)
+season_labels = age_df['season_label'].unique()
+season_to_index = {label: i for i, label in enumerate(season_labels)}
+age_df['x_pos'] = age_df['season_label'].map(season_to_index)
+
+# Compute mean and std deviation per season
+grouped = age_df.groupby('season_label')['age']
+mean = grouped.mean()
+std = grouped.std()
+x_vals = [season_to_index[s] for s in mean.index]
+
+# PLOT
+sns.set(style="whitegrid")
+fig, ax = plt.subplots(figsize=(12, 7))
+
+# Shaded area (mean ± std)
+ax.fill_between(
+    x_vals,
+    mean - std,
+    mean + std,
+    color='#041e42ff',
+    alpha=0.25,
+    label="± 1 std. dev."
+)
+
+# Plot mean age line
+ax.plot(
+    x_vals,
+    mean,
+    color='#FF4C00',
+    linewidth=3.5,
+    label="Mean age"
+)
+
+# Style
+sns.despine()
+ax.grid(False)
+
+# X-axis ticks and labels
+tick_indices = list(range(0, len(season_labels), 15))
+tick_labels = [season_labels[i] for i in tick_indices]
+ax.set_xticks(tick_indices)
+ax.set_xticklabels(tick_labels, rotation=0, fontsize=14)
+
+# Y-axis
+ax.tick_params(axis='y', labelsize=14)
+ax.set_ylabel("Age (years)", fontsize=18)
+ax.set_xlabel("")
+
+# Layout and title
+left_x = ax.get_position().x0
+plt.subplots_adjust(top=0.85)
+
+fig.suptitle(
+    "NHL Player Age Has Remained Remarkably Stable",
+    fontsize=20,
+    weight='bold',
+    x=left_x,
+    ha='left',
+    y=0.97
+)
+
+fig.text(
+    left_x,
+    0.87,
+    "Despite changes in training, nutrition, and playing style,\nthe average NHL player age has hovered near 26 for decades.",
+    fontsize=14,
+    ha='left'
+)
+
+# Optional: right-aligned caption below x-axis
+fig.text(
+    0.9,          # far right
+    0.01,          # near bottom
+    "Data: Mean +/- 1 Standard Deviation", 
+    fontsize=10, 
+    style='italic', 
+    ha='right'
+)
+
+# Hide legend
+ax.legend().remove()
+
+# Save and show
+save_figure("nhl_player_age_trend_clean.png")
+plt.show()
+
 
 # ----------------------------------------------------------------------
 #
