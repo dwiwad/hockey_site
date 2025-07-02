@@ -50,7 +50,7 @@ async def dashboard(request: Request):
     return templates.TemplateResponse("dashboard.html", {"request": request})
 
 # -----------------------------------------------------------------------
-# Route: Player history Blog Page Page ('/blog/historical_player_analysis.html')
+# Route: Player history Blog Page Page ('/deep-dives/historical_player_analysis.html')
 # Loads templates/blog/historical_player_analysis.html
 # -----------------------------------------------------------------------
 
@@ -58,6 +58,18 @@ async def dashboard(request: Request):
 async def deep_dives_hist_analysis_post(request: Request):
     return templates.TemplateResponse(
         "deep-dives/historical_player_analysis_072025/nhl-player-demographics.html",
+        {"request": request}
+    )
+
+# -----------------------------------------------------------------------
+# Route: Player Movement Blog Page Page ('/deep-dives/player_movement.html')
+# Loads templates/blog/historical_player_analysis.html
+# -----------------------------------------------------------------------
+
+@app.get("/deep-dives/player_movement_072025", response_class=HTMLResponse)
+async def deep_dives_player_movement_post(request: Request):
+    return templates.TemplateResponse(
+        "deep-dives/player_movement_072025/player_movement.html",
         {"request": request}
     )
 

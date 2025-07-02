@@ -31,7 +31,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [ ] Five blog posts:
     - [ ] Demographics over time
     - [ ] Total Depth Index (TDI)
-    - [ ] TBD
+    - [ ] Career tenure over time
     - [ ] TBD
     - [ ] TBD
 - [ ] Two Dashboards
