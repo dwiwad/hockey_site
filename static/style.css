@@ -1,7 +1,7 @@
 /* ==========================================================================
    GLOBAL STYLES
    ========================================================================== */
-   
+
 /* ==========================================================================
    SITE NAV HEADER STYLES
    ========================================================================== */
@@ -41,7 +41,7 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: sans-serif;
+    font-family: "Charter", "Bitstream Charter", "Sitka Text", Cambria, serif;
     background-color: #fbf8f1ff;
     height: 100vh;
     justify-content: center;
@@ -63,7 +63,7 @@ body {
 }
 
 .site-header p {
-    margin-top: 3rem;
+    margin-top: 2rem;
     font-size: 1.5rem;
     padding-bottom: 2rem;
 }
@@ -102,6 +102,13 @@ body {
     justify-content: space-between; /* optional: spreads out content evenly */
 }
 
+.card p {
+  margin-top: 1.5rem;   /* bring it closer to the title */
+  margin-bottom: auto;  /* push remaining space down to the button */
+  line-height: 1.5;
+}
+
+
 /* FOOTER */
 .site-footer {
     padding-top: 1rem;
@@ -127,11 +134,26 @@ body {
 .card-button a {
     color: white;
     text-decoration: none;
+    font-family: Charter;
 }
 
 /* ==========================================================================
    ABOUT PAGE STYLES
    ========================================================================== */
+
+.about-image-container {
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.about-image {
+  width: 400px;          /* Adjust size as needed */
+  height: 400px;
+  object-fit: cover;
+  border-radius: 50%;    /* Makes it circular */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Optional: soft shadow */
+}
 
 /* HEADER */
 .sub-header {
@@ -251,7 +273,6 @@ body {
     text-align: justify;
     font-size: 1.5rem;
 }
-
 /* ==========================================================================
    DASHBOARD PAGE STYLES
    ========================================================================== */

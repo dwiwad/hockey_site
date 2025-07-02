@@ -32,13 +32,13 @@ async def about(request: Request):
     return templates.TemplateResponse("about.html", {"request": request})
 
 # -----------------------------------------------------------------------
-# Route: Blog Page ('/blog')
-# Loads templates/blog/index.html
+# Route: Deep Dives Page ('/deep-dives')
+# Loads templates/deep-dives/index.html
 # -----------------------------------------------------------------------
 
-@app.get("/blog", response_class = HTMLResponse)
-async def blog(request: Request):
-    return templates.TemplateResponse("blog/index.html", {"request": request})
+@app.get("/deep-dives", response_class = HTMLResponse)
+async def deep_dives(request: Request):
+    return templates.TemplateResponse("deep-dives/index.html", {"request": request})
 
 # -----------------------------------------------------------------------
 # Route: Dashboard page ('/dashboard')
@@ -54,10 +54,10 @@ async def dashboard(request: Request):
 # Loads templates/blog/historical_player_analysis.html
 # -----------------------------------------------------------------------
 
-@app.get("/blog/historical_player_analysis_072025", response_class=HTMLResponse)
-async def blog_hist_analysis_post(request: Request):
+@app.get("/deep-dives/historical_player_analysis_072025", response_class=HTMLResponse)
+async def deep_dives_hist_analysis_post(request: Request):
     return templates.TemplateResponse(
-        "blog/historical_player_analysis_072025/nhl-player-demographics.html",
+        "deep-dives/historical_player_analysis_072025/nhl-player-demographics.html",
         {"request": request}
     )
 

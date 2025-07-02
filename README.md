@@ -27,7 +27,8 @@ As of 06/26/2026 this project is in extremely early development. Currently focus
 
 ## To-Do and Working History
 
-### June XX, 2025 - Standup some content
+### Julu 1, 2025 - Standup some content
+- [X] Happy Canada Day!
 - [ ] Build one static blog post in the blog page
 	- [ ] My historical analysis weight, height, age, and country composition
 - [ ] Connect it to the NHL API for live dashboarding
@@ -37,10 +38,11 @@ As of 06/26/2026 this project is in extremely early development. Currently focus
 
 - [X] Build the button for the landing cards
 - [X] Build the button for the blog cards
-- [ ] Choose and implement a font
-- [ ] Write and implement the about me page
+- [X] Choose and implement a font
+    - Went with Charter for everything for now
+- [X] Write and implement the about me page
     - [X] Writing
-    - [ ] Circular masked photo
+    - [X] Circular masked photo
 - [X] Make it so the nav site title points home
 
 ### June 26, 2025 - build the MVP
