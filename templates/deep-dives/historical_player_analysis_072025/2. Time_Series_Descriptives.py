@@ -33,7 +33,7 @@ PROJECT_ROOT = "/Users/dylanwiwad/hockey_site"
 def save_figure(filename):
     output_dir = os.path.join(
         PROJECT_ROOT,
-        "static/images/blog/historical_player_analysis_072025"
+        "static/images/deep-dives/historical_player_analysis_072025"
     )
     # Ensure the output directory exists
     os.makedirs(output_dir, exist_ok=True)
@@ -49,7 +49,7 @@ def save_figure(filename):
 #
 # ----------------------------------------------------------------------
 
-roster = pd.read_csv("~/hockey_site/templates/blog/historical_player_analysis_072025/rosters.csv")
+roster = pd.read_csv("~/hockey_site/templates/deep-dives/historical_player_analysis_072025/rosters.csv")
 
 # ----------------------------------------------------------------------
 #
@@ -159,13 +159,12 @@ filtered_df['country_group'] = pd.Categorical(
 
 # Define a clean, journalistic color palette
 palette = {
-    'Canada': '#FF0000',       # red
-    'USA': '#0A3161',          # blue
-    'Scandinavia': '#2a9d8f',  # teal
-    'Former USSR': '#8d99ae',  # grayish blue
-    'Central Europe': '#f4a261' # warm orange
+    'Canada': '#D1495B',
+    'USA': '#2E4057',
+    'Scandinavia': '#008080',
+    'Central Europe': '#E0A458',
+    'Former USSR': '#6C757D'
 }
-
 # PLOT
 fig, ax = plt.subplots(figsize=(12, 7))
 
@@ -378,7 +377,7 @@ ax.scatter(
     height_df['x_pos'] + np.random.uniform(-0.5, 0.5, size=len(height_df)),
     height_df['height_cm'] + np.random.uniform(-0.8, 0.8, size=len(height_df)),
     alpha=0.05,
-    color='#041e42ff',
+    color='#3B4B64',
     edgecolor='none',
     s=12
 )
@@ -389,7 +388,7 @@ sns.lineplot(
     x="x_pos",
     y="height_cm",
     ax=ax,
-    color='#FF4C00',
+    color='#D17A22',
     linewidth=3.5,
     zorder=10
 )
@@ -485,7 +484,7 @@ ax.scatter(
 ax.plot(
     smoothed[:, 0],
     smoothed[:, 1],
-    color='#FF4C00',
+    color='#D17A22',
     linewidth=3.5,
     label='LOESS smoothed trend'
 )
@@ -584,7 +583,7 @@ ax.scatter(
     weight_df['x_pos'] + np.random.uniform(-0.5, 0.5, size=len(weight_df)),
     weight_df['weight_lb'] + np.random.uniform(-0.8, 0.8, size=len(weight_df)),
     alpha=0.05,
-    color='#041e42ff',
+    color='#3B4B64',
     edgecolor='none',
     s=12
 )
@@ -595,7 +594,7 @@ sns.lineplot(
     x="x_pos",
     y="weight_lb",
     ax=ax,
-    color='#FF4C00',
+    color='#D17A22',
     linewidth=3.5,
     zorder=10
 )
@@ -690,7 +689,7 @@ ax.scatter(
 ax.plot(
     smoothed[:, 0],
     smoothed[:, 1],
-    color='#FF4C00',
+    color='#D17A22',
     linewidth=3.5
 )
 
@@ -793,7 +792,7 @@ ax.scatter(
     x_jitter,
     y_jitter,
     alpha=0.05,
-    color='#041e42ff',
+    color='#3B4B64',
     edgecolor='none',
     s=12
 )
@@ -804,7 +803,7 @@ sns.lineplot(
     x="x_pos",
     y="age",
     ax=ax,
-    color='#FF4C00',
+    color='#D17A22',
     linewidth=3.5,
     zorder=10
 )
@@ -897,7 +896,7 @@ ax.scatter(
 ax.plot(
     smoothed[:, 0],
     smoothed[:, 1],
-    color='#FF4C00',
+    color='#D17A22',
     linewidth=3.5
 )
 
@@ -1087,9 +1086,9 @@ for varname, ylabel, title, subtitle, filename, ylims, yticks in [
     avg_df['x_pos'] = avg_df['season_label'].map(season_to_index)
 
     color_map = {
-        'Forward': '#FF4C00',
-        'Defense': '#00BFC4',
-        'Goalie': '#7CAE00'
+        'Forward': '#264653',
+        'Defense': '#2a9d8f',
+        'Goalie': '#e9c46a'
     }
 
     plot_clean_position_trend(
@@ -1163,7 +1162,7 @@ ax.scatter(
 ax.plot(
     smoothed[:, 0],
     smoothed[:, 1],
-    color='#FF4C00',
+    color='#D17A22',
     linewidth=3.5
 )
 

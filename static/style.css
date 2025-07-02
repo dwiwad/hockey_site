@@ -6,7 +6,7 @@
    SITE NAV HEADER STYLES
    ========================================================================== */
 .site-nav-header {
-    background-color: #041e42; /* Oilers blue */
+    background-color: #3B4B64; /* Oilers blue */
     color: white;
     padding: 1rem 2rem;
 }
@@ -51,7 +51,7 @@ body {
 
 /* HEADER */
 .site-header {
-    background-color: #041e42ff; /* Oilers blue */
+    background-color: #3B4B64ff; /* Oilers blue */
     color: white;
     padding-top: 2rem;
     text-align: center;
@@ -93,7 +93,7 @@ body {
     height: 250px;        /* fixed height (optional) */
     padding: 2rem;
     background-color: white;
-    color: #041e42ff; 
+    color: #3B4B64ff; 
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     text-align: left;
@@ -116,7 +116,7 @@ body {
 }
 
 .card-button {
-  background-color: #FF4C00;
+  background-color: #E76F2B;
   color: white;
   padding: 10px 32px;
   border: none;
@@ -157,7 +157,7 @@ body {
 
 /* HEADER */
 .sub-header {
-    background-color: #041e42ff; /* Oilers blue */
+    background-color: #3B4B64ff; /* Oilers blue */
     color: white;
     padding: 2rem;
     text-align: left;
@@ -176,7 +176,7 @@ body {
 
 .sub-main h1 {
     margin: 3rem;
-    color: #041e42ff; 
+    color: #3B4B64ff; 
     font-size: 3.5rem;
     text-align: center;
 }
@@ -194,7 +194,7 @@ body {
     gap: 0rem;
     padding: 2rem;
     background-color: white;
-    color: #041e42ff;
+    color: #3B4B64ff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     text-align: left;
@@ -226,7 +226,7 @@ body {
     height: 250px;        /* fixed height (optional) */
     padding: 2rem;
     background-color: white;
-    color: #041e42ff; 
+    color: #3B4B64ff; 
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     text-align: left;
@@ -241,7 +241,7 @@ body {
 }
 
 .blog-button {
-  background-color: #FF4C00;
+  background-color: #E76F2B;
   color: white;
   padding: 10px 72px;
   border: none;
@@ -263,13 +263,13 @@ body {
 
 .blog-content h1 {
     margin: 3rem;
-    color: #041e42ff; 
+    color: #3B4B64ff; 
     font-size: 3.5rem;
     text-align: center;
 }
 
 .blog-content p {
-    color: #041e42ff;
+    color: #3B4B64ff;
     text-align: justify;
     font-size: 1.5rem;
 }
