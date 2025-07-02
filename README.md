@@ -27,7 +27,20 @@ As of 06/26/2026 this project is in extremely early development. Currently focus
 
 ## To-Do and Working History
 
-### Julu 1, 2025 - Standup some content
+Website launch. Right now (July 1, 2025) I'm thinking I will launch and make live when I have:
+- [ ] Five blog posts:
+    - [ ] Demographics over time
+    - [ ] Total Depth Index (TDI)
+    - [ ] TBD
+    - [ ] TBD
+    - [ ] TBD
+- [ ] Two Dashboards
+    - [ ] Live in game TDI
+    - [ ] Historical player level shot heatmap explorer
+    
+As well as 2 dashboards, one that shows the scoreboard and live TDI, and a historical player level shot heatmap.
+
+### July 1, 2025 - Standup some content
 - [X] Happy Canada Day!
 - [ ] Build one static blog post in the blog page
 	- [ ] My historical analysis weight, height, age, and country composition
