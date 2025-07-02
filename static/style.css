@@ -93,7 +93,7 @@ body {
     height: 250px;        /* fixed height (optional) */
     padding: 2rem;
     background-color: white;
-    color: #3B4B64ff; 
+    color: #041E42; 
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     text-align: left;
@@ -176,7 +176,7 @@ body {
 
 .sub-main h1 {
     margin: 3rem;
-    color: #3B4B64ff; 
+    color: #041E42; 
     font-size: 3.5rem;
     text-align: center;
 }
@@ -194,7 +194,7 @@ body {
     gap: 0rem;
     padding: 2rem;
     background-color: white;
-    color: #3B4B64ff;
+    color: #041E42;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     text-align: left;
@@ -226,7 +226,7 @@ body {
     height: 250px;        /* fixed height (optional) */
     padding: 2rem;
     background-color: white;
-    color: #3B4B64ff; 
+    color: #041E42; 
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     text-align: left;
@@ -238,6 +238,7 @@ body {
 .blog-card h1 {
     margin: 0;
     font-size: 1.5rem;
+    color: #041E42;
 }
 
 .blog-button {
@@ -262,14 +263,15 @@ body {
 }
 
 .blog-content h1 {
-    margin: 3rem;
-    color: #3B4B64ff; 
+    margin: 3rem auto;           /* centers the block horizontally */
+    color: #041E42; 
     font-size: 3.5rem;
-    text-align: center;
+    text-align: center;          /* centers the text inside */
+    max-width: 75%;              /* limits the width of the heading block */
 }
 
 .blog-content p {
-    color: #3B4B64ff;
+    color: #041E42;
     text-align: justify;
     font-size: 1.5rem;
 }
