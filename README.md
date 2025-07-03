@@ -40,6 +40,19 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
     
 As well as 2 dashboards, one that shows the scoreboard and live TDI, and a historical player level shot heatmap.
 
+### July XX, 2025 - Standup some content
+- [ ] Optimize backend for scalability
+	- [ ] Break up main.py into separate routing files
+	- [ ] Create a single generic deep dive router
+	- [ ] Add in meta for Google Analytics
+	- [ ] Add in meta tags for later searching
+	- [ ] Add level 1 folder called data (e.g., /data/deep_dive_1/data.csv)
+	- [ ] Add level 1 folder called scripts (e.g., /scripts/deep_dive_1/1.Pull_data.py)
+- [ ] Fix Front end for recurring new static analyses
+	- [ ] Build a deep dive html template
+	- [ ] Get markdown rolling for content writing that knits to custom styled html
+	- [ ] More generally generalize style.css
+	
 ### July 1, 2025 - Standup some content
 - [X] Happy Canada Day!
 - [ ] Build one static blog post in the blog page
