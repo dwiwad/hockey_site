@@ -49,7 +49,7 @@ def save_figure(filename):
 #
 # ----------------------------------------------------------------------
 
-roster = pd.read_csv("~/hockey_site/templates/deep-dives/historical_player_analysis_072025/rosters.csv")
+roster = pd.read_csv("~/hockey_site/data/nhl-player-demographics/rosters.csv")
 
 # ----------------------------------------------------------------------
 #

@@ -100,13 +100,16 @@ rosters_df = pd.DataFrame(all_rosters)
 # Preview
 print(rosters_df.head())
 
-# Save the data as a CSV for actual analysis
-# Get the current working directory
-script_dir = os.getcwd()
+# Set path to project-relative data folder
+data_folder = os.path.join("data", "nhl-player-demographics")
+os.makedirs(data_folder, exist_ok=True)  # Make sure the folder exists
 
-# Save the DataFrame as a CSV there
-csv_path = os.path.join(script_dir, 'rosters.csv')
+# Save the file into that folder
+csv_path = os.path.join(data_folder, "rosters.csv")
 rosters_df.to_csv(csv_path, index=False)
+
+print(f"✅ Roster data saved to: {csv_path}")
+
 
 # ----------------------------------------------------------------------
 #

@@ -42,12 +42,12 @@ As well as 2 dashboards, one that shows the scoreboard and live TDI, and a histo
 
 ### July XX, 2025 - Standup some content
 - [ ] Optimize backend for scalability
-	- [ ] Break up main.py into separate routing files
-	- [ ] Create a single generic deep dive router
+	- [X] Break up main.py into separate routing files
+	- [X] Create a single generic deep dive router
 	- [ ] Add in meta for Google Analytics
 	- [ ] Add in meta tags for later searching
-	- [ ] Add level 1 folder called data (e.g., /data/deep_dive_1/data.csv)
-	- [ ] Add level 1 folder called scripts (e.g., /scripts/deep_dive_1/1.Pull_data.py)
+	- [X] Add level 1 folder called data (e.g., /data/deep_dive_1/data.csv)
+	- [X] Add level 1 folder called scripts (e.g., /scripts/deep_dive_1/1.Pull_data.py)
 - [ ] Fix Front end for recurring new static analyses
 	- [ ] Build a deep dive html template
 	- [ ] Get markdown rolling for content writing that knits to custom styled html
