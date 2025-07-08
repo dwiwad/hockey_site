@@ -2,11 +2,26 @@
    GLOBAL STYLES
    ========================================================================== */
 
+:root {
+  --blue: #3B4B64; /* Pale blue */
+  --blue-dark: #041E42; /* Oilers blue */
+  --orange: #E76F2B; /* Pale orange */
+  --bg-cream: #fbf8f1ff;
+  --white: #ffffff;
+}
+
+
+/* FOOTER */
+.site-footer {
+    padding-top: 1rem;
+    text-align: center;
+}
+
 /* ==========================================================================
    SITE NAV HEADER STYLES
    ========================================================================== */
 .site-nav-header {
-    background-color: #3B4B64; /* Oilers blue */
+    background-color: var(--blue); 
     color: white;
     padding: 1rem 2rem;
 }
@@ -42,7 +57,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: "Charter", "Bitstream Charter", "Sitka Text", Cambria, serif;
-    background-color: #fbf8f1ff;
+    background-color: var(--bg-cream);
     height: 100vh;
     justify-content: center;
     align-items: center;
@@ -51,7 +66,7 @@ body {
 
 /* HEADER */
 .site-header {
-    background-color: #3B4B64ff; /* Oilers blue */
+    background-color: var(--blue); /* Oilers blue */
     color: white;
     padding-top: 2rem;
     text-align: center;
@@ -93,7 +108,7 @@ body {
     height: 250px;        /* fixed height (optional) */
     padding: 2rem;
     background-color: white;
-    color: #041E42; 
+    color: var(--blue-dark); 
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     text-align: left;
@@ -108,15 +123,8 @@ body {
   line-height: 1.5;
 }
 
-
-/* FOOTER */
-.site-footer {
-    padding-top: 1rem;
-    text-align: center;
-}
-
 .card-button {
-  background-color: #E76F2B;
+  background-color: var(--orange);
   color: white;
   padding: 10px 32px;
   border: none;
@@ -157,7 +165,7 @@ body {
 
 /* HEADER */
 .sub-header {
-    background-color: #3B4B64ff; /* Oilers blue */
+    background-color: var(--blue); /* Oilers blue */
     color: white;
     padding: 2rem;
     text-align: left;
@@ -176,7 +184,7 @@ body {
 
 .sub-main h1 {
     margin: 3rem;
-    color: #041E42; 
+    color: var(--blue-dark); 
     font-size: 3.5rem;
     text-align: center;
 }
@@ -194,7 +202,7 @@ body {
     gap: 0rem;
     padding: 2rem;
     background-color: white;
-    color: #041E42;
+    color: var(--blue-dark);
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     text-align: left;
@@ -226,7 +234,7 @@ body {
     height: 250px;        /* fixed height (optional) */
     padding: 2rem;
     background-color: white;
-    color: #041E42; 
+    color: var(--blue-dark); 
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     text-align: left;
@@ -238,11 +246,11 @@ body {
 .blog-card h1 {
     margin: 0;
     font-size: 1.5rem;
-    color: #041E42;
+    color: var(--blue-dark);
 }
 
 .blog-button {
-  background-color: #E76F2B;
+  background-color: var(--orange);
   color: white;
   padding: 10px 72px;
   border: none;
@@ -264,14 +272,14 @@ body {
 
 .blog-content h1 {
     margin: 3rem auto;           /* centers the block horizontally */
-    color: #041E42; 
+    color: var(--blue-dark); 
     font-size: 3.5rem;
     text-align: center;          /* centers the text inside */
     max-width: 75%;              /* limits the width of the heading block */
 }
 
 .blog-content p {
-    color: #041E42;
+    color: var(--blue-dark);
     text-align: justify;
     font-size: 1.5rem;
 }

@@ -31,8 +31,8 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [ ] Five blog posts:
     - [ ] Demographics over time
     - [ ] Total Depth Index (TDI)
-    - [ ] Career tenure over time
-    - [ ] TBD
+    - [ ] Career tenure over time?
+    - [ ] Quantifying generational talent vs everyone else?
     - [ ] TBD
 - [ ] Two Dashboards
     - [ ] Live in game TDI
