@@ -23,7 +23,7 @@ As of 06/26/2026 this project is in extremely early development. Currently focus
 ## Tech Stack (Planned)
 
 - Python for backend code and data analysis. Maybe some R if it plays nicely together  (FastAPI for backend)
-- HTML/CSS/JS for front end (Jinja2)
+- HTML/CSS/JS for front end (Jinja2).
 
 ## To-Do and Working History
 
