@@ -28,12 +28,12 @@ print("Using font:", mpl.rcParams['font.family'])  # should say ['Charter']
 
 
 # Hardcoded project root (adjust if you move the repo)
-PROJECT_ROOT = "/Users/dylanwiwad/hockey_site"
+PROJECT_ROOT = "/Users/dwiwad/dev/hockey_site"
 
 def save_figure(filename):
     output_dir = os.path.join(
         PROJECT_ROOT,
-        "static/images/deep-dives/historical_player_analysis_072025"
+        "static/images/deep-dives/nhl-player-demographics"
     )
     # Ensure the output directory exists
     os.makedirs(output_dir, exist_ok=True)
@@ -49,7 +49,7 @@ def save_figure(filename):
 #
 # ----------------------------------------------------------------------
 
-roster = pd.read_csv("~/hockey_site/data/nhl-player-demographics/rosters.csv")
+roster = pd.read_csv("~/dev/hockey_site/data/nhl-player-demographics/rosters.csv")
 
 # ----------------------------------------------------------------------
 #
