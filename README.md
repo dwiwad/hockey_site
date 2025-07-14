@@ -51,7 +51,7 @@ As well as 2 dashboards, one that shows the scoreboard and live TDI, and a histo
 - [ ] Fix Front end for recurring new static analyses
 	- [ ] Build a deep dive html template
 	- [ ] Get markdown rolling for content writing that knits to custom styled html
-	- [ ] More generally generalize style.css
+	- [ ] Generalize style.css
 	
 ### July 1, 2025 - Standup some content
 - [X] Happy Canada Day!
