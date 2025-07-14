@@ -58,7 +58,7 @@ As well as 2 dashboards, one that shows the scoreboard and live TDI, and a histo
 - [ ] Build one static blog post in the blog page
 	- [ ] My historical analysis weight, height, age, and country composition
 - [ ] Connect it to the NHL API for live dashboarding
-	- [ ] Perhaps a page that just pulls the last oilers game of the season and displays data
+	- [ ] This will be just a test, but pull a stylized schedule with a list of all pre-season games
 
 ### June 27, 2025 - Design Work
 
