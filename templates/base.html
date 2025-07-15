@@ -1,1 +1,32 @@
-<!DOCTYPE html><html lang="en"><head>  <meta charset="UTF-8">  <title>{{ title or "Hockey Decoded" }}</title>  <link rel="stylesheet" href="/static/style.css"></head><body>  <header>    <h1><a href="/">Hockey Decoded</a></h1>  </header>  <main>    {% block content %}{% endblock %}  </main>  <footer>    <p>&copy; 2025 Dylan Wiwad</p>  </footer></body></html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>{{ short_title or "Hockey Decoded" }}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <header class="site-nav-header">
+        <div class="nav-container">
+            <div class="site-title"><a href="/">Hockey Decoded</a></div>
+            <nav class="site-nav">
+                <a href="/">Home</a>
+                <a href="/deep-dives">Deep Dives</a>
+                <a href="/dashboard">Dashboards</a>
+                <a href="/about">About</a>
+            </nav>
+        </div>
+    </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Dylan Wiwad</p>
+  </footer>
+</body>
+
+</html>
