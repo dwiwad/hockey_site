@@ -13,6 +13,23 @@
     --blue-dark: #041E42; /* Oilers blue */
 }
 
+a {
+  color: var(--oil-orange);
+  text-decoration: underline; /* optional */
+}
+
+a:hover,
+a:focus {
+  color: var(--oil-orange);
+  opacity: 0.8; /* optional: gives a hover effect */
+  text-decoration: underline;
+}
+
+sup {
+  font-size: 0.75em;
+  vertical-align: super;
+  line-height: 1;
+}
 
 /* FOOTER */
 .site-footer {
@@ -23,19 +40,58 @@
 .markdown-body {
   line-height: 1.6;
   font-size: 1rem;
-  max-width: 750px;
+  max-width: 60%;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  text-align: left;
+}
+
+.post-title {
+  width: 75vw;
+  margin: 3rem auto 0.25rem auto;
+  font-size: 3.5rem;
+  color: var(--blue-dark);
+  text-align: center;
+}
+
+.date {
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--blue-dark);
+    margin-top: 0.25rem;
+}
+
+.markdown-body h1 {
+  font-size: 2.5rem;
+  margin-top: 2rem;
+  color: var(--blue-dark);
+  text-align: center;
+}
+
+.markdown-body h2 {
+  font-size: 2rem;
+  margin-top: 1rem;
+  color: var(--blue-dark);
+  text-align: center;
+}
+
+.markdown-body h3 {
+  font-size: 1.5rem;
+  margin-top: 1rem;
+  color: var(--blue-dark);
+  text-align: center;
+}
+
+.markdown-body p {
+    color: var(--blue-dark);
+    text-align: justify;
+    font-size: 1.5rem;
 }
 
 .markdown-body img {
   max-width: 100%;
   height: auto;
-  margin: 1rem 0;
-}
-
-.markdown-body h1, .markdown-body h2, .markdown-body h3 {
-  margin-top: 2rem;
+  margin: 2rem 0;
+  display: block
 }
 
 
