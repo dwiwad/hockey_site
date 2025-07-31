@@ -33,5 +33,6 @@ async def deep_dive_post(request: Request, slug: str):
         "title": post_data["title"],
         "date": post_data["date"],
         "image": post_data["image"],
-        "content": post_data["content"]
+        "content": post_data["content"],
+        "data_source": post_data["data_source"]
     })

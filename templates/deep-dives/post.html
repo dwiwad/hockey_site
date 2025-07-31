@@ -11,4 +11,15 @@
   <article class="deep-dive markdown-body">
     <div>{{ content | safe }}</div>
   </article>
+
+  {% if data_source %}
+  <footer class="site-footer">
+    <p>Data Source: {{ data_source }} • Analysis, Viz, and Writing &copy; 2025 Dylan Wiwad</p>
+  </footer>
+  {% else %}
+    <footer class="site-footer">
+      <p>Analysis, Viz, and Writing &copy; 2025 Dylan Wiwad</p>
+    </footer>
+  {% endif %}
+
 {% endblock %}

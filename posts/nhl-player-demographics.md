@@ -2,8 +2,8 @@
 title: "How have player demographics changed over the history of the league?"
 short_title: "Player Demographics | Hockey Decoded"
 date: "2025-07-14"
-slug: "test-deep-dive"
 image: ""
+data_source: "NHL API"
 ---
 
 The shape of the NHL has changed quite drastically over the last 100 years. When

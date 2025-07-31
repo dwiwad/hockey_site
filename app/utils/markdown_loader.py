@@ -19,5 +19,6 @@ def load_deep_dive(slug: str):
         "title": post.get("title", "Untitled"),
         "date": post.get("date", ""),
         "image": post.get("image", ""),
-        "content": html_content
+        "content": html_content,
+        "data_source": post.get("data_source", None),
     }

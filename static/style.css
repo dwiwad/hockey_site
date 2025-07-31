@@ -33,12 +33,15 @@ sup {
 
 /* FOOTER */
 .site-footer {
-    padding-top: 1rem;
     text-align: center;
+    padding: 1rem 1rem; /* Adds vertical + horizontal padding */
+    background-color: var(--bg-cream); 
+    font-size: 1.3rem; /* Optional, adjust for readability */
+    color: var(--blue-dark); /* Optional, for consistency */
 }
 
 .markdown-body {
-  line-height: 1.6;
+  line-height: 1.2;
   font-size: 1rem;
   max-width: 60%;
   margin: 0 auto;
@@ -85,6 +88,7 @@ sup {
     color: var(--blue-dark);
     text-align: justify;
     font-size: 1.5rem;
+    line-height: 1.2;
 }
 
 .markdown-body img {
