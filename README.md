@@ -18,7 +18,9 @@ Homepage site preview:
 
 ## Status
 
-As of 06/26/2026 this project is in extremely early development. Currently focused on design and standing up the skeleton.
+As of 08/17/2026 this project is in very early development. I have the bare bones structure stood up for my deep dive posts. I'm beginning to play around with bringing in live data from the NHL api for my dashboarding. Would like to continue writing the deep dives I have planned, but then also starting the dashboarding build out.
+
+I'm beginning to think about database management. Right now there is no database structure in place but I'm going to need to have this--what happens if someone wants to look at yesterdays games? Or games from earlier in the season? So I'm going to need a place to store all this json so people can see static snapshots of previous games. I did not expect this project to start simply with data science, morph into learning front and back end web development, and then start to touch on data engineering lol.
 
 ## Tech Stack (Planned)
 
@@ -37,9 +39,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [ ] Two Dashboards
     - [ ] Live in game TDI
     - [ ] Historical player level shot heatmap explorer
-    
-As well as 2 dashboards, one that shows the scoreboard and live TDI, and a historical player level shot heatmap.
-
+	
 ### Sept. 22, 2025 - Turn the dashboards live
 - [ ] Change functions from static and historical to live
 

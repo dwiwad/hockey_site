@@ -18,7 +18,7 @@ def get_todays_games():
     # FOR NOW, JUST MAKE THIS THE FIRST DAY SO WE HAVE SOMETHING TO WORK WITH
     # today = date.today()
     # url = f'https://api-web.nhle.com/v1/schedule/{today}'
-    url = 'https://api-web.nhle.com/v1/schedule/2025-09-22'
+    url = 'https://api-web.nhle.com/v1/schedule/2025-06-17'
     
     try:
         response = requests.get(url)
