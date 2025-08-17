@@ -40,6 +40,9 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
     
 As well as 2 dashboards, one that shows the scoreboard and live TDI, and a historical player level shot heatmap.
 
+### Sept. 22, 2025 - Turn the dashboards live
+- [ ] Change functions from static and historical to live
+
 ### July 31, 2025 - Standup some content
 - [ ] Optimize backend for scalability
 	- [X] Break up main.py into separate routing files
@@ -52,13 +55,16 @@ As well as 2 dashboards, one that shows the scoreboard and live TDI, and a histo
 	- [X] Build a deep dive html template
 	- [X] Get markdown rolling for content writing that knits to custom styled html
 	- [ ] Generalize style.css
+- [ ] Add links to about page with icons 
+	- Github, personal site, linkedin, google scholar
+- [ ] Stylize Today's Games with cards
 	
 ### July 1, 2025 - Standup some content
 - [X] Happy Canada Day!
 - [ ] Build one static blog post in the blog page
 	- [ ] My historical analysis weight, height, age, and country composition
-- [ ] Connect it to the NHL API for live dashboarding
-	- [ ] This will be just a test, but pull a stylized schedule with a list of all pre-season games
+- [X] Connect it to the NHL API for live dashboarding
+	- [X] This will be just a test, but pull a schedule with a list of the days games
 
 ### June 27, 2025 - Design Work
 

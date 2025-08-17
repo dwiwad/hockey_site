@@ -14,8 +14,11 @@ import pandas as pd
 from datetime import date
 
 def get_todays_games():
-    today = date.today()
-    url = f'https://api-web.nhle.com/v1/schedule/{today}'
+
+    # FOR NOW, JUST MAKE THIS THE FIRST DAY SO WE HAVE SOMETHING TO WORK WITH
+    # today = date.today()
+    # url = f'https://api-web.nhle.com/v1/schedule/{today}'
+    url = 'https://api-web.nhle.com/v1/schedule/2025-09-22'
     
     try:
         response = requests.get(url)
@@ -46,4 +49,11 @@ def get_todays_games():
     
     except (requests.RequestException, KeyError, IndexError) as e:
         print(f"Error fetching NHL schedule: {e}")
-        return pd.DataFrame(columns=['game_id', 'away', 'home'])
+        return pd.DataFrame(columns=['game_id', 'start', 'away', 'home'])
+
+# Run the script when needed
+if __name__ == "__main__":
+    print(get_todays_games())
+    
+games_today_df = get_todays_games()
+games_today = games_today_df.to_dict(orient="records")

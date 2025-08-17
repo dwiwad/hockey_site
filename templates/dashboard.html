@@ -22,6 +22,21 @@
     
     <main class="sub-main">
         <h1>Games Today</h1>
+
+        <section class="todays-games">
+            {% if games_today %}
+                <ul>
+                    {% for game in games_today %}
+                        <li>
+                            <div>{{ game.away }} @ {{ game.home }}</div>
+                            <div>{{ game.start }}</div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No games scheduled for today.</p>
+            {% endif %}
+        </section>
     </main>
 </body>
 

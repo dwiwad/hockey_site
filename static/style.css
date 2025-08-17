@@ -98,7 +98,6 @@ sup {
   display: block
 }
 
-
 /* ==========================================================================
    SITE NAV HEADER STYLES
    ========================================================================== */
@@ -145,7 +144,6 @@ body {
     align-items: center;
 }
 
-
 /* HEADER */
 .site-header {
     background-color: var(--blue); /* Oilers blue */
@@ -173,7 +171,6 @@ body {
     gap: 2rem; /* <-- adds vertical space between boxes */
     padding: 2rem 0;
 }
-
 
 /* CONTENT BOX */
 .card-row {
@@ -368,3 +365,17 @@ body {
 /* ==========================================================================
    DASHBOARD PAGE STYLES
    ========================================================================== */
+
+/* GAME LIST HOME PAGE - TODAY'S GAMES */
+
+.todays-games ul {
+  list-style-type: none;
+  text-align: center;
+  padding: 1rem;
+  color: var(--blue-dark);
+  font-size: 1.5rem;
+}
+
+.todays-games li {
+  margin-bottom: 1rem;
+}
