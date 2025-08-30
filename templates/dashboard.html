@@ -23,20 +23,37 @@
     <main class="sub-main">
         <h1>Games Today</h1>
 
-        <section class="todays-games">
+        <section class="game-card-row">
             {% if games_today %}
-                <ul>
-                    {% for game in games_today %}
-                        <li>
-                            <div>{{ game.away }} @ {{ game.home }}</div>
-                            <div>{{ game.start }}</div>
-                        </li>
-                    {% endfor %}
-                </ul>
+                {% for game in games_today %}
+                    <article class="game-card">
+                        <div class="game-card-body">
+                            <!-- Left logo -->
+                            <img class="team-logo"
+                                src="/static/images/logos/{{ game.away_tri|upper }}_light.svg"
+                                alt="{{ game.away }} logo">
+
+                        <!-- Center stack -->
+                        <div class="center-stack">
+                            <h2 class="matchup">{{ game.away }} <span style="font-size:16px;">AT</span> {{ game.home }}</h2>
+                            <h3 class="start">{{ game.start }}</h3>
+                            <button class="game-button"><a href="/dashboard/games/{{ game.game_id }}">Open dashboard</a></button>
+                        </div>
+
+                        <!-- Right logo -->
+                        <img class="team-logo"
+                            src="/static/images/logos/{{ game.home_tri|upper }}_light.svg"
+                            alt="{{ game.home }} logo">
+                        </div>
+                    </article>
+                {% endfor %}
             {% else %}
-                <p>No games scheduled for today.</p>
+                <h2>No games scheduled for today.</h2>
             {% endif %}
         </section>
+
+        <!-- <h1>Static Dashboards</h1> -->
+            <!-- I might want static or historical dashboards to be below but that sort of goes against the clean design philosophy. Link to elsewhere? --> 
     </main>
 </body>
 

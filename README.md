@@ -8,10 +8,10 @@ Homepage site preview:
 
 ## Goals
 
-- 📊 Static blog-style analysis of NHL teams, players, games, and historical trends
+- 📊 Static deep dive-style analysis of NHL teams, players, games, and historical trends
 - 🖥  Live game dashboards using the NHL API that track the "shape of the game" with my novel metrics of Depth, Physicality, Defensive Success, etc.
 - 📁 Separate pages for:
-	- Blog Posts (static analyses)
+	- Deep Dive Posts (static analyses)
 	- Live Dashboards
 	- Team and player stat lookups
 	- About me
@@ -26,11 +26,12 @@ I'm beginning to think about database management. Right now there is no database
 
 - Python for backend code and data analysis. Maybe some R if it plays nicely together  (FastAPI for backend)
 - HTML/CSS/JS for front end (Jinja2).
+- Figma for design work
 
 ## To-Do and Working History
 
 Website launch. Right now (July 1, 2025) I'm thinking I will launch and make live when I have:
-- [ ] Five blog posts:
+- [ ] Five deep dive posts:
     - [ ] Demographics over time
     - [ ] Total Depth Index (TDI)
     - [ ] Career tenure over time?
@@ -39,7 +40,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [ ] Two Dashboards
     - [ ] Live in game TDI
     - [ ] Historical player level shot heatmap explorer
-	
+
 ### Sept. 22, 2025 - Turn the dashboards live
 - [ ] Change functions from static and historical to live
 
@@ -57,11 +58,15 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 	- [ ] Generalize style.css
 - [ ] Add links to about page with icons 
 	- Github, personal site, linkedin, google scholar
-- [ ] Stylize Today's Games with cards
+- [X] Stylize Today's Games with cards
+ - [X] Cards
+ - [X] Team logo images
+ - [X] Buttons
+ - [X] Do the design on Figma
 	
 ### July 1, 2025 - Standup some content
 - [X] Happy Canada Day!
-- [ ] Build one static blog post in the blog page
+- [ ] Build one static deep dive post in the deep dive page
 	- [ ] My historical analysis weight, height, age, and country composition
 - [X] Connect it to the NHL API for live dashboarding
 	- [X] This will be just a test, but pull a schedule with a list of the days games
@@ -69,7 +74,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 ### June 27, 2025 - Design Work
 
 - [X] Build the button for the landing cards
-- [X] Build the button for the blog cards
+- [X] Build the button for the deep dive cards
 - [X] Choose and implement a font
     - Went with Charter for everything for now
 - [X] Write and implement the about me page
@@ -82,12 +87,12 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [X] Set up the basic website structure backend
     - [X] Landing page
 	- [X] About page
-	- [X] Blog page
+	- [X] deep dive page
 	- [X] Dashboard page
 - [X] Add placeholder HTML frontend pages
     - [X] Landing page
 	- [X] About page
-	- [X] Blog page
+	- [X] deep dive page
 	- [X] Dashboard page
 
 ## Author

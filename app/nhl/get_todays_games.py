@@ -18,7 +18,7 @@ def get_todays_games():
     # FOR NOW, JUST MAKE THIS THE FIRST DAY SO WE HAVE SOMETHING TO WORK WITH
     # today = date.today()
     # url = f'https://api-web.nhle.com/v1/schedule/{today}'
-    url = 'https://api-web.nhle.com/v1/schedule/2025-06-17'
+    url = 'https://api-web.nhle.com/v1/schedule/2025-09-22'
     
     try:
         response = requests.get(url)
@@ -44,7 +44,9 @@ def get_todays_games():
                 'game_id': games['id'],
                 'start': games['start_et_str'],
                 'away': games['awayTeam.commonName.default'],
-                'home': games['homeTeam.commonName.default']
+                'home': games['homeTeam.commonName.default'],
+                'away_tri': games['awayTeam.abbrev'],
+                'home_tri': games['homeTeam.abbrev']
             })
     
     except (requests.RequestException, KeyError, IndexError) as e:
