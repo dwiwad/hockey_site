@@ -102,18 +102,44 @@ peak ages.
 
 ## Height: A Steady Increase and Biological Stagnation
 
-Paragraph 2: Height — A Slow but Steady Climb
-Main Point: NHL players have gotten taller over time, rising from ~176 cm to ~187 cm—a 6% increase.
+There are again some interesting trends when it comes to how height has changed over the years.
+By and large, players have gotten taller, which is not entirely surprising. The average height
+of a Canadian man in 1920 was ~171cm. By 2014, this had grown to be ~178cm. This raw 7cm, or 4%,
+increase roughly tracks the NHL change of 176 to 187cm, a 6% increase, over the same time period.
 
-Trend Shape: Growth was consistent until ~2010s, then plateaus.
+So it's not really that the league is getting taller, it's simply most likely that people were
+getting taller over the same time period, and the NHL kept up, maybe outpacing the general population
+slightly. Naturally, the athletes are a bit taller than the general population overall.
 
-Possible Causes: Better nutrition, scouting bias toward size, and modern training regimens.
+![NHL Player Nationality Trends](/static/images/deep-dives/nhl-player-demographics/nhl_height_by_position.png)
 
-Future Questions: Is hockey hitting a height ceiling? Or could newer play styles favor agility over reach?
+I think what is the most interesting here, though, is the change in positional heights. For almost
+the entire history of the NHL, goalies were the smallest position by height (and weight, but more
+on that below). However, come the late 1980s and early 1990s this began to shift and goalies' saw
+a dramatic rise in their overall height, eventually becoming the tallest players around 2010.
+
+While there are many plausible reasons for this, one that I think rises to the top is implementation
+of helmets for goalies with the the shift towards the butterfly, or "profly" style popularized in
+the mid 1980s by Patrick Roy.<sup>(<a href="https://en.wikipedia.org/wiki/Butterfly_style" target="_blank" rel="noopener noreferrer">3</a>)</sup>
+Goalies were first required to wear masks in 1979-1980, followed quickly by some equipment changes
+that made it feasible for a goalie to drop to his knees (masks and more heavily armored chest and arm pads).
+
+Now, instead of relying on their gloves, with an unprotected face, goalies could drop to their knees and
+use their whole body to stop the puck. As Patrick Roy came along in the mid 1980s and popularized the style,
+it was now the reality that a goalie could be both large AND agile AND use their whole body. Thus, it was
+much more effective now to be a large goalie, possibly kicking off the slow and steady height trend we see now.
 
 ## Weight: Slow and Steady Rise to an Eventual Decline
 
-Main Point: Player weight followed height—steadily climbing from ~175 lbs to a peak near 205 lbs, but has slightly declined in recent years.
+There are a few interesting trends with the average weight of NHL players. Overall, there
+has been a steady increase from ~175lbs average to a peak of near 205lbs, with now a drop to
+slightly below 200lbs average. This trend mirrors the height changes, at least until weight begins to
+decline: as players get taller, they get heavier.
+
+![NHL Player Nationality Trends](/static/images/deep-dives/nhl-player-demographics/nhl_weight_by_position.png)
+
+But, similar to the changes in goalie height, there may have been a shift in the last 15 to 20 years that
+allows players to be more effective while being lighter.
 
 Interpretation: The bulking era may have crested; teams may now prioritize pace and endurance.
 

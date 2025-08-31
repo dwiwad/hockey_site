@@ -43,6 +43,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 
 ### Sept. 22, 2025 - Turn the dashboards live
 - [ ] Change functions from static and historical to live
+- [ ] Add a meta-tag in the markdown for raw analysis that links to a notebook
 
 ### July 31, 2025 - Standup some content
 - [ ] Optimize backend for scalability

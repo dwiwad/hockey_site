@@ -33,17 +33,17 @@
                                 src="/static/images/logos/{{ game.away_tri|upper }}_light.svg"
                                 alt="{{ game.away }} logo">
 
-                        <!-- Center stack -->
-                        <div class="center-stack">
-                            <h2 class="matchup">{{ game.away }} <span style="font-size:16px;">AT</span> {{ game.home }}</h2>
-                            <h3 class="start">{{ game.start }}</h3>
-                            <button class="game-button"><a href="/dashboard/games/{{ game.game_id }}">Open dashboard</a></button>
-                        </div>
+                            <!-- Center stack -->
+                            <div class="center-stack">
+                                <h2 class="matchup">{{ game.away }} <span style="font-size:16px;">AT</span> {{ game.home }}</h2>
+                                <h3 class="start">{{ game.start }}</h3>
+                                <button class="game-button"><a href="/dashboard/games/{{ game.game_id }}">Open dashboard</a></button>
+                            </div>
 
-                        <!-- Right logo -->
-                        <img class="team-logo"
-                            src="/static/images/logos/{{ game.home_tri|upper }}_light.svg"
-                            alt="{{ game.home }} logo">
+                            <!-- Right logo -->
+                            <img class="team-logo"
+                                src="/static/images/logos/{{ game.home_tri|upper }}_light.svg"
+                                alt="{{ game.home }} logo">
                         </div>
                     </article>
                 {% endfor %}
