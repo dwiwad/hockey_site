@@ -53,7 +53,17 @@ roster = pd.read_csv("~/dev/hockey_site/data/nhl-player-demographics/rosters.csv
 
 # ----------------------------------------------------------------------
 #
-# COUNTRY COUNTS BY YEAR
+# ROSTER COUNTS
+#
+# ----------------------------------------------------------------------
+
+print('Total number of NHL rostered players from 1917 to 2025:', len(roster))
+print('Total roster years:', roster['season'].nunique())
+print('Total unique rostered players from 1917 to 2025:', roster['id'].nunique())
+
+# ----------------------------------------------------------------------
+#
+# NATIONALITY PROPORTIONS IN THE 2024-2025 AND OVERALL PLOT
 #
 # ----------------------------------------------------------------------
 
@@ -99,94 +109,72 @@ def map_country_group(country):
 # Apply dataframe dataframe
 country_year_df['country_group'] = country_year_df['birth_country'].apply(map_country_group)
 
-palette = {
-    'Canada': '#FF0000',
-    'USA': '#0A3161',
-    'Scandinavia': 'goldenrod',
-    'Central Europe': 'darkgreen',
-    'Former USSR': 'purple',
-    'Western Europe': 'orange',
-    'Other Europe': 'gray',
-    'Other': 'lightgray'
-}
+# ----------------------------------------------------------------------
+# AGGREGATION FOR PLOTTING
+# ----------------------------------------------------------------------
 
 # Get the max season
 latest_season = country_year_df['season'].max()
 
-# Compute total proportion for each group in the latest season
-latest_order = (
-    country_year_df[country_year_df['season'] == latest_season]
-    .groupby('country_group')['country_prop']
+# Get the latest group totals
+latest_group_totals = (
+    country_year_df.query("season == @latest_season")
+    .groupby('country_group', as_index=False)['country_prop']
     .sum()
-    .sort_values(ascending=False)
-    .index
+)
+
+latest_order = (
+    latest_group_totals
+    .sort_values('country_prop', ascending=False)['country_group']
     .tolist()
 )
+
+top_groups = latest_group_totals.nlargest(5, 'country_prop')['country_group'].tolist()
+
+# aggregate to group-by-season before plotting 
+plot_df = (
+    country_year_df[country_year_df['country_group'].isin(top_groups)]
+    .groupby(['season', 'country_group'], as_index=False)['country_prop']
+    .sum()
+)
+
+# Re-add the season label
+plot_df['season_label'] = plot_df['season'].apply(split_and_hyphenate)
 
 # Convert to categorical to enforce order
-country_year_df['country_group'] = pd.Categorical(
-    country_year_df['country_group'],
-    categories=latest_order,
-    ordered=True
-)
+plot_df['country_group'] = pd.Categorical(plot_df['country_group'], categories=top_groups, ordered=True)
 
-# TRY TO MAKE A FIVETHIRTYEIGHT OR OTHERWISE NARRATIVE STYLED PLOT
-# Set a clean aesthetic style
-sns.set(style="whitegrid")
-mpl.rcParams['font.family'] = 'Charter'
 
-# Restrict to only top 5 country groups in 2024–2025
-latest_season = country_year_df['season'].max()
-top_groups = (
-    country_year_df[country_year_df['season'] == latest_season]
-    .groupby('country_group')['country_prop']
-    .sum()
-    .sort_values(ascending=False)
-    .head(5)
-    .index
-    .tolist()
-)
-
-# Filter data to only include these groups
-filtered_df = country_year_df[country_year_df['country_group'].isin(top_groups)].copy()
-
-# Set order explicitly
-filtered_df['country_group'] = pd.Categorical(
-    filtered_df['country_group'],
-    categories=top_groups,
-    ordered=True
-)
-
-# Define a clean, journalistic color palette
-palette = {
-    'Canada': '#D1495B',
-    'USA': '#2E4057',
-    'Scandinavia': '#008080',
-    'Central Europe': '#E0A458',
-    'Former USSR': '#6C757D'
-}
+# ----------------------------------------------------------------------
 # PLOT
-fig, ax = plt.subplots(figsize=(12, 7))
+# ----------------------------------------------------------------------
 
-# Plot
+fig, ax = plt.subplots(figsize=(12, 7))
 sns.lineplot(
-    data=filtered_df,
+    data=plot_df,
     x="season_label",
     y="country_prop",
     hue="country_group",
-    palette=palette,
+    palette={
+        'Canada': '#D1495B',
+        'USA': '#2E4057',
+        'Scandinavia': '#008080',
+        'Central Europe': '#E0A458',
+        'Former USSR': '#6C757D'
+    },
     linewidth=3.5,
     ax=ax,
-    ci=None
+    errorbar=None  
 )
 
-# Style
+# Set a clean aesthetic style
+mpl.rcParams['font.family'] = 'Charter'
 sns.despine()
 ax.grid(False)
 
 # X-tick labels
 # Get unique season labels every 15 steps
-tick_labels = filtered_df['season_label'].unique()[::15]
+tick_labels = plot_df['season_label'].unique()[::15]
 
 # Set ticks and labels using actual string values
 ax.set_xticks(tick_labels)
@@ -235,7 +223,67 @@ fig.text(
 # Legend
 ax.legend(title="", frameon=False, loc='upper right', fontsize=14)
 save_figure("nhl_player_nationalities_trend.png")
+
 plt.show()
+
+# ----------------------------------------------------------------------
+#
+# AGE BY YEAR
+#
+# ----------------------------------------------------------------------
+
+# Important to start off - move the legend so it's in the other corner
+# and follows the same structure as country, with no box.
+
+# Test quickly, should I just have it the same as country? Plot the average
+# with CI band, or plot the smoothed curve?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------
+#
+# COUNTRY COUNTS BY YEAR
+#
+# ----------------------------------------------------------------------
 
 
 # CLEAN
