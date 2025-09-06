@@ -40,10 +40,17 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [ ] Two Dashboards
     - [ ] Live in game TDI
     - [ ] Historical player level shot heatmap explorer
+- [ ] Databasing
+	- [ ] How do I store previous games so people can look at history?
 
-### Sept. 2, 2025 - Turn the dashboards live
+### Sept. 22, 2025 - Turn the dashboards live
 - [ ] Change functions from static and historical to live
 - [ ] Add a meta-tag in the markdown for raw analysis that links to a notebook
+
+### Sept. 6, 2025 - Keep on keepin on
+- [ ] Write the demographics deep dive notebook file
+- [ ] Do the ground exploration and analysis to define TDI; Need this for the blog post and dash
+- [ ] Design the "Shape of the Game" Dashboard
 
 ### July 31, 2025 - Standup some content
 - [ ] Optimize backend for scalability

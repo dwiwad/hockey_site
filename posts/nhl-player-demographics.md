@@ -170,7 +170,7 @@ There are a ton of open questions that I will continue to explore in these deep 
 
 <div style="text-align:center; margin-top: 2rem;">
   <button class="card-button">
-    <a href="https://github.com/dwiwad/hockey_site/blob/main/scripts/nhl-player-demographics/3.Demographics_Notebook.ipynb" target="_blank" rel="noopener noreferrer">
+    <a href="https://github.com/dwiwad/hockey_site/blob/main/scripts/nhl-player-demographics/3. Demographics_Notebook.ipynb" target="_blank" rel="noopener noreferrer">
       View Code, Data, & Extra Analysis
     </a>
   </button>
