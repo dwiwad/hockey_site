@@ -32,7 +32,7 @@ I'm beginning to think about database management. Right now there is no database
 
 Website launch. Right now (July 1, 2025) I'm thinking I will launch and make live when I have:
 - [ ] Five deep dive posts:
-    - [ ] Demographics over time
+    - [X] Demographics over time
     - [ ] Total Depth Index (TDI)
     - [ ] Career tenure over time?
     - [ ] Quantifying generational talent vs everyone else?
@@ -41,7 +41,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
     - [ ] Live in game TDI
     - [ ] Historical player level shot heatmap explorer
 
-### Sept. 22, 2025 - Turn the dashboards live
+### Sept. 2, 2025 - Turn the dashboards live
 - [ ] Change functions from static and historical to live
 - [ ] Add a meta-tag in the markdown for raw analysis that links to a notebook
 
@@ -68,7 +68,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 ### July 1, 2025 - Standup some content
 - [X] Happy Canada Day!
 - [ ] Build one static deep dive post in the deep dive page
-	- [ ] My historical analysis weight, height, age, and country composition
+	- [X] My historical analysis weight, height, age, and country composition
 - [X] Connect it to the NHL API for live dashboarding
 	- [X] This will be just a test, but pull a schedule with a list of the days games
 
