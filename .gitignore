@@ -20,6 +20,12 @@ venv/
 # Jupyter Notebook checkpoints (if you use them)
 .ipynb_checkpoints/
 
+# VS Code Jupyter scratch space
+.virtual_documents/
+
+# Anaconda project metadata
+anaconda_projects/
+
 # Log files and SQLite DBs
 *.log
 *.sqlite3
