@@ -27,7 +27,7 @@ mpl.rcParams['font.family'] = 'Charter'
 print("Using font:", mpl.rcParams['font.family'])  # should say ['Charter']
 
 
-# Hardcoded project root (adjust if you move the repo)
+# Hardcoded project root
 PROJECT_ROOT = "/Users/dwiwad/dev/hockey_site"
 
 def save_figure(filename):
@@ -1115,11 +1115,92 @@ plt.show()
 
 
 
+# Clean and calculate age
+age_df = roster[['season', 'birth_date']].dropna().copy()
+age_df['birth_date'] = pd.to_datetime(age_df['birth_date'])
 
+# Assume players are measured at January 1st of each season year
+age_df['reference_date'] = pd.to_datetime(age_df['season'].astype(str).str[:4] + '-01-01')
+age_df['age'] = (age_df['reference_date'] - age_df['birth_date']).dt.days / 365.25
 
+# Map seasons to numeric x values
+season_labels = age_df['season_label'].unique()
+season_to_index = {label: i for i, label in enumerate(season_labels)}
+age_df['x_pos'] = age_df['season_label'].map(season_to_index)
 
+# Compute average height by season
+avg_age = (
+    age_df.groupby('season_label')['age']
+    .mean()
+    .reset_index()
+)
+avg_age['x_pos'] = avg_age['season_label'].map(season_to_index)
 
+# PLOT
+fig, ax = plt.subplots(figsize=(12, 7))
 
+# Scatter: faded, jittered dots
+ax.scatter(
+    age_df['x_pos'],
+    age_df['age'],
+    alpha=0.05,
+    color='#3B4B64',
+    edgecolor='none',
+    s=12
+)
+
+# Line: average height per season
+sns.lineplot(
+    data=avg_age,
+    x="x_pos",
+    y="age",
+    color='#D17A22',
+    linewidth=3.5,
+    zorder=10
+)
+
+# Style
+sns.despine()
+ax.grid(False)
+
+# X-axis ticks and labels
+tick_indices = list(range(0, len(season_labels), 15))
+tick_labels = [season_labels[i] for i in tick_indices]
+ax.set_xticks(tick_indices)
+ax.set_xticklabels(tick_labels, rotation=0, fontsize=14)
+
+# Y-axis tick label styling
+ax.tick_params(axis='y', labelsize=14)
+
+# Axis labels
+ax.set_xlabel("")
+ax.set_ylabel("Age", fontsize=18)
+
+# Layout and title position
+left_x = ax.get_position().x0
+plt.subplots_adjust(top=0.85)
+
+# Title
+fig.suptitle(
+    "NHL player age has remained relatively stable",
+    fontsize=20,
+    weight='bold',
+    x=left_x,
+    ha='left',
+    y=0.97
+)
+
+# Subtitle
+fig.text(
+    left_x,
+    0.87,
+    "Despite changes in nutrition, training, and playing style,\nthe average NHL player age has remained relatively stable.",
+    fontsize=14,
+    ha='left'
+)
+
+# Show
+plt.show()
 
 
 

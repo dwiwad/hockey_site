@@ -48,7 +48,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [ ] Add a meta-tag in the markdown for raw analysis that links to a notebook
 
 ### Sept. 6, 2025 - Keep on keepin on
-- [ ] Write the demographics deep dive notebook file
+- [X] Write the demographics deep dive notebook file
 - [ ] Do the ground exploration and analysis to define TDI; Need this for the blog post and dash
 - [ ] Design the "Shape of the Game" Dashboard
 
