@@ -228,55 +228,163 @@ plt.show()
 
 # ----------------------------------------------------------------------
 #
-# AGE BY YEAR
+# CLEAN AGE, HEIGHT, AND WEIGHT BY POSITION GROUP
 #
 # ----------------------------------------------------------------------
 
-# Important to start off - move the legend so it's in the other corner
-# and follows the same structure as country, with no box.
+# Get roster size by year 
+season_roster_size = roster.groupby('season')['id'].nunique()
 
-# Test quickly, should I just have it the same as country? Plot the average
-# with CI band, or plot the smoothed curve?
+# Map position to groups
+position_map = {'C': 'Forward', 'R': 'Forward', 'L': 'Forward', 'D': 'Defense', 'G': 'Goalie'}
+roster['position_group'] = roster['position'].map(position_map)
 
+# Convert height to cm
+roster['height_cm'] = roster['height_in'] * 2.54
 
-
-
-
-
-
-
-
-
-
+# Format season label
+def split_and_hyphenate(number):
+    s_number = str(number)
+    return f"{s_number[:4]}-{s_number[4:]}"
 
 
+# Plotting function
+def plot_clean_position_trend(df, value_col, ylabel, title, subtitle, filename, ylims, yticks, color_map):
+    sns.set(style="whitegrid")
+    mpl.rcParams['font.family'] = 'Charter'
+    fig, ax = plt.subplots(figsize=(12, 7))
+
+    for group in df['position_group'].unique():
+        group_df = df[df['position_group'] == group]
+
+        # Dots
+        ax.scatter(
+            group_df['x_pos'],
+            group_df[value_col],
+            color=color_map[group],
+            alpha=0.2,
+            s=50
+        )
+
+        # Smoothed LOESS line
+        smoothed = lowess(
+            endog=group_df[value_col],
+            exog=group_df['x_pos'],
+            frac=0.2,
+            return_sorted=True
+        )
+        ax.plot(
+            smoothed[:, 0],
+            smoothed[:, 1],
+            color=color_map[group],
+            linewidth=3.5,
+            label=group
+        )
+
+    ax.set_ylim(ylims)
+    ax.set_yticks(yticks)
+    ax.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{int(round(x))}"))
+    sns.despine()
+    ax.grid(False)
+
+    tick_indices = list(range(0, len(season_labels), 15))
+    tick_labels = [season_labels[i] for i in tick_indices]
+    ax.set_xticks(tick_indices)
+    ax.set_xticklabels(tick_labels, rotation=0, fontsize=14)
+    ax.tick_params(axis='y', labelsize=14)
+    ax.set_ylabel(ylabel, fontsize=18)
+    ax.set_xlabel("")
+
+    left_x = ax.get_position().x0
+    plt.subplots_adjust(top=0.85)
+    fig.suptitle(title, fontsize=20, weight='bold', x=left_x, ha='left', y=0.97)
+    fig.text(left_x, 0.87, subtitle, fontsize=14, ha='left')
+    clean_label = {"age": "age", "height_cm": "height", "weight_lb": "weight"}.get(value_col, value_col.split("_")[0])
+    fig.text(0.9, 0.01, f"Data: Yearly average {clean_label} with LOESS-smoothed trend", 
+             fontsize=10, style='italic', ha='right')
+    legend_loc = 'upper left' if value_col == 'weight_lb' else 'upper right'
+    ax.legend(title='', loc=legend_loc, frameon = False, fontsize = 14)
+    save_figure(filename)
+    plt.show()
+
+# Loop for each variable
+for varname, ylabel, title, subtitle, filename, ylims, yticks in [
+    (
+        'age',
+        'Age (years)',
+        'The average NHL player age by position',
+        'Forwards, defense, and goalies all follow a similar age curve over time.',
+        'nhl_age_by_position.png',
+        (22, 30),
+        range(22, 31)
+    ),
+    (
+        'height_cm',
+        'Height (cm)',
+        'The average NHL player height by position',
+        'Goalies are slightly taller on average, but the trend is upward for all roles.',
+        'nhl_height_by_position.png',
+        (170, 200),
+        range(170, 201, 5)
+    ),
+    (
+        'weight_lb',
+        'Weight (lb)',
+        'The average NHL player weight by position',
+        'Weights peaked around 2010 and have trended down since.',
+        'nhl_weight_by_position.png',
+        (150, 220),                # <-- y-axis limits
+        range(150, 221, 10)        # <-- y-axis ticks
+    )
+]:
+    temp_df = roster.dropna(subset=['season', 'birth_date', 'position_group']).copy()
+    temp_df['birth_date'] = pd.to_datetime(temp_df['birth_date'])
+    temp_df['reference_date'] = pd.to_datetime(temp_df['season'].astype(str).str[:4] + '-01-01')
+
+    if varname == 'age':
+        temp_df['value'] = (temp_df['reference_date'] - temp_df['birth_date']).dt.days / 365.25
+    else:
+        temp_df['value'] = temp_df[varname]
+
+    temp_df['season_label'] = temp_df['season'].apply(split_and_hyphenate)
+
+    avg_df = (
+        temp_df.groupby(['season_label', 'position_group'])['value']
+        .mean()
+        .reset_index()
+        .rename(columns={'value': varname})
+    )
+
+    season_labels = avg_df['season_label'].unique()
+    season_to_index = {label: i for i, label in enumerate(season_labels)}
+    avg_df['x_pos'] = avg_df['season_label'].map(season_to_index)
+
+    color_map = {
+        'Forward': '#264653',
+        'Defense': '#2a9d8f',
+        'Goalie': '#e9c46a'
+    }
+
+    plot_clean_position_trend(
+        df=avg_df,
+        value_col=varname,
+        ylabel=ylabel,
+        title=title,
+        subtitle=subtitle,
+        filename=filename,
+        ylims=ylims,
+        yticks=yticks,
+        color_map=color_map
+    )
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# ----------------------------------------------------------------------
+#
+# UNUSED CODE; FIGURES MADE WHILE EXPLORING DATA
+#
+# ----------------------------------------------------------------------
 
 
 # ----------------------------------------------------------------------
@@ -1004,152 +1112,6 @@ plt.show()
 
 
 
-# ----------------------------------------------------------------------
-#
-# CLEAN AGE, HEIGHT, AND WEIGHT BY POSITION GROUP
-#
-# ----------------------------------------------------------------------
-
-# Map position to groups
-position_map = {'C': 'Forward', 'R': 'Forward', 'L': 'Forward', 'D': 'Defense', 'G': 'Goalie'}
-roster['position_group'] = roster['position'].map(position_map)
-
-# Convert height to cm
-roster['height_cm'] = roster['height_in'] * 2.54
-
-# Format season label
-def split_and_hyphenate(number):
-    s_number = str(number)
-    return f"{s_number[:4]}-{s_number[4:]}"
-
-
-# Plotting function
-def plot_clean_position_trend(df, value_col, ylabel, title, subtitle, filename, ylims, yticks, color_map):
-    sns.set(style="whitegrid")
-    mpl.rcParams['font.family'] = 'Charter'
-    fig, ax = plt.subplots(figsize=(12, 7))
-
-    for group in df['position_group'].unique():
-        group_df = df[df['position_group'] == group]
-
-        # Dots
-        ax.scatter(
-            group_df['x_pos'],
-            group_df[value_col],
-            color=color_map[group],
-            alpha=0.2,
-            s=50
-        )
-
-        # Smoothed LOESS line
-        smoothed = lowess(
-            endog=group_df[value_col],
-            exog=group_df['x_pos'],
-            frac=0.2,
-            return_sorted=True
-        )
-        ax.plot(
-            smoothed[:, 0],
-            smoothed[:, 1],
-            color=color_map[group],
-            linewidth=3.5,
-            label=group
-        )
-
-    ax.set_ylim(ylims)
-    ax.set_yticks(yticks)
-    ax.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{int(round(x))}"))
-    sns.despine()
-    ax.grid(False)
-
-    tick_indices = list(range(0, len(season_labels), 15))
-    tick_labels = [season_labels[i] for i in tick_indices]
-    ax.set_xticks(tick_indices)
-    ax.set_xticklabels(tick_labels, rotation=0, fontsize=14)
-    ax.tick_params(axis='y', labelsize=14)
-    ax.set_ylabel(ylabel, fontsize=18)
-    ax.set_xlabel("")
-
-    left_x = ax.get_position().x0
-    plt.subplots_adjust(top=0.85)
-    fig.suptitle(title, fontsize=20, weight='bold', x=left_x, ha='left', y=0.97)
-    fig.text(left_x, 0.87, subtitle, fontsize=14, ha='left')
-    fig.text(0.9, 0.01, f"Data: Yearly average {value_col} with LOESS-smoothed trend", 
-             fontsize=10, style='italic', ha='right')
-
-    ax.legend(title='Position', loc='upper left')
-    save_figure(filename)
-    plt.show()
-
-# Loop for each variable
-for varname, ylabel, title, subtitle, filename, ylims, yticks in [
-    (
-        'age',
-        'Age (years)',
-        'The average NHL player age by position',
-        'Forwards, defense, and goalies all follow a similar age curve over time.',
-        'nhl_age_by_position.png',
-        (22, 30),
-        range(22, 31)
-    ),
-    (
-        'height_cm',
-        'Height (cm)',
-        'The average NHL player height by position',
-        'Goalies are slightly taller on average, but the trend is upward for all roles.',
-        'nhl_height_by_position.png',
-        (170, 200),
-        range(170, 201, 5)
-    ),
-    (
-        'weight_lb',
-        'Weight (lb)',
-        'The average NHL player weight by position',
-        'Weights peaked around 2010 and have trended down since—especially for forwards.',
-        'nhl_weight_by_position.png',
-        (150, 220),                # <-- y-axis limits
-        range(150, 221, 10)        # <-- y-axis ticks
-    )
-]:
-    temp_df = roster.dropna(subset=['season', 'birth_date', 'position_group']).copy()
-    temp_df['birth_date'] = pd.to_datetime(temp_df['birth_date'])
-    temp_df['reference_date'] = pd.to_datetime(temp_df['season'].astype(str).str[:4] + '-01-01')
-
-    if varname == 'age':
-        temp_df['value'] = (temp_df['reference_date'] - temp_df['birth_date']).dt.days / 365.25
-    else:
-        temp_df['value'] = temp_df[varname]
-
-    temp_df['season_label'] = temp_df['season'].apply(split_and_hyphenate)
-
-    avg_df = (
-        temp_df.groupby(['season_label', 'position_group'])['value']
-        .mean()
-        .reset_index()
-        .rename(columns={'value': varname})
-    )
-
-    season_labels = avg_df['season_label'].unique()
-    season_to_index = {label: i for i, label in enumerate(season_labels)}
-    avg_df['x_pos'] = avg_df['season_label'].map(season_to_index)
-
-    color_map = {
-        'Forward': '#264653',
-        'Defense': '#2a9d8f',
-        'Goalie': '#e9c46a'
-    }
-
-    plot_clean_position_trend(
-        df=avg_df,
-        value_col=varname,
-        ylabel=ylabel,
-        title=title,
-        subtitle=subtitle,
-        filename=filename,
-        ylims=ylims,
-        yticks=yticks,
-        color_map=color_map
-    )
 
 
 

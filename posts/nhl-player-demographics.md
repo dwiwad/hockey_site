@@ -1,7 +1,7 @@
 ---
 title: "How have player demographics changed over the history of the league?"
 short_title: "Player Demographics | Hockey Decoded"
-date: "2025-07-14"
+date: "2025-09-06"
 image: ""
 data_source: "NHL API"
 ---
@@ -74,8 +74,8 @@ I think one possible reason for this cycle is simply how the league expanded and
 changed over the years. The general trend seems to be "expansion = age decline." Interestingly, the shifts in trend seem to track quite closely
 with the "eras" of the league.<sup>(<a href="https://en.wikipedia.org/wiki/Timeline_of_the_National_Hockey_League" target="_blank" rel="noopener noreferrer">4</a>)</sup> 
 Up until 1942, in the early era, the league fluctuated growing from four to ten teams,
-then back down to seven. In this era, the size of the league fluctuated between XX and YY
-players; again, more players, lower age.
+then back down to seven. In this era, the size of the league fluctuated but overall grew from
+45 players in the 1917-1918 season to 160 players in the 1941-1942 season; again, more players, lower age.
 
 Following this, 1942 to 1967 the team stayed at 6 teams, the "original six" era. As you
 can see, in this era the league slowly aged. No expansion, no injection of new players,
@@ -85,9 +85,9 @@ the league again got younger and younger. From 1991 to 2017 the league again exp
 but only 30%. Less need for new young players, more static rosters, the league ages again.
 Finally, from 2017 until now the league has only added one team, and age has stagnated.
 
-Secondly, the long term trend is that goalies have remained static around 28 years
+One other interesting recent trend is that is that goalies have remained static around 28 years
 old while forwards and defencemen have declined from 28 to about 26 years old. I suspect
-this long term age change simply reflects the speed and demands of modern athletics.
+this modern-era age change simply reflects the speed and demands of modern athletics.
 Goalies can afford to be a hair older, while skaters must deal with the increasing 
 demands of the sport and cannot afford to be older. This is a trend we have seen
 in numerous sports. Cycling grand tour winners used to be mature in their career,
@@ -147,7 +147,7 @@ Specifically, there was a large swath of rule changes in the 2005-2006 season, r
 were designed to encourage faster, more aggressive offensive play.<sup>(<a href="https://records.nhl.com/history/historical-rule-changes" rel="noopener noreferrer">8</a>)</sup> 
 For example, the league eliminated the two-line pass rule making it such that players could pass from
 their defensive zone across the red line, allowing for longer stretch passes, quick transitions, and breakaways.
-Additionally, the league reinstated the "tag-up" rule for offides, allowing an offensive player to
+Additionally, the league reinstated the "tag-up" rule for offsides, allowing an offensive player to
 simply pop one skate out of the zone and re-enter. This, as opposed to having to fully exit the zone,
 come to a stop, and re-enter, allows the game to maintain a faster more aggressive pace.
 
