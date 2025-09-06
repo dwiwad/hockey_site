@@ -67,7 +67,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 	
 ### July 1, 2025 - Standup some content
 - [X] Happy Canada Day!
-- [ ] Build one static deep dive post in the deep dive page
+- [X] Build one static deep dive post in the deep dive page
 	- [X] My historical analysis weight, height, age, and country composition
 - [X] Connect it to the NHL API for live dashboarding
 	- [X] This will be just a test, but pull a schedule with a list of the days games
