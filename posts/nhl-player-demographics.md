@@ -3,6 +3,7 @@ title: "How have player demographics changed over the history of the league?"
 short_title: "Player Demographics | Hockey Decoded"
 date: "2025-09-06"
 image: ""
+summary: A deep exploration of player height, weight, and nationality from 1917-2025.
 data_source: "NHL API"
 ---
 
@@ -175,15 +176,6 @@ There are a ton of open questions that I will continue to explore in these deep 
     </a>
   </button>
 </div>
-
-
-
-<!--ADD LINES TO THE AGE GRAPH FOR ERAS-->
-
-<!--NEW GRAPH TEST HYPOTHESIS THAT ROSTER TURNOVER IS HIGHER WHEN AGE IS DECLINING,-->
-<!--AND THEN ROSTERS STAGNATE, THE AGE SLOWLY RISES WITH THE PLAYERS, THEN PEOPLE START-->
-<!--TO RETIRE AND YOUNGER FOLKS COME IN UNDERNEATH, REPEAT CYCLE.-->
-
 
 
 

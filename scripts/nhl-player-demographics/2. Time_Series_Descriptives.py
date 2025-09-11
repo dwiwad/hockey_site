@@ -1110,50 +1110,152 @@ ax.legend().remove()
 save_figure("nhl_player_age_trend_clean.png")
 plt.show()
 
+# SCRATCHPAD FOR ROSTER TURNOVER
+id_df = roster[['season', 'id']].dropna().copy()
+id_df['season_label'] = id_df['season'].apply(split_and_hyphenate)
 
+# Put in the eras
+def first_year(number):
+    s_number = str(number)
+    part1 = s_number[:4]
+    return part1
 
+id_df['first_year'] = id_df['season'].apply(first_year)
 
+# make sure first_year is int
+id_df['first_year'] = id_df['first_year'].astype(int)
 
+# build a set of (id, first_year) pairs that actually exist
+pairs = set(zip(id_df['id'], id_df['first_year']))
 
-# Clean and calculate age
-age_df = roster[['season', 'birth_date']].dropna().copy()
-age_df['birth_date'] = pd.to_datetime(age_df['birth_date'])
+# flag if (id, first_year-1) is in the set
+id_df['in_prev_season'] = [
+    int((i, y-1) in pairs) for i, y in zip(id_df['id'], id_df['first_year'])
+]
 
-# Assume players are measured at January 1st of each season year
-age_df['reference_date'] = pd.to_datetime(age_df['season'].astype(str).str[:4] + '-01-01')
-age_df['age'] = (age_df['reference_date'] - age_df['birth_date']).dt.days / 365.25
+id_df['in_prev_season'].mean()
 
-# Map seasons to numeric x values
-season_labels = age_df['season_label'].unique()
-season_to_index = {label: i for i, label in enumerate(season_labels)}
-age_df['x_pos'] = age_df['season_label'].map(season_to_index)
-
-# Compute average height by season
-avg_age = (
-    age_df.groupby('season_label')['age']
-    .mean()
-    .reset_index()
+# Build eras
+id_df = id_df.assign(
+    era = np.where(id_df['first_year'] < 1942, 'Early Era (≤1941)',
+           np.where(id_df['first_year'] < 1967, 'Original Six (1942–1966)',
+           np.where(id_df['first_year'] < 1991, 'Expansion Boom (1967–1990)',
+           np.where(id_df['first_year'] < 2017, 'Expansion II (1991–2016)',
+                    'Modern Era (2017–present)'))))
 )
-avg_age['x_pos'] = avg_age['season_label'].map(season_to_index)
 
-# PLOT
+
+id_df.groupby('era')['in_prev_season'].count()
+id_df.groupby('era')['in_prev_season'].mean()
+
+
+
+
+
+
+
+
+
+# 0) Clean, de-dup per player-season
+id_df = (
+    roster[['season', 'id']]
+    .dropna()
+    .drop_duplicates()           # ensure one row per id-season
+    .copy()
+)
+
+def season_start(season):
+    s = str(season)
+    return int(s[:4])
+
+def season_label(season):
+    s = str(season)
+    return f"{s[:4]}-{s[4:]}"
+
+id_df['season_start'] = id_df['season'].apply(season_start)
+id_df['season_label'] = id_df['season'].apply(season_label)
+
+# 1) Build an ordered list of actual seasons in your data
+seasons_sorted = sorted(id_df['season_start'].unique())
+
+# Map each season to the *previous real season* (skip gaps like 2004-05)
+prev_map = {s: p for s, p in zip(seasons_sorted[1:], seasons_sorted[:-1])}
+
+# 2) Build a set of (id, season_start) pairs and flag returning players
+pairs = set(zip(id_df['id'], id_df['season_start']))
+
+id_df['in_prev_season'] = id_df.apply(
+    lambda r: int((r['id'], prev_map.get(r['season_start'], None)) in pairs)
+              if prev_map.get(r['season_start'], None) is not None else 0,
+    axis=1
+)
+
+# 3) Compute per-season turnover = share of newcomers
+season_turnover = (
+    id_df
+      .groupby('season_start', as_index=False)
+      .agg(
+          players_this_season=('id', 'nunique'),
+          returning=('in_prev_season', 'sum')
+      )
+)
+season_turnover['newcomers'] = season_turnover['players_this_season'] - season_turnover['returning']
+season_turnover['turnover_rate'] = season_turnover['newcomers'] / season_turnover['players_this_season']
+
+# 4) Add your era buckets (rename Modern end as you like)
+def era_of(y):
+    if y < 1942: return 'Early Era (≤1941)'
+    if y < 1967: return 'Original Six (1942–1966)'
+    if y < 1991: return 'Expansion Boom (1967–1990)'
+    if y < 2017: return 'Expansion II (1991–2016)'
+    return 'Modern Era (2017–present)'
+
+season_turnover['era'] = season_turnover['season_start'].apply(era_of)
+
+# 5) Optional: compare to “expansion pressure”
+#    Use total player count (or #teams if you have it) and look at year-over-year change
+season_turnover = season_turnover.sort_values('season_start')
+season_turnover['delta_players'] = season_turnover['players_this_season'].diff()
+
+# Example summaries:
+era_summary = (season_turnover
+               .groupby('era', as_index=False)['turnover_rate']
+               .mean()
+               .rename(columns={'turnover_rate': 'avg_turnover_rate'}))
+
+# Quick check: overall newcomer share (what your mean() was aiming at)
+overall_turnover = 1 - id_df['in_prev_season'].mean()
+
+
+# --- PREPARE TURNOVER DATAFRAME (season_turnover) ---
+# season_turnover should already have: season_start, turnover_rate
+
+# Build season labels (e.g., 1917-18, 1918-19, ...)
+season_turnover['season_label'] = season_turnover['season_start'].astype(str) + '-' + (season_turnover['season_start']+1).astype(str).str[-2:]
+
+# Map seasons to numeric x positions
+season_labels = season_turnover['season_label'].unique()
+season_to_index = {label: i for i, label in enumerate(season_labels)}
+season_turnover['x_pos'] = season_turnover['season_label'].map(season_to_index)
+
+# --- PLOT ---
 fig, ax = plt.subplots(figsize=(12, 7))
 
-# Scatter: faded, jittered dots
+# Scatter: faded dots for season-level turnover
 ax.scatter(
-    age_df['x_pos'],
-    age_df['age'],
-    alpha=0.05,
+    season_turnover['x_pos'],
+    season_turnover['turnover_rate'],
+    alpha=0.15,
     color='#3B4B64',
     edgecolor='none',
-    s=12
+    s=25
 )
 
-# Line: average height per season
+# Line: average turnover per season
 sns.lineplot(
-    data=avg_age,
+    data=season_turnover,
     x="x_pos",
-    y="age",
+    y="turnover_rate",
     color='#D17A22',
     linewidth=3.5,
     zorder=10
@@ -1174,7 +1276,7 @@ ax.tick_params(axis='y', labelsize=14)
 
 # Axis labels
 ax.set_xlabel("")
-ax.set_ylabel("Age", fontsize=18)
+ax.set_ylabel("Turnover Rate", fontsize=18)
 
 # Layout and title position
 left_x = ax.get_position().x0
@@ -1182,7 +1284,7 @@ plt.subplots_adjust(top=0.85)
 
 # Title
 fig.suptitle(
-    "NHL player age has remained relatively stable",
+    "NHL roster turnover spikes during expansion periods",
     fontsize=20,
     weight='bold',
     x=left_x,
@@ -1194,13 +1296,31 @@ fig.suptitle(
 fig.text(
     left_x,
     0.87,
-    "Despite changes in nutrition, training, and playing style,\nthe average NHL player age has remained relatively stable.",
+    "When the league expands, the proportion of newcomers entering each season increases sharply,\n"
+    "reflecting roster turnover driven by new teams and greater player demand.",
     fontsize=14,
     ha='left'
 )
 
-# Show
 plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
