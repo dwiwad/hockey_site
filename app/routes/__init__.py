@@ -1,1 +1,4 @@
-from .core import core_routerfrom .deepdive import deepdive_routerfrom .dashboard import dashboard_router
+from .core import core_router
+from .deepdive import deepdive_router
+from .dashboard import dashboard_router
+from .games import games_router

@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{{ away_label }} at {{ home_label }} — Shots</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { background:#0b0b0b; color:#fff; font-family: Charter, Georgia, serif; }
+    .wrap { max-width: 860px; margin: 2rem auto; padding: 0 1rem; }
+    .card { background:#121212; border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:18px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>{{ away_label }} at {{ home_label }}</h1>
+    <div class="card">
+      <p>total {{ away_label }} shots: <strong>{{ away_sog }}</strong></p>
+      <p>total {{ home_label }} shots: <strong>{{ home_sog }}</strong></p>
+    </div>
+  </div>
+</body>
+</html>

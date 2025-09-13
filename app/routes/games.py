@@ -1,0 +1,23 @@
+from __future__ import annotations
+from pathlib import Path
+from fastapi import APIRouter, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+
+from app.nhl.service import fetch_game_pbp
+from app.nhl.parsers.sogs import sog_by_team
+
+# Anchor templates to project root so it works no matter where you run uvicorn
+# PROJECT_ROOT = Path(__file__).resolve().parents[1]
+templates = Jinja2Templates(directory="templates")
+
+games_router = APIRouter()
+
+@games_router.get("/dashboard/games/{game_id}", response_class=HTMLResponse)
+async def game_dashboard(request: Request, game_id: int, fresh: bool = False):
+    pbp = fetch_game_pbp(game_id, ttl_seconds=5)
+    data = sog_by_team(pbp)
+    return templates.TemplateResponse(
+        "game_dashboard.html",
+        {"request": request, "game_id": game_id, **data}
+    )
