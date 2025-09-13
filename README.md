@@ -45,12 +45,13 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 
 ### Sept. 22, 2025 - Turn the dashboards live
 - [ ] Change functions from static and historical to live
-- [ ] Add a meta-tag in the markdown for raw analysis that links to a notebook
+- [X] Add a meta-tag in the markdown for raw analysis that links to a notebook
 
 ### Sept. 6, 2025 - Keep on keepin on
 - [X] Write the demographics deep dive notebook file
 - [ ] Do the ground exploration and analysis to define TDI; Need this for the blog post and dash
 - [ ] Design the "Shape of the Game" Dashboard
+- [ ] Find the right icons that are thin in each case
 
 ### July 31, 2025 - Standup some content
 - [ ] Optimize backend for scalability
@@ -64,8 +65,8 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 	- [X] Build a deep dive html template
 	- [X] Get markdown rolling for content writing that knits to custom styled html
 	- [ ] Generalize style.css
-- [ ] Add links to about page with icons 
-	- Github, personal site, linkedin, google scholar
+- [X] Add links to about page with icons 
+	- [X] Github, personal site, linkedin, google scholar
 - [X] Stylize Today's Games with cards
  - [X] Cards
  - [X] Team logo images
