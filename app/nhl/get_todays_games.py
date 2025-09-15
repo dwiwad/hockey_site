@@ -12,13 +12,23 @@ Created on Sat Aug 16 09:32:12 2025
 import requests 
 import pandas as pd
 from datetime import date
+from pathlib import Path
 
-def get_todays_games():
+# Storing as parquet to be faster, lighter even though its a small file
+#today = date.today()
+today = '2025-03-13'
+CACHE_FILE = Path(f"data/cache/schedule/{today}.parquet")
+
+def get_todays_games(force_refresh = False):
+    
+    # If cache exists and no refresh requested, just load
+    if CACHE_FILE.exists() and not force_refresh:
+        return pd.read_parquet(CACHE_FILE)
 
     # FOR NOW, JUST MAKE THIS THE FIRST DAY SO WE HAVE SOMETHING TO WORK WITH
-    # today = date.today()
-    # url = f'https://api-web.nhle.com/v1/schedule/{today}'
-    url = 'https://api-web.nhle.com/v1/schedule/2025-09-20'
+    #today = date.today()
+    today = '2025-03-13'
+    url = f'https://api-web.nhle.com/v1/schedule/{today}'
     
     try:
         response = requests.get(url)
@@ -40,7 +50,7 @@ def get_todays_games():
         games["start_et_str"] = games["start_et"].dt.strftime("%I:%M %p ET")
         
         # Just pull the needed variables and return as a df
-        return pd.DataFrame({
+        df = pd.DataFrame({
                 'game_id': games['id'],
                 'season': games['season'],
                 'start': games['start_et_str'],
@@ -49,6 +59,11 @@ def get_todays_games():
                 'away_tri': games['awayTeam.abbrev'],
                 'home_tri': games['homeTeam.abbrev']
             })
+        
+        # Save to cache
+        CACHE_FILE.parent.mkdir(parents=True, exist_ok=True)
+        df.to_parquet(CACHE_FILE, index=False)
+        return df
     
     except (requests.RequestException, KeyError, IndexError) as e:
         print(f"Error fetching NHL schedule: {e}")
@@ -58,5 +73,3 @@ def get_todays_games():
 if __name__ == "__main__":
     print(get_todays_games())
     
-games_today_df = get_todays_games()
-games_today = games_today_df.to_dict(orient="records")
