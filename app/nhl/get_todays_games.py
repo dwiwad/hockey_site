@@ -42,6 +42,7 @@ def get_todays_games():
         # Just pull the needed variables and return as a df
         return pd.DataFrame({
                 'game_id': games['id'],
+                'season': games['season'],
                 'start': games['start_et_str'],
                 'away': games['awayTeam.commonName.default'],
                 'home': games['homeTeam.commonName.default'],

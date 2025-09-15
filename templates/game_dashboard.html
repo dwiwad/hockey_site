@@ -1,22 +1,66 @@
 <!doctype html>
-<html>
+<html lang="en">
+
 <head>
-  <meta charset="utf-8">
-  <title>{{ away_label }} at {{ home_label }} — Shots</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body { background:#0b0b0b; color:#fff; font-family: Charter, Georgia, serif; }
-    .wrap { max-width: 860px; margin: 2rem auto; padding: 0 1rem; }
-    .card { background:#121212; border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:18px; }
-  </style>
+    <meta charset="UTF-8">
+    <title>{{ away_abbrev }} at {{ home_abbrev }} | Hockey Decoded</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
+
 <body>
-  <div class="wrap">
-    <h1>{{ away_label }} at {{ home_label }}</h1>
-    <div class="card">
-      <p>total {{ away_label }} shots: <strong>{{ away_sog }}</strong></p>
-      <p>total {{ home_label }} shots: <strong>{{ home_sog }}</strong></p>
-    </div>
-  </div>
+  <header class="site-nav-header">
+    <div class="nav-container">
+      <div class="site-title"><a href="/">Hockey Decoded</a></div>
+        <nav class="site-nav">
+          <a href="/">Home</a>
+          <a href="/deep-dives">Deep Dives</a>
+          <a href="/dashboard">Dashboards</a>
+          <a href="/about">About</a>
+         </nav>
+      </div>    
+  </header>
+
+  <main class="sub-main">
+    <h1>Scoreboard</h1>
+    <h2 align="center">Temporary set of cards, just to work on pulling the data</h2>
+    <h3 align="center">Build a card here that is similar to the game card, but has the score, period and time.</h3>
+
+    <section class="game-card-row">
+      <article class="game-card">
+        <div class="game-card-body">
+          <!-- Left logo -->
+          <img class="team-logo"
+            src="/static/images/logos/{{ away_abbrev }}_light.svg"
+            alt="{{ away_abbrev }} logo">
+
+          <!-- Center stack -->
+          <div class="center-stack">
+            <h2 class="matchup">SCORE <span style="font-size:16px;">-</span> SCORE</h2>
+            <h2 class="start">GAME TIME</h2>
+            <h2 class="start">PERIOD</h2>
+          </div>
+          
+          <!-- Right logo -->
+          <img class="team-logo"
+            src="/static/images/logos/{{ home_abbrev }}_light.svg"
+            alt="{{ home_abbrev }} logo">
+        </div>
+      </article>
+
+    
+      <article class="game-card">
+         <h2>Shots</h2>
+         <p>Total {{ away_label }} shots: <strong>{{ away_sog }}</strong></p>
+         <p>Total {{ home_label }} shots: <strong>{{ home_sog }}</strong></p>
+       </article>
+
+      <article class="game-card">
+        <h2>Hits</h2>
+        <p>Total {{ away_label }} hits: <strong>{{ away_sog }}</strong></p>
+        <p>Total {{ home_label }} hits: <strong>{{ home_sog }}</strong></p>
+       </article>
+    </section>
+
+  </main>
 </body>
 </html>

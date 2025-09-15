@@ -13,11 +13,11 @@ templates = Jinja2Templates(directory="templates")
 
 games_router = APIRouter()
 
-@games_router.get("/dashboard/games/{game_id}", response_class=HTMLResponse)
-async def game_dashboard(request: Request, game_id: int, fresh: bool = False):
-    pbp = fetch_game_pbp(game_id, ttl_seconds=5)
+@games_router.get("/dashboard/games/{season}/{game_id}", response_class=HTMLResponse)
+async def game_dashboard(request: Request, season: int, game_id: int, fresh: bool = False):
+    pbp = fetch_game_pbp(game_id, season, ttl_seconds=5)
     data = sog_by_team(pbp)
     return templates.TemplateResponse(
         "game_dashboard.html",
-        {"request": request, "game_id": game_id, **data}
+        {"request": request, "game_id": game_id, "season": season, **data}
     )

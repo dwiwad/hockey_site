@@ -27,9 +27,11 @@ CACHE_DIR.mkdir(parents=True, exist_ok=True)
 ###################################################################
 
 # Function that directs where to store the pulled game files
-def _paths(game_id: int) -> Tuple[Path, Path]:
-    data = CACHE_DIR / f"{game_id}.json"
-    meta = CACHE_DIR / f"{game_id}.meta.json"
+def _paths(game_id: int, season: int) -> Tuple[Path, Path]:
+    season_dir = CACHE_DIR / str(season)
+    season_dir.mkdir(parents=True, exist_ok=True)   # <-- ensure folder exists
+    data = season_dir / f"{game_id}.json"
+    meta = season_dir / f"{game_id}.meta.json"
     return data, meta
 
 # function that loads metadata or returns an empty dictionary
@@ -49,7 +51,7 @@ def _save_meta(meta_path: Path, etag: Optional[str], last_modified: Optional[str
 # GET THE PLAY BY PLAY DATA
 ###################################################################
 
-def fetch_game_pbp(game_id: int, ttl_seconds: int = 5) -> Dict[str, Any]:
+def fetch_game_pbp(game_id: int, season: int, ttl_seconds: int = 5) -> Dict[str, Any]:
     """
     Return the PBP JSON for a game, with:
       - disk caching
@@ -58,7 +60,7 @@ def fetch_game_pbp(game_id: int, ttl_seconds: int = 5) -> Dict[str, Any]:
     """
     
     # Look for the cached game and meta data
-    data_path, meta_path = _paths(game_id)
+    data_path, meta_path = _paths(game_id, season)
     headers = {}
     meta = _load_meta(meta_path)
     
