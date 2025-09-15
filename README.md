@@ -54,8 +54,10 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [ ] Find the right icons for about page that are thin in each case
 - [ ] Live dashboarding
 	- [X] Learn how to bring in the live data
-	- [ ] Bring in a Cache for the main dashboard so it doesn't take so long to load the days games
-	- [ ] Debug the shot counter for the interim sog dash; tampa gave giving boston game counts for march 13, 2025 test day
+	- [X] Bring in a Cache for the main dashboard so it doesn't take so long to load the days games
+	- [X] Debug the shot counter for the interim sog dash; tampa gave giving boston game counts for march 13, 2025 test day
+		- Damn that was annoying. Turns out I thought I was duplicating a game but just by chance the shot counts for two games were the same
+		because I included shootout shots, and didn't line up with the box score because nhl doesn't count shootouts. Just had to filter that out.
 	- [X] Start fleshing out the dash page
 
 ### July 31, 2025 - Standup some content

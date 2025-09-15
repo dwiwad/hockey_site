@@ -21,8 +21,6 @@
   </header>
 
   <main class="sub-main">
-    <h1>Scoreboard</h1>
-    
     <section class="game-card-row">
       <article class="game-card">
         <div class="game-card-body">
@@ -32,9 +30,9 @@
             alt="{{ away_abbrev }} logo">
 
           <!-- Center stack -->
-          <div class="center-stack">
-            <h2 class="matchup">SCORE <span style="font-size:16px;">-</span> SCORE</h2>
-            <h2 class="start">GAME TIME | PERIOD</h2>
+          <div class="scoreboard">
+            <h2 class="score">SCORE - SCORE</h2>
+            <h2 class="progress">GAME TIME | PERIOD</h2>
           </div>
           
           <!-- Right logo -->
@@ -47,16 +45,16 @@
       <h1>Shape of the Game</h1>
     
       <article class="game-card">
-         <h2>Shots</h2>
-         <p>Total {{ away_label }} shots: <strong>{{ away_sog }}</strong></p>
-         <p>Total {{ home_label }} shots: <strong>{{ home_sog }}</strong></p>
-       </article>
+        <h2>Shots</h2>
+        <p>Total {{ away_label }} shots: <strong>{{ away_sog }}</strong></p>
+        <p>Total {{ home_label }} shots: <strong>{{ home_sog }}</strong></p>
+      </article>
 
       <article class="game-card">
         <h2>Hits</h2>
         <p>Total {{ away_label }} hits: <strong>{{ away_sog }}</strong></p>
         <p>Total {{ home_label }} hits: <strong>{{ home_sog }}</strong></p>
-       </article>
+      </article>
     </section>
 
   </main>

@@ -46,6 +46,7 @@ def _save_meta(meta_path: Path, etag: Optional[str], last_modified: Optional[str
     if etag: meta["etag"] = etag
     if last_modified: meta["last_modified"] = last_modified
     meta_path.write_text(json.dumps(meta))
+
     
 ###################################################################
 # GET THE PLAY BY PLAY DATA
@@ -97,35 +98,5 @@ def fetch_game_pbp(game_id: int, season: int, ttl_seconds: int = 5) -> Dict[str,
             last_modified=r.headers.get("Last-Modified"),
             )
         return body
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     

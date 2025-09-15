@@ -84,6 +84,11 @@ def sog_by_team(pbp: dict) -> dict:
     for p in pbp.get("plays", []):
         if not _is_sog(p):
             continue
+        
+        # skip shootout shots - this bug was a bitch.
+        pd = p.get("periodDescriptor") or {}
+        if (pd.get("periodType") or "").upper() == "SO":
+            continue
 
         # Try abbrev path first
         team_abbr = _team_abbrev_for_play(p, team_lookup)
