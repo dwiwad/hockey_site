@@ -48,3 +48,5 @@ output/
 .env.*
 config.yaml
 
+# Data files for now
+data/

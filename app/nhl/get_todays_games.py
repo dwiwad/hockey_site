@@ -15,8 +15,8 @@ from datetime import date
 from pathlib import Path
 
 # Storing as parquet to be faster, lighter even though its a small file
-#today = date.today()
-today = '2025-03-13'
+today = date.today()
+#today = '2025-03-13'
 CACHE_FILE = Path(f"data/cache/schedule/{today}.parquet")
 
 def get_todays_games(force_refresh = False):
@@ -26,8 +26,8 @@ def get_todays_games(force_refresh = False):
         return pd.read_parquet(CACHE_FILE)
 
     # FOR NOW, JUST MAKE THIS THE FIRST DAY SO WE HAVE SOMETHING TO WORK WITH
-    #today = date.today()
-    today = '2025-03-13'
+    today = date.today()
+    #today = '2025-03-13'
     url = f'https://api-web.nhle.com/v1/schedule/{today}'
     
     try:

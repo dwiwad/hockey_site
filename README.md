@@ -59,6 +59,9 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 		- Damn that was annoying. Turns out I thought I was duplicating a game but just by chance the shot counts for two games were the same
 		because I included shootout shots, and didn't line up with the box score because nhl doesn't count shootouts. Just had to filter that out.
 	- [X] Start fleshing out the dash page
+	- [ ] Bring in the roster data for each game as well for sog by player id matching 
+	- [ ] Build some sog by player figures to sit side by side live 
+	- [ ] Add Yesterdays games page + date selector
 
 ### July 31, 2025 - Standup some content
 - [ ] Optimize backend for scalability
