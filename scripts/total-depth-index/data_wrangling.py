@@ -238,6 +238,7 @@ games = pd.read_csv('~/dev/hockey_site/data/total-depth-index/all_games_meta_202
 pbp = pd.read_csv('~/dev/hockey_site/data/total-depth-index/all_pbp_20242025.csv')
 shifts = pd.read_csv('~/dev/hockey_site/data/total-depth-index/all_shifts_20242025.csv')
 rosters = pd.read_csv('~/dev/hockey_site/data/total-depth-index/all_rosters_20242025.csv')
+mpxg = pd.read_csv('~/dev/hockey_site/data/total-depth-index/moneypuck_xg_20242025.csv')
 
     
 # Let's start with team by team. Perhaps just with Edmonton.
@@ -369,6 +370,33 @@ toi_sums = (
 # Merge into the roster
 rosters = pd.merge(rosters, toi_sums, on = ['game_id', 'playerId'], how = 'left').fillna(0)
 
+##############################################################################
+# EXPECTED GOALS
+##############################################################################
+
+# This is a bit different. I'm using Moneypuck's data as a simple test. I would
+# eventually want to recreate his model I think for prediction, but as far as 
+# explanation and the SEM goes, simply using his data should be sufficient.
+cols = ['game_id', 'shooterPlayerId', 'xGoal']
+
+mpxg = mpxg[cols].rename(columns = {'shooterPlayerId': 'playerId'})
+# The game id is going to need to be changed. In my data 2024020003 becomes 20003
+# or 2024030416 becomes 30416
+# Moneypuck drops 20240, so we can just append those back on.
+mpxg['game_id'] = ("20240" + mpxg['game_id'].astype(str)).astype(int)
+
+
+# Count mean xG per player per game
+game_xg = (
+    mpxg
+    .groupby(['game_id', 'playerId'])['xGoal']
+    .sum()
+    .reset_index(name='sum_xg')
+)
+
+# Merge into the roster
+rosters = pd.merge(rosters, game_xg, on = ['game_id', 'playerId'], how = 'left').fillna(0)
+
 
 ##############################################################################
 # BUILD GAME LEVEL METRICS AND SAVE
@@ -450,6 +478,21 @@ game_data = (
              how='left')
 )
 
+# Get the xG gini
+xgoal = (
+    shooters.groupby(['game_id', 'teamAbbrev'])['sum_xg']
+      .apply(gini)
+      .rename('xgoal_gini')
+      .reset_index()
+)
+
+game_data = (
+    pd.merge(game_data,
+             xgoal[['game_id', 'teamAbbrev', 'xgoal_gini']], 
+             on=['game_id', 'teamAbbrev'], 
+             how='left')
+)
+
 # CF = shots-on-goal + goal + blocks + misses
 # Get the total by team game
 cf_by_team_game = (
@@ -482,134 +525,10 @@ game_data = (
 
 # This is just myself wanting it in the right order lol
 new_order = ['game_id', 'teamAbbrev', 'outcome', 'total_sogs', 'sog_gini', 
-             'assist_gini', 'toi_gini', 'corsi_for']
+             'assist_gini', 'toi_gini', 'xgoal_gini', 'corsi_for']
 
 # Reassign the DataFrame with the new column order
 game_data = game_data[new_order]
 
 # Save the data
 game_data.to_csv('~/dev/hockey_site/data/total-depth-index/final_data_20242025.csv', index=False)    
-
-##############################################################################
-# INTERIM VALIDATION OUT OF CURIOSITY
-# AVG GINI BY TEAM
-# DOES GINI PREDICT WINS?
-# IS GINI ORTHOGONAL TO SHOT COUNT?
-##############################################################################
-
-# CF = shots-on-goal + goal + blocks + misses
-# Get the total by team game
-cf_by_team_game = (
-    rosters.groupby(['game_id', 'teamAbbrev'])['corsi_for']
-      .sum()
-      .reset_index()
-)
-
-# I just want to do a quick test. Bring in Olivia Guest's gini func, modified slightly
-# https://github.com/oliviaguest/gini
-
-def gini(x, eps=1e-9):
-    """Gini coefficient for a 1D array-like of nonnegative values."""
-    a = np.asarray(x, dtype=np.float64).ravel()
-    if a.size == 0:
-        return np.nan
-    # Shift up if any negatives (shouldn't happen for SOG, but safe)
-    amin = a.min()
-    if amin < 0:
-        a = a - amin
-    s = a.sum()
-    if s <= 0:
-        return 0.0  # all zeros -> perfectly equal
-    a = np.sort(a)
-    n = a.size
-    idx = np.arange(1, n + 1, dtype=np.float64)
-    return ((2 * idx - n - 1) @ a) / (n * s + eps)
-
-# remove goalies
-shooter_roster = rosters[rosters['positionCode'] != 'G']
-
-gini_by_team_game = (
-    shooter_roster.groupby(['game_id', 'teamAbbrev'])['sog_count']
-      .apply(gini)
-      .rename('gini')
-      .reset_index()
-)
-
-# Average gini by team
-gini_by_team = (
-    gini_by_team_game.groupby('teamAbbrev')['gini']
-    .mean()
-    .reset_index()
-)
-
-# Correlation with SOGs
-# Get the total by team game
-sogs_by_team_game = (
-    shooter_roster.groupby(['game_id', 'teamAbbrev'])['sog_count']
-      .sum()
-      .rename('total_sogs')
-      .reset_index()
-)
-
-gini_by_team_game = (
-    pd.merge(gini_by_team_game,
-             sogs_by_team_game[['game_id', 'teamAbbrev', 'total_sogs']], 
-             on=['game_id', 'teamAbbrev'], 
-             how='left')
-)
-
-# Correlate
-gini_by_team_game['gini'].corr(gini_by_team_game['total_sogs'])
-
-# They seem to be pretty highly correlated such that teams with more shooting
-# depth are straight up just taking more shots. 
-# I think it will be important when predicting wins with gini here, does it go
-# just beyond shot counts. But also, if it doesn't that's okay because this is
-# only going to be on element of depth.
-
-# To calc win, 
-# create col win.Abbrev
-# if awayTeam.score > homeTeam.score then win.Abbrev =  awayTeam.abbrev else homeTeam.abbrev
-games['winAbbrev'] = np.where(games['awayTeam.score'] > games['homeTeam.score'], games['awayTeam.abbrev'], games['homeTeam.abbrev'])
-
-# Merge it in
-games = games.rename(columns = {'id': 'game_id'})
-
-gini_by_team_game = gini_by_team_game.merge(
-    games[["game_id", "winAbbrev"]],
-    on="game_id",
-    how="left"
-)
-
-gini_by_team_game['outcome'] = np.where(gini_by_team_game['teamAbbrev'] == gini_by_team_game['winAbbrev'], 1, 0)
-
-# Given this is quick and dirty let's just look at corr and then regress to control for sogs
-gini_by_team_game['gini'].corr(gini_by_team_game['outcome'])
-gini_by_team_game['total_sogs'].corr(gini_by_team_game['outcome'])
-
-# The corr is low, but the sogs corr is low too. Teams who take more shots
-# win more (r = .0992), teams with more shot depth win more (r = -.063)
-
-# Quick standardized logit regression
-
-# z-score predictors
-# Reverse gini to be more intuitive
-gini_by_team_game["depth_z"] = -zscore(gini_by_team_game["gini"])
-gini_by_team_game["sogs_z"] = zscore(gini_by_team_game["total_sogs"])
-
-model = smf.logit(formula='outcome ~ depth_z * sogs_z', data=gini_by_team_game)
-results = model.fit()
-results.summary()
-
-
-##############################################################################
-# STRUCTURAL EQUATION MODEL
-##############################################################################
-
-
-    
-    
-    
-
-    
-    
