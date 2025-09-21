@@ -32,7 +32,10 @@
           <!-- Center stack -->
           <div class="scoreboard">
             <h1 class="score">{{ away_score }} - {{ home_score }}</h1>
-            <h2 class="progress"> Clock: {{ time_remaining }} | Period: {{ period }}</h2>
+            <h2 class="progress">
+              Clock: <span id="clock" data-initial="{{ time_remaining|trim }}">{{ time_remaining }}</span>
+              | Period: <span id="period">{{ period }}</span>
+            </h2>
           </div>
           
           <!-- Right logo -->

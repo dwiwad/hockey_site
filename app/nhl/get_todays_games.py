@@ -47,7 +47,7 @@ def get_todays_games(force_refresh = False):
         games["start_et"] = games["start_dt"].dt.tz_convert("America/New_York")
         
         # Format as string (e.g., "7:00 PM ET")
-        games["start_et_str"] = games["start_et"].dt.strftime("%I:%M %p ET")
+        games["start_et_str"] = games["start_et"].dt.strftime("%-I:%M %p ET")  # mac/linux
         
         # Just pull the needed variables and return as a df
         df = pd.DataFrame({

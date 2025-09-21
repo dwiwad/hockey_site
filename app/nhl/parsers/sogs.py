@@ -75,7 +75,10 @@ def sog_by_team(pbp: dict) -> dict:
     home_abbrev = home.get("abbrev") or home.get("triCode") or ""
     away_score = (away.get("score") or {}) or "0"
     home_score = (home.get("score") or {}) or "0"
-    time_remaining = clock.get("timeRemaining" or {}) or ""
+    time_remaining = clock.get("timeRemaining") or ""
+    
+    if time_remaining:
+        time_remaining = time_remaining.lstrip("0")
 
     # Build lookup once
     team_lookup = build_team_lookup(pbp)
