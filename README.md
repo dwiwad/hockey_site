@@ -44,12 +44,14 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 	- [ ] How do I store previous games so people can look at history?
 
 ### Sept. 22, 2025 - Turn the dashboards live
-- [ ] Change functions from static and historical to live
+- [X] Change functions from static and historical to live
 - [X] Add a meta-tag in the markdown for raw analysis that links to a notebook
 
 ### Sept. 6, 2025 - Keep on keepin on
 - [X] Write the demographics deep dive notebook file
-- [ ] Do the ground exploration and analysis to define TDI; Need this for the blog post and dash
+- [ ] Total Depth Index
+	- [X] Do the ground exploration and analysis to define TDI in last season; Need this for the blog post and dash
+	- [ ] Pull the data for 2010 to 2025
 - [ ] Design the "Shape of the Game" Dashboard
 - [ ] Find the right icons for about page that are thin in each case
 - [ ] Live dashboarding
