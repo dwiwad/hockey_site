@@ -500,3 +500,12 @@ body {
   .team-logo { width: 100px; height: 100px; }
   .game-card { width: 100%; max-width: 750px; }
 }
+
+/* ==========================================================================
+   SCOREBOARD STYLES
+   ========================================================================== */
+
+.scoreboard h1 {
+  margin-top: 0;
+  font-size: 6.5rem;
+}
