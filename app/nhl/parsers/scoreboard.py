@@ -12,23 +12,13 @@ from __future__ import annotations
 # HELPERS
 ###################################################################
 
-import requests 
-import pandas as pd
-from datetime import date
-from pathlib import Path
+# I don't think I'll need any helpers here. Everything I need for the
+# scoreboard should exist in the toplevel pbp data, which is already
+# pulled in service.py; so I can rely on pbp.get for everything.
 
-url = f'https://api-web.nhle.com/v1/gamecenter/2025010010/play-by-play'
-response = requests.get(url)
-data = response.json()
-
-# Get the clock
-clock = pd.json_normalize(data['clock'])
-
-time_left = clock.at[0, 'timeRemaining']
-period = data['displayPeriod']
-
-home_score = data['homeTeam']['score']
-away_score = data['awayTeam']['score']
+###################################################################
+# GET THE SCOREBOARD DATA
+###################################################################
 
 # Okay we need some stuff to make the scoreboard function work. 
 # We need to be able to tell if the game is live or not; pbp['gameState'] FUT, LIVE, FINAL

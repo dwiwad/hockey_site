@@ -63,7 +63,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 	- [X] Start fleshing out the dash page
 	- [ ] Bring in the roster data for each game as well for sog by player id matching 
 	- [ ] Build some sog by player figures to sit side by side live 
-	- [ ] Add Yesterdays games page + date selector
+	- [ ] Add Yesterdays games page + date selector; this might require rewriting my game fetcher and router
 
 ### July 31, 2025 - Standup some content
 - [ ] Optimize backend for scalability
