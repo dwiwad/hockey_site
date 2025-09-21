@@ -493,6 +493,36 @@ game_data = (
              how='left')
 )
 
+# Also just xG so I can calc differentials
+xgoal_by_team_game = (
+    shooters.groupby(['game_id', 'teamAbbrev'])['sum_xg']
+      .sum()
+      .rename('xgoal')
+      .reset_index()
+)
+
+game_data = (
+    pd.merge(game_data,
+             xgoal_by_team_game[['game_id', 'teamAbbrev', 'xgoal']], 
+             on=['game_id', 'teamAbbrev'], 
+             how='left')
+)
+
+# Get the cf gini
+cf_gini = (
+    shooters.groupby(['game_id', 'teamAbbrev'])['corsi_for']
+      .apply(gini)
+      .rename('cf_gini')
+      .reset_index()
+)
+
+game_data = (
+    pd.merge(game_data,
+             cf_gini[['game_id', 'teamAbbrev', 'cf_gini']], 
+             on=['game_id', 'teamAbbrev'], 
+             how='left')
+)
+
 # CF = shots-on-goal + goal + blocks + misses
 # Get the total by team game
 cf_by_team_game = (
@@ -507,6 +537,7 @@ game_data = (
              on=['game_id', 'teamAbbrev'], 
              how='left')
 )
+
 
 # Get the TOI gini
 toi_gini = (
@@ -524,8 +555,8 @@ game_data = (
 )
 
 # This is just myself wanting it in the right order lol
-new_order = ['game_id', 'teamAbbrev', 'outcome', 'total_sogs', 'sog_gini', 
-             'assist_gini', 'toi_gini', 'xgoal_gini', 'corsi_for']
+new_order = ['game_id', 'teamAbbrev', 'outcome', 'total_sogs', 'xgoal', 'sog_gini', 
+             'assist_gini', 'toi_gini', 'xgoal_gini', 'cf_gini', 'corsi_for']
 
 # Reassign the DataFrame with the new column order
 game_data = game_data[new_order]

@@ -11,6 +11,7 @@ Created on Tue Sep 16 07:45:52 2025
 """
 import pandas as pd
 import statsmodels.formula.api as smf
+from sklearn.linear_model import LinearRegression 
 from scipy.stats import zscore
 import graphviz
 import semopy as sp
@@ -38,11 +39,13 @@ data['xgoal_depth_z'] = -zscore(data['xgoal_gini'])
 data["assist_depth_z"] = -zscore(data["assist_gini"])
 data["toi_depth_z"] = -zscore(data["toi_gini"])
 data["corsi_for_z"] = zscore(data["corsi_for"])
+data["cf_depth_z"] = -zscore(data["cf_gini"])
 data['sogs_z'] = zscore(data['total_sogs'])
+data['xgoal_z'] = zscore(data['xgoal'])
 
 model_desc = """
     # Simple model
-    depth =~ 1*corsi_for_z + sog_depth_z + xgoal_depth_z + assist_depth_z + toi_depth_z
+    depth =~ 1*cf_depth_z + sog_depth_z + xgoal_depth_z + assist_depth_z + toi_depth_z
 
     """
 
@@ -86,8 +89,7 @@ it’s distributed shot production, even if stars eat the minutes.
 
 model_desc = """
     # Simple model
-    depth =~ 1*corsi_for_z + sog_depth_z + toi_depth_z + xgoal_depth_z
-
+    depth =~ 1*cf_depth_z + sog_depth_z + toi_depth_z + xgoal_depth_z
     """
 
 model = sp.Model(model_desc)
@@ -129,6 +131,29 @@ import statsmodels.formula.api as smf
 
 # Simple model with just depth
 logit_model = smf.logit("outcome ~ depth_rolling10", data=model_data)
+results = logit_model.fit()
+print(results.summary())
+
+# Simple model with just depth
+logit_model = smf.logit("outcome ~ tdi_factor", data=data)
+results = logit_model.fit()
+print(results.summary())
+
+logit_model = smf.ols("total_sogs ~ tdi_factor", data=data)
+results = logit_model.fit()
+print(results.summary())
+
+logit_model = smf.ols("xgoal ~ tdi_factor", data=data)
+results = logit_model.fit()
+print(results.summary())
+
+# Simple model with just depth
+logit_model = smf.logit("outcome ~ xgoal * total_sogs", data=data)
+results = logit_model.fit()
+print(results.summary())
+
+# Simple model with just depth
+logit_model = smf.logit("outcome ~ xgoal * tdi_factor", data=data)
 results = logit_model.fit()
 print(results.summary())
 
@@ -184,7 +209,7 @@ train = model_data.iloc[:split_idx]
 test  = model_data.iloc[split_idx:]
 
 # Fit
-model = smf.logit("outcome ~ depth_rolling10", data=train).fit()
+model = smf.logit("outcome ~ total_sogs + xgoal + depth_rolling10", data=train).fit()
 
 # Predict
 test['pred_prob'] = model.predict(test)
@@ -199,8 +224,7 @@ print("AUC:", auc, "Brier:", brier)
 # So a differential score.
 # Try a version with corsi depth (cf/60 inverse gini)
 
-
-
+# Mediation model - semopy can't do this so I need to do it in R
 
 
 ##############################################################################
