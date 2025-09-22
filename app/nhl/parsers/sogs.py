@@ -65,6 +65,7 @@ def sog_by_team(pbp: dict) -> dict:
     home = pbp.get("homeTeam", {}) or {}
     clock = pbp.get("clock", {}) or {}
     period = pbp.get("displayPeriod", {}) or {}
+    gameState = pbp.get("gameState", {}) or {}
 
     # Labels and abbreviations
     away_place = (away.get("placeName") or {}).get("default") or ""
@@ -127,5 +128,6 @@ def sog_by_team(pbp: dict) -> dict:
         "away_score": away_score,
         "home_score": home_score,
         "time_remaining": time_remaining,
-        "period": period
+        "period": period,
+        "gameState": gameState
     }
