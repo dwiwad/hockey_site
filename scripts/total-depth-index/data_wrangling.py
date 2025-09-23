@@ -35,7 +35,7 @@ def get_mondays(start_date, end_date):
     current_date = start_date
     # If current date is not a monday, add a day
     while current_date.weekday() != 0:
-        current_date +- timedelta(days=1)
+        current_date += timedelta(days=1)
     # If the current day is less than the end day, keep going to the next week
     # And also, if current date is a monday, add to list
     while current_date <= end_date:

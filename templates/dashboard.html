@@ -22,6 +22,7 @@
     
     <main class="sub-main">
         <h1>Games Today</h1>
+        <h3>{{ pretty_date }}</h3>
 
         <section class="game-card-row">
             {% if games_today %}
@@ -51,6 +52,20 @@
                 <h2>No games scheduled for today.</h2>
             {% endif %}
         </section>
+
+        <div style="padding:0 24px 80px;">
+            <div style="max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;">
+                <button class="game-button"><a href="/dashboard?date={{ prev_day }}">Yesterday's Games</a></button>
+
+                <form action="/dashboard" method="get" style="display:flex;align-items:center;gap:10px;">
+                    <input type="date" id="myDate" name="date">
+                    <button type="submit">Go</button>
+                </form>
+                
+                <button class="game-button"><a href="/dashboard?date={{ next_day }}">Tomorrow's Games</a></button>
+            </div>
+        </div>
+
 
         <!-- <h1>Static Dashboards</h1> -->
             <!-- I might want static or historical dashboards to be below but that sort of goes against the clean design philosophy. Link to elsewhere? --> 

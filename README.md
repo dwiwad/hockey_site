@@ -63,10 +63,12 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 	- [X] Start fleshing out the dash page
 	- [ ] Bring in the roster data for each game as well for sog by player id matching 
 	- [ ] Build some sog by player figures to sit side by side live 
-	- [ ] Add Yesterdays games page + date selector; this might require rewriting my game fetcher and router
-	- [ ] Redo the scoreboard, goals on either side, clock and period in the middle like nhl.com
+	- [X] Add Yesterdays games page + date selector; this might require rewriting my game fetcher and router
+		- [ ] Stylize the date selector
+	- [ ] Test Redo the scoreboard, goals on either side, clock and period in the middle like nhl.com
 		- example: https://www.nhl.com/gamecenter/ott-vs-tor/2025/09/21/2025010010
 	- [ ] Add simple javascripting to auto-refresh the clock every 5 seconds, builds the base for depth to do the same. (nhl.com updates every 10s)
+	- [ ] Add javascripting to update goals if the data updates
 
 ### July 31, 2025 - Standup some content
 - [ ] Optimize backend for scalability

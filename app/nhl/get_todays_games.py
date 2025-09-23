@@ -6,70 +6,81 @@ Created on Sat Aug 16 09:32:12 2025
 
 @author: dwiwad
 """
-# The API endpoint that has the games is:
-# https://api-web.nhle.com/v1/schedule/now"
-
-import requests 
+# app/nhl/get_todays_games.py  (rename if you like)
+import requests
 import pandas as pd
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
-# Storing as parquet to be faster, lighter even though its a small file
-today = date.today()
-#today = '2025-09-22'
-CACHE_FILE = Path(f"data/cache/schedule/{today}.parquet")
+TZ_APP = ZoneInfo("America/Toronto")   # your app/user timezone
+TZ_ET  = ZoneInfo("America/Toronto")   # ET == Toronto for NHL use
 
-def get_todays_games(force_refresh = False):
-    
-    # If cache exists and no refresh requested, just load
-    if CACHE_FILE.exists() and not force_refresh:
-        return pd.read_parquet(CACHE_FILE)
+def _cache_path(d: date) -> Path:
+    return Path(f"data/cache/schedule/{d.isoformat()}.parquet")
 
-    # FOR NOW, JUST MAKE THIS THE FIRST DAY SO WE HAVE SOMETHING TO WORK WITH
-    today = date.today()
-    #today = '2025-09-22'
-    url = f'https://api-web.nhle.com/v1/schedule/{today}'
-    
+def get_games_for_date(target_date: date, force_refresh: bool = False) -> pd.DataFrame:
+    """
+    Fetch NHL games for a specific calendar date (Toronto/ET),
+    returning: game_id, season, start, away, home, away_tri, home_tri
+    """
+    cache_file = _cache_path(target_date)
+
+    if cache_file.exists() and not force_refresh:
+        return pd.read_parquet(cache_file)
+
+    # NHL endpoint returns a *week* containing target_date
+    url = f"https://api-web.nhle.com/v1/schedule/{target_date.isoformat()}"
+
     try:
-        response = requests.get(url)
-        data = response.json()
-        
-        # Pull the first block of today's games
-        game_list = data['gameWeek'][0]['games']
-        
-        # Flatten the json
-        games = pd.json_normalize(game_list)
-        
-        # Convert start to datetime in UTC
-        games["start_dt"] = pd.to_datetime(games["startTimeUTC"], utc=True)
+        resp = requests.get(url, timeout=(5, 20))
+        resp.raise_for_status()
+        data = resp.json()
 
-        # Convert to Eastern Time (IANA tz name for NY covers DST automatically)
-        games["start_et"] = games["start_dt"].dt.tz_convert("America/New_York")
-        
-        # Format as string (e.g., "7:00 PM ET")
-        games["start_et_str"] = games["start_et"].dt.strftime("%-I:%M %p ET")  # mac/linux
-        
-        # Just pull the needed variables and return as a df
+        # Find the day-block within the week that matches target_date
+        # Each entry in gameWeek looks like: {"date": "2025-09-23", "games": [...]}
+        day_block = None
+        for block in data.get("gameWeek", []):
+            if block.get("date") == target_date.isoformat():
+                day_block = block
+                break
+
+        games_list = (day_block or {}).get("games", [])
+
+        if not games_list:
+            # still return an empty DF with expected columns
+            return pd.DataFrame(columns=[
+                "game_id","season","start","away","home","away_tri","home_tri"
+            ])
+
+        games = pd.json_normalize(games_list)
+
+        # Parse UTC start, convert to ET (Toronto). Then format as e.g., "7:00 PM ET"
+        games["start_dt_utc"] = pd.to_datetime(games["startTimeUTC"], utc=True)
+        games["start_et"] = games["start_dt_utc"].dt.tz_convert(TZ_ET)
+
+        # Cross-platform hour without leading zero:
+        # Windows doesn't support %-I; use %I then lstrip("0")
+        games["start_et_str"] = games["start_et"].dt.strftime("%I:%M %p ET").str.lstrip("0")
+
         df = pd.DataFrame({
-                'game_id': games['id'],
-                'season': games['season'],
-                'start': games['start_et_str'],
-                'away': games['awayTeam.commonName.default'],
-                'home': games['homeTeam.commonName.default'],
-                'away_tri': games['awayTeam.abbrev'],
-                'home_tri': games['homeTeam.abbrev']
-            })
-        
-        # Save to cache
-        CACHE_FILE.parent.mkdir(parents=True, exist_ok=True)
-        df.to_parquet(CACHE_FILE, index=False)
-        return df
-    
-    except (requests.RequestException, KeyError, IndexError) as e:
-        print(f"Error fetching NHL schedule: {e}")
-        return pd.DataFrame(columns=['game_id', 'start', 'away', 'home'])
+            "game_id" : games["id"],
+            "season"  : games["season"],
+            "start"   : games["start_et_str"],
+            "away"    : games["awayTeam.commonName.default"],
+            "home"    : games["homeTeam.commonName.default"],
+            "away_tri": games["awayTeam.abbrev"],
+            "home_tri": games["homeTeam.abbrev"],
+        })
 
-# Run the script when needed
-if __name__ == "__main__":
-    print(get_todays_games())
+        cache_file.parent.mkdir(parents=True, exist_ok=True)
+        df.to_parquet(cache_file, index=False)
+        return df
+
+    except (requests.RequestException, ValueError, KeyError) as e:
+        print(f"Error fetching NHL schedule for {target_date}: {e}")
+        return pd.DataFrame(columns=[
+            "game_id","season","start","away","home","away_tri","home_tri"
+        ])
+
     
