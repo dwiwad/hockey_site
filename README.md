@@ -37,11 +37,17 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
     - [ ] Career tenure over time?
     - [ ] Quantifying generational talent vs everyone else?
     - [ ] TBD
-- [ ] Two Dashboards
+- [ ] Shape of the Game Dashboard
+	- [ ] Scoreboard
     - [ ] Live in game TDI
-    - [ ] Historical player level shot heatmap explorer
-- [ ] Databasing
-	- [ ] How do I store previous games so people can look at history?
+- [ ] Data Storage
+	- [X] How do I store previous games so people can look at history?
+	- [ ] S3 migration; reading and writing to s3 instead of locally
+		- [X] get_todays_games.py
+		- [ ] service.py
+		- [ ] sogs.py
+		- [ ] scoreboard.py
+
 
 ### Sept. 22, 2025 - Turn the dashboards live
 - [X] Change functions from static and historical to live
@@ -51,8 +57,8 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [X] Write the demographics deep dive notebook file
 - [ ] Total Depth Index
 	- [X] Do the ground exploration and analysis to define TDI in last season; Need this for the blog post and dash
-	- [ ] Pull the data for 2010 to 2025
-- [ ] Design the "Shape of the Game" Dashboard
+	- [X] Pull the data for 2010 to 2025
+	- [ ] Analyze - Big data is big 😬
 - [ ] Find the right icons for about page that are thin in each case
 - [ ] Live dashboarding
 	- [X] Learn how to bring in the live data
@@ -65,8 +71,6 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 	- [ ] Build some sog by player figures to sit side by side live 
 	- [X] Add Yesterdays games page + date selector; this might require rewriting my game fetcher and router
 		- [ ] Stylize the date selector
-	- [ ] Test Redo the scoreboard, goals on either side, clock and period in the middle like nhl.com
-		- example: https://www.nhl.com/gamecenter/ott-vs-tor/2025/09/21/2025010010
 	- [ ] Add simple javascripting to auto-refresh the clock every 5 seconds, builds the base for depth to do the same. (nhl.com updates every 10s)
 	- [ ] Add javascripting to update goals if the data updates
 
