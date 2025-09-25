@@ -25,10 +25,7 @@ def parse_or_today(date_str: str | None) -> date:
 async def dashboard(request: Request, date_str: str | None = Query(default=None, alias="date")):
     d = parse_or_today(date_str)
 
-    # If your getter only returns *today’s* games, add a date-aware helper later.
-    # For now: if d != today, you can call a more general function (recommended),
-    # but to keep this minimal, pretend get_todays_games handles the given date.
-    games_today_df = get_games_for_date(d)  # change your function to accept a `date` arg
+    games_today_df = get_games_for_date(d)  
     games_today = games_today_df.to_dict(orient="records")
 
     prev_day = (d - timedelta(days=1)).isoformat()
