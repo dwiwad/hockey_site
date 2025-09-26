@@ -40,13 +40,11 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [ ] Shape of the Game Dashboard
 	- [ ] Scoreboard
     - [ ] Live in game TDI
-- [ ] Data Storage
+- [X] Data Storage - Migrate to S3; this is fine for now.
 	- [X] How do I store previous games so people can look at history?
-	- [ ] S3 migration; reading and writing to s3 instead of locally
+	- [X] S3 migration; reading and writing to s3 instead of locally
 		- [X] get_todays_games.py
-		- [ ] service.py
-		- [ ] sogs.py
-		- [ ] scoreboard.py
+		- [X] service.py
 
 
 ### Sept. 22, 2025 - Turn the dashboards live
