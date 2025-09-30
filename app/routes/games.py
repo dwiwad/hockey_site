@@ -6,6 +6,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.nhl.service import fetch_game_pbp
 from app.nhl.parsers.sogs import sog_by_team
+from app.nhl.parsers.hits import hits_by_team
 
 # Anchor templates to project root so it works no matter where you run uvicorn
 # PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -17,7 +18,8 @@ games_router = APIRouter()
 async def game_dashboard(request: Request, season: int, game_id: int, fresh: bool = False):
     pbp = fetch_game_pbp(game_id, season, ttl_seconds=5)
     data = sog_by_team(pbp)
+    hits = hits_by_team(pbp)
     return templates.TemplateResponse(
         "game_dashboard.html",
-        {"request": request, "game_id": game_id, "season": season, **data}
+        {"request": request, "game_id": game_id, "season": season, **data, **hits}
     )

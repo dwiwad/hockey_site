@@ -28,7 +28,7 @@ getwd()
 setwd("~/dev/hockey_site/data/total-depth-index/")
 getwd()
 
-data <- read.csv("final_data_20242025.csv", header = T)
+data <- read.csv("final_data_20102025.csv", header = T)
 
 data <- data[which(data$game_id > 2024020000),]
 
@@ -59,6 +59,23 @@ depth =~ 1*cf_depth_z + sog_depth_z + toi_depth_z + xgoal_depth_z
 
 fit <- sem(model, data = data)
 summary(fit, fit.measures = T)
+
+fit_config <- sem(model, data = data, group = "season")
+fit_metric <- sem(model, data = data, group = "season", group.equal = "loadings")
+fit_scalar <- sem(model, data = data, group = "season", group.equal = c("loadings", "intercepts"))
+fit_strict <- sem(model, data = data, group = "season", group.equal = c("loadings", "intercepts", "residuals"))
+
+anova(fit_config, fit_metric, fit_scalar, fit_strict)
+fitMeasures(fit_config, c("cfi","rmsea","srmr"))
+fitMeasures(fit_metric, c("cfi","rmsea","srmr"))
+fitMeasures(fit_scalar, c("cfi","rmsea","srmr"))
+fitMeasures(fit_strict, c("cfi","rmsea","srmr"))
+
+library(semTools)
+measurementInvariance(model=model, data = data, group = "season")
+
+
+
 
 library(lavaanPlot)
 

@@ -34,7 +34,8 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [ ] Five deep dive posts:
     - [X] Demographics over time
     - [ ] Total Depth Index (TDI)
-    - [ ] Career tenure over time?
+    - [ ] Career tenure over time
+	- [ ] Distances flown by team by season - inequality?
     - [ ] Quantifying generational talent vs everyone else?
     - [ ] TBD
 - [ ] Shape of the Game Dashboard

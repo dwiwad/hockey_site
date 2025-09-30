@@ -12,7 +12,7 @@ reg_seas <- data[which(data$game_id > 202403000),]
 # Assumes `data` has: game_id, teamAbbrev, outcome (0/1),
 # total_sogs, xgoal, depth_factor, etc.
 
-data_ra <- reg_seas %>%
+data_ra <- data %>%
   arrange(teamAbbrev, game_id) %>%
   group_by(teamAbbrev) %>%
   mutate(

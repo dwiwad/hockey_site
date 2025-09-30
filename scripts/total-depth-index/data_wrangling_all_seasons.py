@@ -13,6 +13,7 @@ import statsmodels.formula.api as smf
 from scipy.stats import zscore
 import json
 from pathlib import Path
+import s3fs
 
 
 ##############################################################################
@@ -289,17 +290,187 @@ with keep.running():
 ##############################################################################  
 
 # Had to clear the environment. Reload data.
-games = pd.read_csv('~/dev/hockey_site/data/total-depth-index/all_games_meta_20102025.csv')
-pbp = pd.read_csv('~/dev/data/pbp/pbp.csv')
+games = pd.read_csv('~/dev/hockey_site/data/total-depth-index/all_seasons/all_games_meta_20102025.csv')
+pbp = pd.read_csv('~/dev/hockey_site/data/total-depth-index/all_seasons/all_pbp_20102025.csv')
+# Shifts I did separately in all_season_shift_depth.py
 #shifts = pd.read_csv('~/dev/hockey_site/data/total-depth-index/all_shifts_20242025.csv')
-rosters = pd.read_csv('~/dev/hockey_site/data/total-depth-index/all_rosters_20102025.csv')
-mpxg = pd.read_csv('~/dev/hockey_site/data/total-depth-index/moneypuck_xg_20242025.csv')
+rosters = pd.read_csv('~/dev/hockey_site/data/total-depth-index/all_seasons/all_rosters_20102025.csv')
+#mpxg = pd.read_csv('~/dev/hockey_site/data/total-depth-index/moneypuck_xg_20242025.csv')
+
+# Let's start with team by team. Perhaps just with Edmonton.
+# For every game, create a df that is:
+# game_id, player_name, shots_on_goal, goals, shot_attempts
+# I am just gonna wanna merge counts into the roster data I think, preserving 0s
+
+# What I need to do now is loop through shots and count by player_id and add to rosters.
+pbp['typeDescKey'].value_counts()
+
+# For shots, remove shootouts and shrink to shots-on-goal
+shots = pbp[pbp['period_periodType'] != 'SO']
+shots = shots[shots['typeDescKey'].isin(['shot-on-goal', 'goal'])]    
+# Quick check
+shots['typeDescKey'].value_counts()    
+
+# Create a playerId col that uses scoring or shooting playerId
+shots['playerId'] = np.where(
+    shots['typeDescKey'].eq('goal'),
+    shots['detail_scoringPlayerId'],
+    shots['detail_shootingPlayerId']
+)
+
+# Count shots-on-goal per player per game
+game_sogs = (
+    shots
+    .groupby('game_id')['playerId']
+    .value_counts()
+    .reset_index(name='sog_count')
+)
 
 
+# Merge into the roster
+rosters = pd.merge(rosters, game_sogs, on = ['game_id', 'playerId'], how = 'left').fillna(0)
+
+##############################################################################
+# ASSISTS BY PLAYER_ID
+##############################################################################
+
+# We can apply the same player counting logic for assists. I'm realizing we don't
+# even need to filter the data we can just count
+# What I need to do now is loop through shots and count by player_id and add to rosters.
+pbp['typeDescKey'].value_counts()
+
+# For shots, remove shootouts and shrink to goals; the only thing w/ assists
+goals = pbp[pbp['period_periodType'] != 'SO']
+goals = goals[goals['typeDescKey'].isin(['goal'])]    
+
+# Stack both assist columns into one
+assists = goals.melt(
+    id_vars=['game_id'], 
+    value_vars=['detail_assist1PlayerId', 'detail_assist2PlayerId'],
+    value_name='playerId'
+)
+
+# Count assists per player per game
+game_assists = (
+    assists
+    .groupby(['game_id', 'playerId'])
+    .size()
+    .reset_index(name='assist_count')
+)
+
+# Merge into the roster
+rosters = pd.merge(rosters, game_assists, on = ['game_id', 'playerId'], how = 'left').fillna(0)
+
+##############################################################################
+# CORSI FOR - SHOT ATTEMPTS AT EVEN STRENGTH
+##############################################################################
+
+pbp['typeDescKey'].value_counts()
+
+# For shots, remove shootouts and shrink to goals; the only thing w/ assists
+corsi = pbp[pbp['period_periodType'] != 'SO']
+corsi = corsi[corsi['typeDescKey'].isin(['shot-on-goal', 'blocked-shot', 'missed-shot', 'goal'])]  
+
+# It seeeems like situationCode describes players on ice so 1551 is even strength
+# https://gitlab.com/dword4/nhlapi/-/issues/112
+corsi = corsi[corsi['situationCode'] == 1551]
+
+# Quick check
+corsi['typeDescKey'].value_counts()    
+
+# Create a playerId col that uses scoring or shooting playerId
+corsi['playerId'] = np.where(
+    corsi['typeDescKey'].eq('goal'),
+    corsi['detail_scoringPlayerId'],
+    corsi['detail_shootingPlayerId']
+)
+
+# Count shots-on-goal per player per game
+game_cf = (
+    corsi
+    .groupby('game_id')['playerId']
+    .value_counts()
+    .reset_index(name='corsi_for')
+)
 
 
+# Merge into the roster
+rosters = pd.merge(rosters, game_cf, on = ['game_id', 'playerId'], how = 'left').fillna(0)
+
+# Proper split: bucket + prefix + object
+BUCKET = "hockey-decoded"
+PREFIX = "static-ds-analyses/total-depth-index/all-seasons"
+OBJECT = "roster_with_sog_assist_corsi.csv"
+
+fs = s3fs.S3FileSystem(anon=False)
+
+# Build full S3 path
+out_path = f"s3://{BUCKET}/{PREFIX}/{OBJECT}"
+
+# Write DataFrame
+rosters.to_csv(out_path, index=False, storage_options={"anon": False})
+
+print(f"Wrote {len(rosters)} rows to {out_path}")
+
+##############################################################################
+# EXPECTED GOALS
+##############################################################################
+
+# Pull all the expected goals for each season
+BUCKET = "hockey-decoded"
+PREFIX = "static-ds-analyses/total-depth-index/all-seasons"
+
+fs = s3fs.S3FileSystem(anon=False)
+
+# The game id is going to need to be changed. In my data 2024020003 becomes 20003
+# or 2024030416 becomes 30416
+# Moneypuck drops 20240, so we can just append those back on.
+xg = {}
+for year in range(2010, 2025):
+    path = f"s3://{BUCKET}/{PREFIX}/shots_{year}.csv"
+    print(f"Loading {path}")
+    df = pd.read_csv(path, storage_options={"anon": False})
+    # prepend the season year and left-pad the short id to 6 digits, e.g., 20001 -> 020001 -> 2024020001
+    df["game_id"] = df["game_id"].apply(lambda v: f"{year}{str(int(v)).zfill(6)}")
+    xg[year] = df
+
+# combine all years
+xg_all = pd.concat(xg.values(), ignore_index=True)
+xg_all["game_id"] = xg_all["game_id"].astype("int64")
+
+# This is a bit different. I'm using Moneypuck's data as a simple test. I would
+# eventually want to recreate his model I think for prediction, but as far as 
+# explanation and the SEM goes, simply using his data should be sufficient.
+cols = ['game_id', 'shooterPlayerId', 'xGoal']
+
+xg_all = xg_all[cols].rename(columns = {'shooterPlayerId': 'playerId'})
 
 
+# Count mean xG per player per game
+game_xg = (
+    xg_all
+    .groupby(['game_id', 'playerId'])['xGoal']
+    .sum()
+    .reset_index(name='sum_xg')
+)
+
+# Merge into the roster
+rosters = pd.merge(rosters, game_xg, on = ['game_id', 'playerId'], how = 'left').fillna(0)
+
+# Proper split: bucket + prefix + object
+BUCKET = "hockey-decoded"
+PREFIX = "static-ds-analyses/total-depth-index/all-seasons"
+OBJECT = "roster_with_sog_assist_corsi_xg.csv"
+
+fs = s3fs.S3FileSystem(anon=False)
+
+# Build full S3 path
+out_path = f"s3://{BUCKET}/{PREFIX}/{OBJECT}"
+
+# Write DataFrame
+rosters.to_csv(out_path, index=False, storage_options={"anon": False})
+
+print(f"Wrote {len(rosters)} rows to {out_path}")
 
 
 
