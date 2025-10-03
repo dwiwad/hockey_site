@@ -32,7 +32,7 @@
           <!-- Center stack -->
           <div class="scoreboard">
             <h1 class="score">{{ box.away_score }} - {{ box.home_score }}</h1>
-            {% if box.gameState == 'FINAL' %}
+            {% if box.gameState == 'FINAL' or box.gameState == 'OFF' %}
               <h2 class="progress">Final</h2>
             {% elif box.gameState == 'FUT' %}
               <h2 class="progress">Game not yet Started</h2>

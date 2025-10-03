@@ -70,7 +70,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 	- [ ] Bring in the roster data for each game as well for sog by player id matching 
 	- [ ] Build some sog by player figures to sit side by side live 
 	- [X] Add Yesterdays games page + date selector; this might require rewriting my game fetcher and router
-		- [ ] Stylize the date selector
+		- [X] Stylize the date selector
 	- [ ] Add simple javascripting to auto-refresh the clock every 5 seconds, builds the base for depth to do the same. (nhl.com updates every 10s)
 	- [ ] Add javascripting to update goals if the data updates
 
