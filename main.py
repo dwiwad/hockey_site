@@ -11,8 +11,8 @@ from app.routes import core_router, deepdive_router, dashboard_router, games_rou
 from app.core.scheduler import get_scheduler, daily_trigger, every_5s_trigger
 from apscheduler.events import EVENT_JOB_EXECUTED, EVENT_JOB_ERROR, JobExecutionEvent
 
-logger = logging.getLogger("scheduler")
 logging.basicConfig(level=logging.INFO) 
+logger = logging.getLogger("scheduler")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

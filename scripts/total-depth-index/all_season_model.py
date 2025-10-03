@@ -59,6 +59,8 @@ game_data_regular["cf_depth_z"] = -zscore(game_data_regular["cf_gini"])
 game_data_regular['sogs_z'] = zscore(game_data_regular['total_sogs'])
 game_data_regular['xgoal_z'] = zscore(game_data_regular['xgoal'])
 
+game_data_regular.to_csv('~/dev/hockey_site/data/total-depth-index/final_data_20102025.csv', index=False)
+
 model_desc = """
     # Simple model
     depth =~ 1*cf_depth_z + sog_depth_z + xgoal_depth_z + assist_depth_z + toi_depth_z
@@ -118,3 +120,56 @@ print(ins)
 
 stats = sp.calc_stats(model)
 print(stats)
+
+
+
+# A little predictive validity test
+factor_scores = model.predict_factors(game_data_regular)
+game_data_regular['tdi_factor'] = zscore(factor_scores['depth'])
+
+game_data_regular = game_data_regular.sort_values(['teamAbbrev', 'game_id'])
+
+# Rolling 10-game mean of depth
+game_data_regular['depth_rolling10'] = (
+    game_data_regular.groupby('teamAbbrev')['tdi_factor']
+    .transform(lambda x: x.rolling(window=10, min_periods=5).mean())
+)
+
+
+game_data_regular['depth_rolling10'] = (
+    game_data_regular.groupby('teamAbbrev')['tdi_factor']
+        .transform(lambda s: s.shift(1).rolling(window=10, min_periods=5).mean())
+)
+
+# Subset to rows where we have rolling depth values
+model_data = game_data_regular.dropna(subset=['depth_rolling10'])
+
+import statsmodels.formula.api as smf
+
+# Simple model with just depth
+logit_model = smf.logit("outcome ~ depth_rolling10", data=model_data)
+results = logit_model.fit()
+print(results.summary())
+
+# Simple model with just depth
+logit_model = smf.logit("outcome ~ tdi_factor", data=game_data_regular)
+results = logit_model.fit()
+print(results.summary())
+
+logit_model = smf.ols("total_sogs ~ tdi_factor", data=game_data_regular)
+results = logit_model.fit()
+print(results.summary())
+
+logit_model = smf.ols("xgoal ~ tdi_factor", data=game_data_regular)
+results = logit_model.fit()
+print(results.summary())
+
+# Simple model with just depth
+logit_model = smf.logit("outcome ~ xgoal * total_sogs", data=game_data_regular)
+results = logit_model.fit()
+print(results.summary())
+
+# Simple model with just depth
+logit_model = smf.logit("outcome ~ xgoal * tdi_factor", data=game_data_regular)
+results = logit_model.fit()
+print(results.summary())

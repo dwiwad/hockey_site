@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>{{ away_abbrev }} at {{ home_abbrev }} | Hockey Decoded</title>
+    <title>{{ sog.away_abbrev }} at {{ sog.home_abbrev }} | Hockey Decoded</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 
@@ -26,32 +26,32 @@
         <div class="game-card-body">
           <!-- Left logo -->
           <img class="team-logo"
-            src="/static/images/logos/{{ away_abbrev }}_light.svg"
-            alt="{{ away_abbrev }} logo">
+            src="/static/images/logos/{{ sog.away_abbrev }}_light.svg"
+            alt="{{ sog.away_abbrev }} logo">
 
           <!-- Center stack -->
           <div class="scoreboard">
-            <h1 class="score">{{ away_score }} - {{ home_score }}</h1>
-            {% if gameState == 'FINAL' %}
+            <h1 class="score">{{ box.away_score }} - {{ box.home_score }}</h1>
+            {% if box.gameState == 'FINAL' %}
               <h2 class="progress">Final</h2>
-            {% elif gameState == 'FUT' %}
+            {% elif box.gameState == 'FUT' %}
               <h2 class="progress">Game not yet Started</h2>
             {% else %}
               <h2 class="progress">
-                <span id="clock" data-initial="{{ time_remaining|trim }}">{{ time_remaining }}</span>
-                {% if intermission == True and period == 1 %}
+                <span id="clock" data-initial="{{ clock.timeRemaining|trim }}">{{ clock.timeRemaining }}</span>
+                {% if clock.inIntermission == True and box.period == 1 %}
                   |  <span id="period">1st Intermission</span>
-                {% elif intermission == True and period == 2 %}
+                {% elif clock.inIntermission == True and box.period == 2 %}
                   | <span id="period">2nd Intermission</span>
                 {% else %}
-                  {% if period == 1 %} 
-                    | <span id="period">{{ period }}</span>st 
-                  {% elif period == 2 %} 
-                    | <span id="period">{{ period }}</span>nd 
-                  {% elif period == 3 %} 
-                    | <span id="period">{{ period }}</span>rd
+                  {% if box.period == 1 %} 
+                    | <span id="period">{{ box.period }}</span>st 
+                  {% elif box.period == 2 %} 
+                    | <span id="period">{{ box.period }}</span>nd 
+                  {% elif box.period == 3 %} 
+                    | <span id="period">{{ box.period }}</span>rd
                   {% else %}
-                    | <span id="period">{{ period }}</span> 
+                    | <span id="period">{{ box.period }}</span> 
                   {% endif %}
                 {% endif %}
               </h2>
@@ -60,8 +60,8 @@
           
           <!-- Right logo -->
           <img class="team-logo"
-            src="/static/images/logos/{{ home_abbrev }}_light.svg"
-            alt="{{ home_abbrev }} logo">
+            src="/static/images/logos/{{ sog.home_abbrev }}_light.svg"
+            alt="{{ sog.home_abbrev }} logo">
         </div>
       </article>
 
@@ -69,14 +69,14 @@
     
       <article class="game-card">
         <h2>Shots</h2>
-        <p>Total {{ away_label }} shots: <strong>{{ away_sog }}</strong></p>
-        <p>Total {{ home_label }} shots: <strong>{{ home_sog }}</strong></p>
+        <p>Total {{ sog.away_label }} shots: <strong>{{ sog.away_sog }}</strong></p>
+        <p>Total {{ sog.home_label }} shots: <strong>{{ sog.home_sog }}</strong></p>
       </article>
 
       <article class="game-card">
         <h2>Hits</h2>
-        <p>Total {{ away_label }} hits: <strong>{{ away_hit }}</strong></p>
-        <p>Total {{ home_label }} hits: <strong>{{ home_hit }}</strong></p>
+        <p>Total {{ hits.away_label }} hits: <strong>{{ hits.away_hit }}</strong></p>
+        <p>Total {{ hits.home_label }} hits: <strong>{{ hits.home_hit }}</strong></p>
       </article>
     </section>
 

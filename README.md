@@ -39,7 +39,8 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
     - [ ] Quantifying generational talent vs everyone else?
     - [ ] TBD
 - [ ] Shape of the Game Dashboard
-	- [ ] Scoreboard
+	- [X] Scoreboard
+		- [X] Bring in boxscore, clean up router and naming conventions
     - [ ] Live in game TDI
 - [X] Data Storage - Migrate to S3; this is fine for now.
 	- [X] How do I store previous games so people can look at history?
