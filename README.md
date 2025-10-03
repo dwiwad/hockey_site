@@ -18,13 +18,15 @@ Homepage site preview:
 
 ## Status
 
-As of 08/17/2026 this project is in very early development. I have the bare bones structure stood up for my deep dive posts. I'm beginning to play around with bringing in live data from the NHL api for my dashboarding. Would like to continue writing the deep dives I have planned, but then also starting the dashboarding build out.
+10/03/2025; Everything is actually pretty far along now. It's really close to what I would consider publishable. I have done a ton of work stylistically and also to have a few blog posts and dashboards stood up. I am currently working on the Total Depth Index. I think once I have a full draft of a whitepaper, and then figure out how to stand up a live in game version of the TDI, it will be ready to launch. At the end of October every team (I think) will have 10 regular season games, which is enough to start calculating a rolling 10 game depth index for dashboard priors. xG will be challenging. But I feel like this has come a LONG way since I stood up an empty website in June.
+
+08/17/2025; This project is in very early development. I have the bare bones structure stood up for my deep dive posts. I'm beginning to play around with bringing in live data from the NHL api for my dashboarding. Would like to continue writing the deep dives I have planned, but then also starting the dashboarding build out.
 
 I'm beginning to think about database management. Right now there is no database structure in place but I'm going to need to have this--what happens if someone wants to look at yesterdays games? Or games from earlier in the season? So I'm going to need a place to store all this json so people can see static snapshots of previous games. I did not expect this project to start simply with data science, morph into learning front and back end web development, and then start to touch on data engineering lol.
 
 ## Tech Stack (Planned)
 
-- Python for backend code and data analysis. Maybe some R if it plays nicely together  (FastAPI for backend)
+- Python for backend code and data analysis. Maybe some R if it plays nicely together (FastAPI for backend)
 - HTML/CSS/JS for front end (Jinja2).
 - Figma for design work
 
