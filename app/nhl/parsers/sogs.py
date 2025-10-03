@@ -63,9 +63,6 @@ def sog_by_team(pbp: dict) -> dict:
     """Return simple labels + SOG counts for away/home teams"""
     away = pbp.get("awayTeam", {}) or {}
     home = pbp.get("homeTeam", {}) or {}
-    clock = pbp.get("clock", {}) or {}
-    period = pbp.get("displayPeriod", {}) or {}
-    gameState = pbp.get("gameState", {}) or {}
 
     # Labels and abbreviations
     away_place = (away.get("placeName") or {}).get("default") or ""
@@ -74,12 +71,6 @@ def sog_by_team(pbp: dict) -> dict:
     home_name  = (home.get("commonName") or {}).get("default") or home.get("abbrev") or "Home"
     away_abbrev = away.get("abbrev") or away.get("triCode") or ""
     home_abbrev = home.get("abbrev") or home.get("triCode") or ""
-    away_score = (away.get("score") or {}) or "0"
-    home_score = (home.get("score") or {}) or "0"
-    time_remaining = clock.get("timeRemaining") or ""
-    
-    if time_remaining:
-        time_remaining = time_remaining.lstrip("0")
 
     # Build lookup once
     team_lookup = build_team_lookup(pbp)
@@ -125,9 +116,4 @@ def sog_by_team(pbp: dict) -> dict:
         "home_abbrev": home_abbrev,
         "away_sog": a,
         "home_sog": h,
-        "away_score": away_score,
-        "home_score": home_score,
-        "time_remaining": time_remaining,
-        "period": period,
-        "gameState": gameState
     }

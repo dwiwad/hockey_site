@@ -32,25 +32,24 @@ from __future__ import annotations
 # The scores we can just pull straight; check sogs.py for how I've hacked it right now.
 
 def scoreboard(pbp: dict) -> dict:
-    """Return simple labels + SOG counts for away/home teams"""
+    """Return simple boxscore info"""
     away = pbp.get("awayTeam", {}) or {}
     home = pbp.get("homeTeam", {}) or {}
+    clock = pbp.get("clock", {}) or {}
+    period = pbp.get("displayPeriod", {}) or {}
+    gameState = pbp.get("gameState", {}) or {}
     
-    away_score = pbp.get()
-
-    # Labels and abbreviations
     away_score = (away.get("score") or {}) or "0"
     home_score = (home.get("score") or {}) or "0"
+    time_remaining = clock.get("timeRemaining") or ""
 
-    # Build lookup once
-    team_lookup = build_team_lookup(pbp)
-
-    # Also keep numeric IDs for a robust fallback comparison
-    away_id = int(away.get("id")) if away.get("id") is not None else None
-    home_id = int(home.get("id")) if home.get("id") is not None else None
-
+    if time_remaining:
+        time_remaining = time_remaining.lstrip("0")
 
     return {
         "away_score": away_score,
         "home_score": home_score,
+        "time_remaining": time_remaining,
+        "period": period,
+        "gameState": gameState,
     }

@@ -39,14 +39,20 @@
             {% else %}
               <h2 class="progress">
                 <span id="clock" data-initial="{{ time_remaining|trim }}">{{ time_remaining }}</span>
-                {% if period == 1 %} 
-                  | <span id="period">{{ period }}</span>st 
-                {% elif period == 2 %} 
-                  | <span id="period">{{ period }}</span>nd 
-                {% elif period == 3 %} 
-                  | <span id="period">{{ period }}</span>rd
+                {% if intermission == True and period == 1 %}
+                  |  <span id="period">1st Intermission</span>
+                {% elif intermission == True and period == 2 %}
+                  | <span id="period">2nd Intermission</span>
                 {% else %}
-                  | <span id="period">{{ period }}</span> 
+                  {% if period == 1 %} 
+                    | <span id="period">{{ period }}</span>st 
+                  {% elif period == 2 %} 
+                    | <span id="period">{{ period }}</span>nd 
+                  {% elif period == 3 %} 
+                    | <span id="period">{{ period }}</span>rd
+                  {% else %}
+                    | <span id="period">{{ period }}</span> 
+                  {% endif %}
                 {% endif %}
               </h2>
             {% endif %}
