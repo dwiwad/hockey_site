@@ -554,14 +554,30 @@ body {
 
 .away-segment {
   height: 100%;
-  background: var(--oil-orange);
+  background: var(--orange);
 }
 
 .home-segment {
   height: 100%;
-  background: var(--blue-dark);
+  background: var(--blue);
 }
 
+#shot-tooltip {
+  position: fixed;              /* follows cursor */
+  z-index: 9999;
+  padding: 6px 8px;
+  font-size: 22px;
+  line-height: 1;
+  background: var(--bg-cream);
+  color: var(--blue-dark);
+  border-radius: 6px;
+  pointer-events: none;
+  font-family: Charter;
+  opacity: 0;
+  transform: translate(-50%, -120%); /* above cursor */
+  transition: opacity 120ms ease;
+}
+#shot-tooltip.show { opacity: 1; }
 
 
 /* ==========================================================================

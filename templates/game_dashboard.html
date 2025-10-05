@@ -77,11 +77,18 @@
 
       <article class="game-card">
         <h2>Shot Share</h2>
-        <div class="shot-bar" role="img"
-            aria-label="Shots: {{ sog.away_label }} {{ (sog.away_share * 100)|round(0) }}%, {{ sog.home_label }} {{ (sog.home_share * 100)|round(0) }}%">
-          <div class="away-segment" style="width: {{ sog.away_share * 100 }}%;"></div>
-          <div class="home-segment" style="width: {{ sog.home_share * 100 }}%;"></div>
+        <div class="shot-bar">
+        <div class="away-segment" tabindex="0" aria-describedby="shot-tooltip"
+            style="width: {{ sog.away_share * 100 }}%;"
+            data-team="{{ sog.away_label }}"
+            data-share="{{ (sog.away_share * 100)|round(0) }}">
         </div>
+        <div class="home-segment" tabindex="0" aria-describedby="shot-tooltip"
+            style="width: {{ sog.home_share * 100 }}%;"
+            data-team="{{ sog.home_label }}"
+            data-share="{{ (sog.home_share * 100)|round(0) }}">
+        </div>
+      </div>
       </article>
 
       <article class="game-card">
@@ -92,5 +99,50 @@
     </section>
 
   </main>
+
+  <!-- one global tooltip element -->
+  <div id="shot-tooltip" role="tooltip" aria-hidden="true"></div>
+
+  <!-- Javascript for the hover  -->
+  <script>
+  (function () {
+    const tip = document.getElementById('shot-tooltip');
+    const segments = document.querySelectorAll('.shot-bar .away-segment, .shot-bar .home-segment');
+
+    function setTipText(el) {
+      tip.textContent = `${el.dataset.team} — ${el.dataset.share}%`;
+    }
+    function showTip(e) {
+      setTipText(e.currentTarget || e.target);
+      tip.classList.add('show');
+      tip.setAttribute('aria-hidden', 'false');
+      moveTip(e);
+    }
+    function moveTip(e) {
+      const point = e.touches ? e.touches[0] : e;
+      tip.style.left = point.clientX + 'px';
+      tip.style.top  = point.clientY + 'px';
+    }
+    function hideTip() {
+      tip.classList.remove('show');
+      tip.setAttribute('aria-hidden', 'true');
+    }
+
+    segments.forEach(el => {
+      // Mouse
+      el.addEventListener('mouseenter', showTip);
+      el.addEventListener('mousemove', moveTip);
+      el.addEventListener('mouseleave', hideTip);
+      // Keyboard
+      el.addEventListener('focus', (e) => { setTipText(e.target); tip.classList.add('show'); tip.setAttribute('aria-hidden','false'); });
+      el.addEventListener('blur', hideTip);
+      // Touch (basic)
+      el.addEventListener('touchstart', showTip, {passive:true});
+      el.addEventListener('touchmove',  moveTip, {passive:true});
+      el.addEventListener('touchend',   hideTip, {passive:true});
+    });
+  })();
+  </script>
+
 </body>
 </html>
