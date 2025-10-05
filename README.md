@@ -73,8 +73,9 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 	- [ ] Build some sog by player figures to sit side by side live 
 	- [X] Add Yesterdays games page + date selector; this might require rewriting my game fetcher and router
 		- [X] Stylize the date selector
-	- [ ] Add simple javascripting to auto-refresh the clock every 5 seconds, builds the base for depth to do the same. (nhl.com updates every 10s)
+	- [ ] Add javascripting to auto-refresh the clock every 5 seconds, builds the base for depth to do the same. (nhl.com updates every 10s)
 	- [ ] Add javascripting to update goals if the data updates
+- [ ] Find the best way to add team colors for the balance bars. CSS or a python dict
 
 ### July 31, 2025 - Standup some content
 - [ ] Optimize backend for scalability
