@@ -76,6 +76,15 @@
       </article>
 
       <article class="game-card">
+        <h2>Shot Share</h2>
+        <div class="shot-bar" role="img"
+            aria-label="Shots: {{ sog.away_label }} {{ (sog.away_share * 100)|round(0) }}%, {{ sog.home_label }} {{ (sog.home_share * 100)|round(0) }}%">
+          <div class="away-segment" style="width: {{ sog.away_share * 100 }}%;"></div>
+          <div class="home-segment" style="width: {{ sog.home_share * 100 }}%;"></div>
+        </div>
+      </article>
+
+      <article class="game-card">
         <h2>Hits</h2>
         <p>Total {{ hits.away_label }} hits: <strong>{{ hits.away_hit }}</strong></p>
         <p>Total {{ hits.home_label }} hits: <strong>{{ hits.home_hit }}</strong></p>

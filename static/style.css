@@ -540,6 +540,30 @@ body {
   .game-card { width: 100%; max-width: 750px; }
 }
 
+/* Shot share bar */
+.shot-bar {
+  display: flex;  
+  margin-top: 1rem;           
+  width: 100%;
+  height: 60px;               
+  border-radius: 12px;
+  overflow: hidden;
+  background: #eee;           /* faint track/background */
+  position: relative;         /* allows future 50% divider if you want */
+}
+
+.away-segment {
+  height: 100%;
+  background: var(--oil-orange);
+}
+
+.home-segment {
+  height: 100%;
+  background: var(--blue-dark);
+}
+
+
+
 /* ==========================================================================
    SCOREBOARD STYLES
    ========================================================================== */

@@ -106,6 +106,10 @@ def sog_by_team(pbp: dict) -> dict:
                 a += 1
             elif home_id is not None and tid == home_id:
                 h += 1
+    
+    total_shots = a + h
+    away_share = round((a / total_shots), 2)
+    home_share = round((h / total_shots), 2)
 
     return {
         "away_place": away_place,
@@ -116,4 +120,7 @@ def sog_by_team(pbp: dict) -> dict:
         "home_abbrev": home_abbrev,
         "away_sog": a,
         "home_sog": h,
+        "total_shots": total_shots,
+        "away_share": away_share,
+        "home_share": home_share,
     }
