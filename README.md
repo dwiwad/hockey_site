@@ -2,16 +2,9 @@
 
 This project is a personal hockey data website built using primarily Python, R, HTML, and CSS.
 
-## Site Preview as of October 2025
+## Site Homepage as of October 2025
 
-<video src="static/images/site_walkthrough_oct2025.mp4"
-       controls
-       muted
-       playsinline
-       poster="static/images/site_walkthrough_oct2025_poster.jpg"
-       width="100%">
-</video>
-
+![Site preview](static/images/homepage4.png)
 
 ## Goals
 
