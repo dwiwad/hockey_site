@@ -4,7 +4,14 @@ This project is a personal hockey data website built using primarily Python, R, 
 
 ## Site Preview as of October 2025
 
-![Site preview](static/images/site_walkthrough_oct2025.mp4)
+<figure align="center">
+  <video controls playsinline muted width="100%" poster="static/images/site_walkthrough_oct2025_poster.jpg">
+    <source src="static/images/site_walkthrough_oct2025.mp4" type="video/mp4">
+    Your browser doesn’t support HTML5 video. Here’s a
+    <a href="static/images/site_walkthrough_oct2025.mp4">direct link</a>.
+  </video>
+  <figcaption>Site walkthrough (October 2025)</figcaption>
+</figure>
 
 ## Goals
 
@@ -57,6 +64,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [ ] Write a shot depth function once rosters are in and replace shot share figure
 - [ ] Add primary and secondary team colors to css or a python dict
 - [ ] Change the shot share/depth bar plot to be away and home team primary colors
+- [ ] Start looking into hosting on AWS
 - [ ] TDI
 	- [ ] Start scoping the deep dive
 	- [ ] Stand up an empty post for it
