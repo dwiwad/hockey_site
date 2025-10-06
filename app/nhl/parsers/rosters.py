@@ -101,6 +101,3 @@ def roster_by_team(pbp: dict) -> list[dict]:
         })
 
     return rows
-
-
-print(roster_by_team(data))
