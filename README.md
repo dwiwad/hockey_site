@@ -4,14 +4,14 @@ This project is a personal hockey data website built using primarily Python, R, 
 
 ## Site Preview as of October 2025
 
-<figure align="center">
-  <video controls playsinline muted width="100%" poster="static/images/site_walkthrough_oct2025_poster.jpg">
-    <source src="static/images/site_walkthrough_oct2025.mp4" type="video/mp4">
-    Your browser doesn’t support HTML5 video. Here’s a
-    <a href="static/images/site_walkthrough_oct2025.mp4">direct link</a>.
-  </video>
-  <figcaption>Site walkthrough (October 2025)</figcaption>
-</figure>
+<video src="static/images/site_walkthrough_oct2025.mp4"
+       controls
+       muted
+       playsinline
+       poster="static/images/site_walkthrough_oct2025_poster.jpg"
+       width="100%">
+</video>
+
 
 ## Goals
 
