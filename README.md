@@ -1,10 +1,10 @@
-# Hockey Analytics Website
+# Hockey Decoded
 
-This project is a personal hockey data website built using primarily Python, HTML, and CSS.
+This project is a personal hockey data website built using primarily Python, R, HTML, and CSS.
 
-Homepage site preview:
+## Site Preview as of October 2025
 
-![Site preview](static/images/homepage4.png)
+![Site preview](static/images/site_walkthrough_oct2025.mp4)
 
 ## Goals
 
@@ -24,9 +24,10 @@ Homepage site preview:
 
 I'm beginning to think about database management. Right now there is no database structure in place but I'm going to need to have this--what happens if someone wants to look at yesterdays games? Or games from earlier in the season? So I'm going to need a place to store all this json so people can see static snapshots of previous games. I did not expect this project to start simply with data science, morph into learning front and back end web development, and then start to touch on data engineering lol.
 
-## Tech Stack (Planned)
+## Tech Stack
 
-- Python for backend code and data analysis. Maybe some R if it plays nicely together (FastAPI for backend)
+- Python for backend code and data analysis. Some R for static stuff, but not actual live analysis or dashboarding. I prefer R over python for stats, sue me.
+	- Backend is FastAPI
 - HTML/CSS/JS for front end (Jinja2).
 - Figma for design work
 
@@ -43,13 +44,22 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [ ] Shape of the Game Dashboard
 	- [X] Scoreboard
 		- [X] Bring in boxscore, clean up router and naming conventions
-    - [ ] Live in game TDI
+    - [ ] Live in game TDI (Or maybe just shot depth?)
 - [X] Data Storage - Migrate to S3; this is fine for now.
 	- [X] How do I store previous games so people can look at history?
 	- [X] S3 migration; reading and writing to s3 instead of locally
 		- [X] get_todays_games.py
 		- [X] service.py
 
+### Oct. 6, 2025 - More tasks I'm thinking of
+- [ ] Look into DuckDB
+- [ ] Re-write fetch_game_pbp.py to also pull and store rosters as gameid.roster.json
+- [ ] Write a shot depth function once rosters are in and replace shot share figure
+- [ ] Add primary and secondary team colors to css or a python dict
+- [ ] Change the shot share/depth bar plot to be away and home team primary colors
+- [ ] TDI
+	- [ ] Start scoping the deep dive
+	- [ ] Stand up an empty post for it
 
 ### Sept. 22, 2025 - Turn the dashboards live
 - [X] Change functions from static and historical to live
@@ -88,7 +98,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [ ] Fix Front end for recurring new static analyses
 	- [X] Build a deep dive html template
 	- [X] Get markdown rolling for content writing that knits to custom styled html
-	- [ ] Generalize style.css
+	- [ ] Clean up style.css; Maybe migrate to separate files later.
 - [X] Add links to about page with icons 
 	- [X] Github, personal site, linkedin, google scholar
 - [X] Stylize Today's Games with cards
