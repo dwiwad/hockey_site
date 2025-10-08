@@ -599,6 +599,19 @@ body {
   position: relative;         /* allows future 50% divider if you want */
 }
 
+/* Shot/Depth bar always-on 50% dashed divider */
+.shot-bar.depth-bar { position: relative; }
+
+.shot-bar.depth-bar::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  border-left: 3px dashed rgba(0,0,0,.35); /* or var(--blue-dark) with opacity */
+  pointer-events: none;    /* don’t block tooltip hover */
+  z-index: 2;              /* above segments, below tooltip */
+}
+
 .away-segment {
   height: 100%;
   background: var(--orange);
@@ -625,7 +638,6 @@ body {
   transition: opacity 120ms ease;
 }
 #shot-tooltip.show { opacity: 1; }
-
 
 /* ==========================================================================
    SCOREBOARD STYLES

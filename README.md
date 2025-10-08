@@ -54,7 +54,8 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 ### Oct. 6, 2025 - More tasks I'm thinking of
 - [ ] Look into DuckDB
 - [ ] Re-write fetch_game_pbp.py to also pull and store rosters as gameid.roster.json
-- [ ] Write a shot depth function once rosters are in and replace shot share figure
+- [X] Write a shot depth function once rosters are in and replace shot share figure
+= [ ] Check the math on the depth.py
 - [ ] Add primary and secondary team colors to css or a python dict
 - [ ] Change the shot share/depth bar plot to be away and home team primary colors
 - [ ] Start looking into hosting on AWS
@@ -73,15 +74,14 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 	- [X] Pull the data for 2010 to 2025
 	- [ ] Analyze - Big data is big 😬
 - [ ] Find the right icons for about page that are thin in each case
-- [ ] Live dashboarding
+- [X] Live dashboarding
 	- [X] Learn how to bring in the live data
 	- [X] Bring in a Cache for the main dashboard so it doesn't take so long to load the days games
 	- [X] Debug the shot counter for the interim sog dash; tampa gave giving boston game counts for march 13, 2025 test day
 		- Damn that was annoying. Turns out I thought I was duplicating a game but just by chance the shot counts for two games were the same
 		because I included shootout shots, and didn't line up with the box score because nhl doesn't count shootouts. Just had to filter that out.
 	- [X] Start fleshing out the dash page
-	- [ ] Bring in the roster data for each game as well for sog by player id matching 
-	- [ ] Build some sog by player figures to sit side by side live 
+	- [X] A shot depth balance bar
 	- [X] Add Yesterdays games page + date selector; this might require rewriting my game fetcher and router
 		- [X] Stylize the date selector
 	- [ ] Add javascripting to auto-refresh the clock every 5 seconds, builds the base for depth to do the same. (nhl.com updates every 10s)

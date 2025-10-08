@@ -9,6 +9,7 @@ from app.nhl.parsers.sogs import sog_by_team
 from app.nhl.parsers.hits import hits_by_team
 from app.nhl.parsers.rosters import roster_by_team
 from app.nhl.parsers.scoreboard import scoreboard
+from app.nhl.parsers.depth import shot_depth_from_pbp
 
 # Anchor templates to project root so it works no matter where you run uvicorn
 # PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -22,11 +23,13 @@ async def game_dashboard(request: Request, season: int, game_id: int, fresh: boo
     pbp = fetch_game_pbp(game_id, season, ttl_seconds=5)
     box = fetch_game_box(game_id, season, ttl_seconds=5)
 
+    rosters = roster_by_team(pbp)
+    depth_payload = shot_depth_from_pbp(pbp, rosters) 
+
     # Parsers to actually work with the data
     data = sog_by_team(pbp)
     hits = hits_by_team(pbp)
     boxscore = scoreboard(pbp)
-    rosters = roster_by_team(pbp)
     clock_data = box.get("clock", {}) or {}
     clock = {
     "inIntermission": clock_data.get("inIntermission"),
@@ -43,6 +46,7 @@ async def game_dashboard(request: Request, season: int, game_id: int, fresh: boo
          "hits": hits,
          "box": boxscore,
          "clock": clock,
-         "rosters": rosters, 
+         "rosters": rosters,
+         "depth_payload": depth_payload,
          }
     )
