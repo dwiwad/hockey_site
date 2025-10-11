@@ -15,6 +15,8 @@ import json, time
 from typing import Any, Dict, Optional
 import httpx
 import s3fs
+import io
+import pandas as pd
 
 # Import the base url for the play-by-play endpoint
 BASE = "https://api-web.nhle.com/v1/gamecenter/{game_id}/play-by-play"
@@ -293,3 +295,214 @@ def fetch_game_box(
             if _s3_exists(data_path):
                 return _s3_read_json(data_path)
             raise
+
+# =========================
+# MoneyPuck xG CSV Caching
+# =========================
+
+MP_HEADERS = {
+    "User-Agent": ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                   "AppleWebKit/537.36 (KHTML, like Gecko) "
+                   "Chrome/118.0.0.0 Safari/537.36"),
+    "Referer": "https://moneypuck.com/",
+}
+MP_TIMEOUT = (5, 20)  # connect, read
+
+def _empty_player_df() -> pd.DataFrame:
+    # Keep common columns you rely on; you can add others as needed
+    cols = [
+        "playerName", "playerId", "team", "position", "situation",
+        "I_F_xGoals", "I_F_flurryAdjustedxGoals", "I_F_scoreVenueAdjustedxGoals",
+        "I_F_flurryScoreVenueAdjustedxGoals",
+    ]
+    return pd.DataFrame({c: pd.Series(dtype="object") for c in cols})
+
+def _empty_game_df() -> pd.DataFrame:
+    cols = ["homeTeamAbbrev", "awayTeamAbbrev", "homeTeam", "awayTeam", "gameId"]
+    return pd.DataFrame({c: pd.Series(dtype="object") for c in cols})
+
+def _mp_season_folder(game_id: int) -> str:
+    y = int(str(game_id)[:4])
+    return f"{y}{y+1}"
+
+def _mp_player_url(game_id: int) -> str:
+    # Per-game *player* CSV (live)
+    return f"https://moneypuck.com/moneypuck/playerData/games/{_mp_season_folder(game_id)}/{game_id}.csv"
+
+def _mp_game_url(game_id: int) -> str:
+    # Per-game *team/game* CSV (live; has home/away metadata)
+    return f"https://moneypuck.com/moneypuck/gameData/{_mp_season_folder(game_id)}/{game_id}.csv"
+
+# ---- S3 paths (CSV + meta) ----
+def _s3_mp_dir(season: int) -> str:
+    return f"s3://{S3_BUCKET}/{S3_PREFIX}/{season}/moneypuck"
+
+def _s3_mp_player_path(season: int, game_id: int) -> str:
+    return f"{_s3_mp_dir(season)}/{game_id}_player.csv"
+
+def _s3_mp_player_meta(season: int, game_id: int) -> str:
+    return f"{_s3_mp_dir(season)}/{game_id}_player.meta.json"
+
+def _s3_mp_game_path(season: int, game_id: int) -> str:
+    return f"{_s3_mp_dir(season)}/{game_id}_game.csv"
+
+def _s3_mp_game_meta(season: int, game_id: int) -> str:
+    return f"{_s3_mp_dir(season)}/{game_id}_game.meta.json"
+
+def _s3_read_text(path: str) -> str:
+    with fs.open(path, "rb") as f:
+        return f.read().decode("utf-8")
+
+def _s3_write_text(path: str, text: str) -> None:
+    data = text.encode("utf-8")
+    # ensure parent "directory" exists (no-op if already there)
+    fs.makedirs(path.rsplit("/", 1)[0], exist_ok=True)
+    with fs.open(path, "wb") as f:
+        f.write(data)
+
+def _http_get_with_conditionals(url: str, headers: Dict[str, str]) -> httpx.Response:
+    with httpx.Client(timeout=MP_TIMEOUT) as client:
+        return client.get(url, headers=headers)
+
+def _fetch_csv_with_cache(
+    url: str,
+    csv_path: str,
+    meta_path: str,
+    ttl_seconds: int,
+    force_refresh: bool,
+    extra_headers: Optional[Dict[str, str]] = None,
+    on_not_started: str = "empty",  # "empty" | "none" | "raise"
+) -> Optional[str]:
+    """
+    Core fetcher for CSV with S3 caching + conditional GET.
+    Returns CSV text, or None if on_not_started == "none" and the game hasn't started.
+    """
+    # TTL short-circuit
+    if not force_refresh:
+        age = _s3_age_seconds(csv_path)
+        if age is not None and age < ttl_seconds:
+            text = _s3_read_text(csv_path)
+            return text if text.strip() else (None if on_not_started == "none" else "")
+
+    # Build conditional headers
+    headers: Dict[str, str] = dict(MP_HEADERS)
+    if extra_headers:
+        headers.update(extra_headers)
+    if not force_refresh:
+        meta = _load_meta_s3(meta_path)
+        if (etag := meta.get("etag")):
+            headers["If-None-Match"] = etag
+        if (lm := meta.get("last_modified")):
+            headers["If-Modified-Since"] = lm
+
+    backoffs = [1.5, 3.0]
+    attempts = len(backoffs) + 1
+    for i in range(attempts):
+        try:
+            r = _http_get_with_conditionals(url, headers)
+
+            # 304: use cache
+            if r.status_code == 304 and _s3_exists(csv_path):
+                text = _s3_read_text(csv_path)
+                return text if text.strip() else (None if on_not_started == "none" else "")
+
+            # 404: game not started yet (don’t cache)
+            if r.status_code == 404:
+                if on_not_started == "raise":
+                    r.raise_for_status()
+                return None if on_not_started == "none" else ""
+
+            r.raise_for_status()
+            text = r.text
+
+            # MoneyPuck sometimes serves HTML for errors; guard that
+            if not text.strip() or text.lstrip().startswith("<!DOCTYPE html"):
+                # treat as not-started; don't cache
+                return None if on_not_started == "none" else ""
+
+            _s3_write_text(csv_path, text)
+            _save_meta_s3(
+                meta_path,
+                r.headers.get("ETag") or r.headers.get("Etag"),
+                r.headers.get("Last-Modified"),
+            )
+            return text
+
+        except (httpx.ReadTimeout, httpx.ConnectTimeout):
+            if i < len(backoffs):
+                time.sleep(backoffs[i]); continue
+            if _s3_exists(csv_path):
+                text = _s3_read_text(csv_path)
+                return text if text.strip() else (None if on_not_started == "none" else "")
+            # no cache; bubble up
+            raise
+
+        except httpx.HTTPStatusError as e:
+            status = e.response.status_code if e.response is not None else None
+            if status and 500 <= status < 600 and i < len(backoffs):
+                time.sleep(backoffs[i]); continue
+            if _s3_exists(csv_path):
+                text = _s3_read_text(csv_path)
+                return text if text.strip() else (None if on_not_started == "none" else "")
+            if status == 404 and on_not_started != "raise":
+                return None if on_not_started == "none" else ""
+            raise
+
+# ---- Public APIs ----
+
+def fetch_moneypuck_player_xg_csv(
+    game_id: int,
+    season: int,
+    ttl_seconds: int = 30,
+    force_refresh: bool = False,
+    return_df: bool = True,
+    on_not_started: str = "empty",   # "empty" | "none" | "raise"
+) -> pd.DataFrame | str | None:
+    url = _mp_player_url(game_id)
+    csv_path = _s3_mp_player_path(season, game_id)
+    meta_path = _s3_mp_player_meta(season, game_id)
+    csv_text = _fetch_csv_with_cache(
+        url, csv_path, meta_path, ttl_seconds, force_refresh, on_not_started=on_not_started
+    )
+
+    if not return_df:
+        return csv_text  # may be "" or None per on_not_started
+
+    if not csv_text:
+        return _empty_player_df()
+
+    try:
+        df = pd.read_csv(io.StringIO(csv_text))
+    except Exception:
+        # Malformed or HTML slipped through — treat as empty
+        return _empty_player_df()
+    return df
+
+
+def fetch_moneypuck_game_csv(
+    game_id: int,
+    season: int,
+    ttl_seconds: int = 60,
+    force_refresh: bool = False,
+    return_df: bool = True,
+    on_not_started: str = "empty",   # "empty" | "none" | "raise"
+) -> pd.DataFrame | str | None:
+    url = _mp_game_url(game_id)
+    csv_path = _s3_mp_game_path(season, game_id)
+    meta_path = _s3_mp_game_meta(season, game_id)
+    csv_text = _fetch_csv_with_cache(
+        url, csv_path, meta_path, ttl_seconds, force_refresh, on_not_started=on_not_started
+    )
+
+    if not return_df:
+        return csv_text  # may be "" or None per on_not_started
+
+    if not csv_text:
+        return _empty_game_df()
+
+    try:
+        df = pd.read_csv(io.StringIO(csv_text))
+    except Exception:
+        return _empty_game_df()
+    return df
+

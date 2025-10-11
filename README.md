@@ -46,7 +46,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 		- [X] Bring in boxscore, clean up router and naming conventions
     - [ ] Live in game TDI 
 		- [X] Wire up shot depth
-		- [ ] Wire up CF depth
+		- [X] Wire up CF depth
 		- [ ] Wire up TOI depth
 		- [ ] Wire up xG depth
 		- [ ] Create the game level table of 10 game depth rolling ave for priors

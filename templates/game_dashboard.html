@@ -126,6 +126,33 @@
                 data-depth="{{ '%.3f'|format(cfdp.cf_home.depth) }}"></div>
           {% endif %}
         </div>
+
+        <h3>xG Depth</h3>
+        {% set xgdp = xg_depth_payload if xg_depth_payload is defined else None %}
+
+        <div class="shot-bar depth-bar">
+          {% if xgdp is none or xgdp.no_xg %}
+            <div class="away-segment"
+                style="width:50%;"
+                data-team="{{ xgdp.xg_away.team if xgdp else 'AWAY' }}"
+                data-depth="N/A"></div>
+
+            <div class="home-segment"
+                style="width:50%;"
+                data-team="{{ xgdp.xg_home.team if xgdp else 'HOME' }}"
+                data-depth="N/A"></div>
+          {% else %}
+            <div class="away-segment"
+                style="width: {{ xgdp.xg_depth_share.away_pct }}%;"
+                data-team="{{ xgdp.xg_away.team }}"
+                data-depth="{{ '%.3f'|format(xgdp.xg_away.depth) }}"></div>
+
+            <div class="home-segment"
+                style="width: {{ xgdp.xg_depth_share.home_pct }}%;"
+                data-team="{{ xgdp.xg_home.team }}"
+                data-depth="{{ '%.3f'|format(xgdp.xg_home.depth) }}"></div>
+          {% endif %}
+        </div>
       </article>
 
       <article class="game-card">
