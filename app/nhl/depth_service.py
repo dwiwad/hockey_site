@@ -1,13 +1,13 @@
 # services/depth_service.py
 from __future__ import annotations
 from typing import Dict, Any, List
-from app.nhl.service import fetch_game_pbp          # you already have this
-from app.nhl.parsers.rosters import roster_by_team          # your roster.py entry point
-from parsers.depth import compute_game_shot_depth    # from depth.py
+from app.nhl.service import fetch_game_pbp          
+from app.nhl.parsers.rosters import roster_by_team          
+from parsers.depth import compute_game_shot_depth    
 
 def get_shot_depth_payload(game_id: str) -> Dict[str, Any]:
     """
-    Returns a payload ready for your template:
+    Returns a payload ready for the template:
     {
       no_shots: bool,
       home: {team, total_shots, ineq, depth},

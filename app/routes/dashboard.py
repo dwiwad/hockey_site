@@ -9,7 +9,7 @@ from app.nhl.get_todays_games import get_games_for_date
 templates = Jinja2Templates(directory = "templates")
 dashboard_router = APIRouter()
 
-TZ = ZoneInfo("America/Toronto")
+TZ = ZoneInfo("America/Vancouver")
 
 def parse_or_today(date_str: str | None) -> date:
     if not date_str:

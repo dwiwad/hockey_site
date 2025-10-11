@@ -38,7 +38,7 @@
               <h2 class="progress">Game not yet Started</h2>
             {% else %}
               <h2 class="progress">
-                <span id="clock" data-initial="{{ clock.timeRemaining|trim }}">{{ clock.timeRemaining }}</span>
+                 <span id="clock" data-initial="{{ clock.timeRemaining|trim }}">{{ clock.timeRemaining }}</span>
                 {% if clock.inIntermission == True and box.period == 1 %}
                   |  <span id="period">1st Intermission</span>
                 {% elif clock.inIntermission == True and box.period == 2 %}
@@ -52,6 +52,8 @@
                     | <span id="period">{{ box.period }}</span>rd
                   {% elif box.period == 4 %} 
                     | <span id="period">OT</span>
+                  {% elif box.period == 5 %} 
+                    | <span id="period">SO</span>
                   {% else %}
                     | <span id="period">{{ box.period }}</span> 
                   {% endif %}
@@ -68,15 +70,10 @@
       </article>
 
       <h1>Shape of the Game</h1>
-    
-      <article class="game-card">
-        <h2>Shots</h2>
-        <p>Total {{ sog.away_label }} shots: <strong>{{ sog.away_sog }}</strong></p>
-        <p>Total {{ sog.home_label }} shots: <strong>{{ sog.home_sog }}</strong></p>
-      </article>
 
       <article class="game-card">
-        <h2>Shot Depth</h2>
+        <h2>Depth</h2>
+        <h3>Shot Depth</h3>
         {% set dp = depth_payload if depth_payload is defined else None %}
 
         <div class="shot-bar depth-bar">
@@ -105,12 +102,10 @@
       </article>
 
       <article class="game-card">
-        <h2>Hits</h2>
-        <p>Total {{ hits.away_label }} hits: <strong>{{ hits.away_hit }}</strong></p>
-        <p>Total {{ hits.home_label }} hits: <strong>{{ hits.home_hit }}</strong></p>
+        <h2>Shots</h2>
+        <p>Total {{ sog.away_label }} shots: <strong>{{ sog.away_sog }}</strong></p>
+        <p>Total {{ sog.home_label }} shots: <strong>{{ sog.home_sog }}</strong></p>
       </article>
-    </section>
-
   </main>
 
   <!-- one global tooltip element -->

@@ -488,8 +488,15 @@ body {
 }
 
 .game-card h2 {
-    margin: 0;
+    margin-top: 0;
+    margin-bottom: .25;
     font-size: 1.5rem;
+    color: var(--blue-dark);
+}
+
+.game-card h3 {
+    margin: 0;
+    font-size: 1.25rem;
     color: var(--blue-dark);
 }
 

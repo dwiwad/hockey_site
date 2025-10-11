@@ -31,7 +31,7 @@ I'm beginning to think about database management. Right now there is no database
 - HTML/CSS/JS for front end (Jinja2).
 - Figma for design work
 
-## To-Do and Working History
+## To-Do
 
 Website launch. Right now (July 1, 2025) I'm thinking I will launch and make live when I have:
 - [ ] Five deep dive posts:
@@ -44,7 +44,14 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [ ] Shape of the Game Dashboard
 	- [X] Scoreboard
 		- [X] Bring in boxscore, clean up router and naming conventions
-    - [ ] Live in game TDI (Or maybe just shot depth?)
+    - [ ] Live in game TDI 
+		- [X] Wire up shot depth
+		- [ ] Wire up CF depth
+		- [ ] Wire up TOI depth
+		- [ ] Wire up xG depth
+		- [ ] Create the game level table of 10 game depth rolling ave for priors
+		- [ ] Wire up the live depth table for display - the sem model
+			- [ ] I'm thinking a dataset for the game that mirrors my analyses dataset, but checks, computes changes, and appends every 15-30 seconds
 - [X] Data Storage - Migrate to S3; this is fine for now.
 	- [X] How do I store previous games so people can look at history?
 	- [X] S3 migration; reading and writing to s3 instead of locally
@@ -53,12 +60,18 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 
 ### Oct. 6, 2025 - More tasks I'm thinking of
 - [ ] Look into DuckDB
-- [ ] Re-write fetch_game_pbp.py to also pull and store rosters as gameid.roster.json
 - [X] Write a shot depth function once rosters are in and replace shot share figure
-= [ ] Check the math on the depth.py
+- [X] Check the math on the depth.py
 - [ ] Add primary and secondary team colors to css or a python dict
+- [ ] For the shape of the game would it be better to have a running line? like moneypuck. I'm finding myself wanting to see how depth balance has evolved over the game...
+	- [ ] Like 4 side by side moving line figures. One for each element of depth or each shape of the game element
 - [ ] Change the shot share/depth bar plot to be away and home team primary colors
+- [ ] Shot depth dash, need to find where depth stabilizes
+	- [ ] Look at Y depth X shot, line team-game. Where does depth stabilize? Check my bookmark.
+- [ ] Problem: Spoilers!
+	- [ ] Create a listener that looks at the box score endpoint, pings every 10 seconds. Updates pages when clock running turns false.
 - [ ] Start looking into hosting on AWS
+- [ ] Localize timezone
 - [ ] TDI
 	- [ ] Start scoping the deep dive
 	- [ ] Stand up an empty post for it
@@ -107,6 +120,8 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
  - [X] Team logo images
  - [X] Buttons
  - [X] Do the design on Figma
+
+ ## Working History - DONE
 	
 ### July 1, 2025 - Standup some content
 - [X] Happy Canada Day!
