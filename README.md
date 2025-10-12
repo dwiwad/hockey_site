@@ -105,7 +105,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [ ] Optimize backend for scalability
 	- [X] Break up main.py into separate routing files
 	- [X] Create a single generic deep dive router
-	- [ ] Add in meta for Google Analytics
+	- [X] Add in meta for Google Analytics
 	- [ ] Add in meta tags for later searching
 	- [X] Add level 1 folder called data (e.g., /data/deep_dive_1/data.csv)
 	- [X] Add level 1 folder called scripts (e.g., /scripts/deep_dive_1/1.Pull_data.py)
