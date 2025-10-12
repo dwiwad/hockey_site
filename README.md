@@ -47,8 +47,8 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
     - [ ] Live in game TDI 
 		- [X] Wire up shot depth
 		- [X] Wire up CF depth
-		- [ ] Wire up TOI depth
-		- [ ] Wire up xG depth
+		- [X] Wire up TOI depth
+		- [X] Wire up xG depth
 		- [ ] Create the game level table of 10 game depth rolling ave for priors
 		- [ ] Wire up the live depth table for display - the sem model
 			- [ ] I'm thinking a dataset for the game that mirrors my analyses dataset, but checks, computes changes, and appends every 15-30 seconds

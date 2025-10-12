@@ -506,3 +506,98 @@ def fetch_moneypuck_game_csv(
         return _empty_game_df()
     return df
 
+
+# =========================
+# Shiftcharts (per-game)
+# =========================
+
+SHIFT_BASE = "https://api.nhle.com/stats/rest/en/shiftcharts?cayenneExp=gameId={game_id}"
+
+def _s3_path_shifts(season: int, game_id: int) -> str:
+    # s3://hockey-decoded/live-data-cache/game-center/SEASON/GAMEID_shifts.json
+    return f"s3://{S3_BUCKET}/{S3_PREFIX}/{season}/{game_id}_shifts.json"
+
+def _s3_meta_path_shifts(season: int, game_id: int) -> str:
+    return f"s3://{S3_BUCKET}/{S3_PREFIX}/{season}/{game_id}_shifts.meta.json"
+
+def fetch_game_shifts(
+    game_id: int,
+    season: int,
+    ttl_seconds: int = 15,
+    force_refresh: bool = False,
+) -> Dict[str, Any]:
+    """
+    Return the raw shiftcharts JSON for a game with S3-backed caching.
+    Shape (from NHL stats REST) is a dict like:
+      {"data":[{...shift row...}, ...], "total": N, ...}
+    """
+    data_path = _s3_path_shifts(season, game_id)
+    meta_path = _s3_meta_path_shifts(season, game_id)
+
+    # TTL short-circuit
+    if not force_refresh:
+        age = _s3_age_seconds(data_path)
+        if age is not None and age < ttl_seconds:
+            return _s3_read_json(data_path)
+
+    # Conditional headers from S3 meta (If-None-Match / If-Modified-Since)
+    headers: Dict[str, str] = {
+        "User-Agent": ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                       "AppleWebKit/537.36 (KHTML, like Gecko) "
+                       "Chrome/118.0.0.0 Safari/537.36"),
+        "Referer": "https://www.nhl.com/",
+        "Accept": "application/json",
+    }
+    if not force_refresh:
+        meta = _load_meta_s3(meta_path)
+        if (etag := meta.get("etag")):
+            headers["If-None-Match"] = etag
+        if (lm := meta.get("last_modified")):
+            headers["If-Modified-Since"] = lm
+
+    url = SHIFT_BASE.format(game_id=game_id)
+    backoffs = [1.5, 3.0]
+    attempts = len(backoffs) + 1
+
+    for i in range(attempts):
+        try:
+            with httpx.Client(timeout=(5, 20)) as client:
+                r = client.get(url, headers=headers)
+
+            # 304 -> serve cache
+            if r.status_code == 304 and _s3_exists(data_path):
+                return _s3_read_json(data_path)
+
+            r.raise_for_status()
+            body = r.json()
+
+            # Guard: some upstream hiccups can return HTML or empty bodies
+            if not isinstance(body, dict) or "data" not in body:
+                # If we have cache, return it; else persist minimal stub
+                if _s3_exists(data_path):
+                    return _s3_read_json(data_path)
+                body = {"data": [], "total": 0}
+
+            _s3_write_json(data_path, body)
+            _save_meta_s3(
+                meta_path,
+                r.headers.get("ETag") or r.headers.get("Etag"),
+                r.headers.get("Last-Modified"),
+            )
+            return body
+
+        except (httpx.ReadTimeout, httpx.ConnectTimeout):
+            if i < len(backoffs):
+                time.sleep(backoffs[i]); continue
+            if _s3_exists(data_path):
+                return _s3_read_json(data_path)
+            raise
+
+        except httpx.HTTPStatusError as e:
+            status = e.response.status_code if e.response is not None else None
+            # Retry 5xx; don't for most 4xx
+            if status and 500 <= status < 600 and i < len(backoffs):
+                time.sleep(backoffs[i]); continue
+            if _s3_exists(data_path):
+                return _s3_read_json(data_path)
+            raise

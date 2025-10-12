@@ -418,3 +418,170 @@ def xgoal_depth_from_players(
             "xg_col": xg_col,
         },
     }
+
+# ---------- SHIFT (TOI) depth from shiftcharts JSON ----------
+
+from math import isnan
+
+def _parse_mmss_to_sec(mmss: str) -> int:
+    if not isinstance(mmss, str) or ":" not in mmss:
+        return 0
+    try:
+        mm, ss = mmss.strip().split(":")
+        return int(mm) * 60 + int(ss)
+    except Exception:
+        return 0
+
+def _safe_toi_5050(home_abbrev: str | None, away_abbrev: str | None) -> Dict[str, Any]:
+    return {
+        "no_toi": True,
+        "toi_home": {"team": home_abbrev, "total_seconds": 0, "ineq": 0.0, "depth": 0.0},
+        "toi_away": {"team": away_abbrev, "total_seconds": 0, "ineq": 0.0, "depth": 0.0},
+        "toi_depth_share": {"home_pct": 50.0, "away_pct": 50.0},
+        "toi": {"toi_home": {}, "toi_away": {}},
+    }
+
+def toi_depth_from_shifts(
+    pbp: Dict[str, Any],
+    shifts_json: Dict[str, Any],
+    roster_rows: List[Dict[str, Any]] | None = None,
+    include_goalies: bool = False
+) -> Dict[str, Any]:
+    """
+    Compute TOI-based depth (1 - Gini) from NHL shiftcharts JSON.
+
+    Parameters
+    ----------
+    pbp : dict
+        The game PBP JSON (used only to resolve home/away abbrevs/ids).
+    shifts_json : dict
+        Raw shiftcharts payload as cached by service (shape: {"data": [...]}).
+    roster_rows : list of dict, optional
+        Roster rows to back-fill zeros per player (keys: teamAbbrev, playerId, position/positionCode).
+    include_goalies : bool
+        Include goalies in the Gini distribution (default False).
+
+    Returns
+    -------
+    dict shaped like other depth payloads, using 'toi_*' keys.
+    """
+    home_meta, away_meta = _home_away_meta(pbp)
+    home_abbrev = home_meta.get("abbrev") or home_meta.get("triCode")
+    away_abbrev = away_meta.get("abbrev") or away_meta.get("triCode")
+    if not home_abbrev or not away_abbrev:
+        return _safe_toi_5050(home_abbrev, away_abbrev)
+
+    rows = []
+    if isinstance(shifts_json, dict):
+        rows = shifts_json.get("data") or []
+    if not isinstance(rows, list):
+        rows = []
+
+    # Accumulate seconds per player by team
+    toi_home: Dict[str, int] = {}
+    toi_away: Dict[str, int] = {}
+
+    for r in rows:
+        if not isinstance(r, dict):
+            continue
+        # Keep only actual shift rows; detailCode==0 in your static pipeline
+        dc = r.get("detailCode")
+        try:
+            dc = int(dc) if dc is not None else None
+        except Exception:
+            dc = None
+        if dc != 0:
+            continue
+
+        # Team abbrev is usually "teamAbbrev" or "playerTeamAbbrev"
+        team_abbrev = r.get("teamAbbrev") or r.get("playerTeamAbbrev")
+        if not team_abbrev:
+            # fall back: compare teamId with pbp meta ids if present
+            tid = r.get("teamId")
+            try:
+                tid = int(tid) if tid is not None else None
+            except Exception:
+                tid = None
+            if tid is not None:
+                if int(away_meta.get("id") or -1) == tid:
+                    team_abbrev = away_abbrev
+                elif int(home_meta.get("id") or -1) == tid:
+                    team_abbrev = home_abbrev
+        if team_abbrev not in (home_abbrev, away_abbrev):
+            continue
+
+        # Player + position
+        pid = r.get("playerId")
+        if pid is None:
+            continue
+        try:
+            pid_str = str(int(pid))
+        except Exception:
+            pid_str = str(pid)
+
+        pos = (r.get("position") or r.get("positionCode") or "").upper()
+        if not include_goalies and pos == "G":
+            continue
+
+        # Duration is "MM:SS" (some feeds also include startTime/endTime)
+        dur = r.get("duration") or ""
+        sec = _parse_mmss_to_sec(dur)
+        if sec <= 0:
+            # fallback if duration missing: derive from start/end when available
+            start = _parse_mmss_to_sec(r.get("startTime") or "")
+            end = _parse_mmss_to_sec(r.get("endTime") or "")
+            sec = max(0, end - start)
+        if sec <= 0:
+            continue
+
+        if team_abbrev == home_abbrev:
+            toi_home[pid_str] = toi_home.get(pid_str, 0) + sec
+        else:
+            toi_away[pid_str] = toi_away.get(pid_str, 0) + sec
+
+    # Back-fill zeros using roster so the distribution includes all skaters
+    for rr in (roster_rows or []):
+        ab = rr.get("teamAbbrev")
+        if ab not in (home_abbrev, away_abbrev):
+            continue
+        pid = rr.get("playerId")
+        if pid is None:
+            continue
+        pos = (rr.get("position") or rr.get("positionCode") or "").upper()
+        if not include_goalies and pos == "G":
+            continue
+        try:
+            pid_str = str(int(pid))
+        except Exception:
+            pid_str = str(pid)
+        if ab == home_abbrev:
+            toi_home.setdefault(pid_str, 0)
+        else:
+            toi_away.setdefault(pid_str, 0)
+
+    home_total = sum(toi_home.values())
+    away_total = sum(toi_away.values())
+    if (home_total + away_total) == 0:
+        return _safe_toi_5050(home_abbrev, away_abbrev)
+
+    def _team_stats(d: Dict[str, int]) -> Dict[str, float]:
+        vals = list(d.values())
+        g = _gini(vals)
+        return {"ineq": g, "depth": 1.0 - g}
+
+    h_stats = _team_stats(toi_home)
+    a_stats = _team_stats(toi_away)
+
+    h, a = h_stats["depth"], a_stats["depth"]
+    denom = (h + a) if (h + a) > 0 else 1.0
+    home_pct = round(100.0 * (h / denom), 1)
+    away_pct = round(100.0 - home_pct, 1)
+
+    return {
+        "no_toi": False,
+        "toi_home": {"team": home_abbrev, "total_seconds": int(home_total), **h_stats},
+        "toi_away": {"team": away_abbrev, "total_seconds": int(away_total), **a_stats},
+        "toi_depth_share": {"home_pct": home_pct, "away_pct": away_pct},
+        "toi": {"toi_home": toi_home, "toi_away": toi_away},
+        "params": {"include_goalies": include_goalies},
+    }

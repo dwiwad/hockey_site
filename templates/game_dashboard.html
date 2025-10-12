@@ -153,6 +153,33 @@
                 data-depth="{{ '%.3f'|format(xgdp.xg_home.depth) }}"></div>
           {% endif %}
         </div>
+
+        <h3>TOI Depth</h3>
+        {% set toidp = toi_depth_payload if toi_depth_payload is defined else None %}
+
+        <div class="shot-bar depth-bar">
+          {% if toidp is none or toidp.no_toi %}
+            <div class="away-segment"
+                style="width:50%;"
+                data-team="{{ toidp.toi_away.team if toidp else 'AWAY' }}"
+                data-depth="N/A"></div>
+
+            <div class="home-segment"
+                style="width:50%;"
+                data-team="{{ toidp.toi_home.team if toidp else 'HOME' }}"
+                data-depth="N/A"></div>
+          {% else %}
+            <div class="away-segment"
+                style="width: {{ toidp.toi_depth_share.away_pct }}%;"
+                data-team="{{ toidp.toi_away.team }}"
+                data-depth="{{ '%.3f'|format(toidp.toi_away.depth) }}"></div>
+
+            <div class="home-segment"
+                style="width: {{ toidp.toi_depth_share.home_pct }}%;"
+                data-team="{{ toidp.toi_home.team }}"
+                data-depth="{{ '%.3f'|format(toidp.toi_home.depth) }}"></div>
+          {% endif %}
+        </div>
       </article>
 
       <article class="game-card">
