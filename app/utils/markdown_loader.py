@@ -46,6 +46,8 @@ def _load_post_from_path(path: Path, slug: str):
         "date_str": post_dt.strftime("%B %d, %Y"),     # safe string for templates
         "image": post.get("image", ""),
         "summary": post.get("summary", ""),
+        "description": post.get("description", ""),
+        "keywords": post.get("keywords", ""),
         "content": html_content,
         "data_source": post.get("data_source", None),
     }

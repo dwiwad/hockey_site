@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
+    
     <!-- Google Analytics -->
     <script async 
     src="https://www.googletagmanager.com/gtag/js?id=G-NJ7PYMV7SS"></script>
@@ -12,6 +13,10 @@
         gtag('js', new Date());
         gtag('config', 'G-NJ7PYMV7SS');
     </script>
+  
+    <!-- SEO tags that child templates can override -->
+    {% block extra_head %}{% endblock %}
+    
   <title>{{ short_title or "Hockey Decoded" }}</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>

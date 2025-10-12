@@ -33,6 +33,9 @@ I'm beginning to think about database management. Right now there is no database
 
 ## To-Do
 
+Tech Debt
+	- [ ] Clean up style.css; Maybe migrate to separate files later.
+
 Website launch. Right now (July 1, 2025) I'm thinking I will launch and make live when I have:
 - [ ] Five deep dive posts:
     - [X] Demographics over time
@@ -76,10 +79,6 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 	- [ ] Start scoping the deep dive
 	- [ ] Stand up an empty post for it
 
-### Sept. 22, 2025 - Turn the dashboards live
-- [X] Change functions from static and historical to live
-- [X] Add a meta-tag in the markdown for raw analysis that links to a notebook
-
 ### Sept. 6, 2025 - Keep on keepin on
 - [X] Write the demographics deep dive notebook file
 - [ ] Total Depth Index
@@ -101,18 +100,23 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 	- [ ] Add javascripting to update goals if the data updates
 - [ ] Find the best way to add team colors for the balance bars. CSS or a python dict
 
+## Working History - DONE
+
+### Sept. 22, 2025 - Turn the dashboards live
+- [X] Change functions from static and historical to live
+- [X] Add a meta-tag in the markdown for raw analysis that links to a notebook
+
 ### July 31, 2025 - Standup some content
-- [ ] Optimize backend for scalability
+- [X] Optimize backend for scalability
 	- [X] Break up main.py into separate routing files
 	- [X] Create a single generic deep dive router
 	- [X] Add in meta for Google Analytics
-	- [ ] Add in meta tags for later searching
+	- [X] Add in meta tags for later searching
 	- [X] Add level 1 folder called data (e.g., /data/deep_dive_1/data.csv)
 	- [X] Add level 1 folder called scripts (e.g., /scripts/deep_dive_1/1.Pull_data.py)
-- [ ] Fix Front end for recurring new static analyses
+- [X] Fix Front end for recurring new static analyses
 	- [X] Build a deep dive html template
 	- [X] Get markdown rolling for content writing that knits to custom styled html
-	- [ ] Clean up style.css; Maybe migrate to separate files later.
 - [X] Add links to about page with icons 
 	- [X] Github, personal site, linkedin, google scholar
 - [X] Stylize Today's Games with cards
@@ -120,8 +124,6 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
  - [X] Team logo images
  - [X] Buttons
  - [X] Do the design on Figma
-
- ## Working History - DONE
 	
 ### July 1, 2025 - Standup some content
 - [X] Happy Canada Day!

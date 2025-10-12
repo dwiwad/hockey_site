@@ -1,5 +1,26 @@
 {% extends "base.html" %}
 
+{% block extra_head %}
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="{{ description or summary }}">
+  {% if keywords %}
+  <meta name="keywords" content="{{ keywords }}">
+  {% endif %}
+  <meta name="author" content="Dylan Wiwad">
+
+  <!-- Open Graph (for social media sharing) -->
+  <meta property="og:title" content="{{ title }}">
+  <meta property="og:description" content="{{ description or summary }}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://hockeydecoded.com/deep-dives/{{
+  slug }}">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ title }}">
+  <meta name="twitter:description" content="{{ description or summary }}">
+{% endblock %}
+
 {% block content %}
   <h1 class="post-title">{{ title }}</h1>
   <p class="date">{{ date }}</p>
