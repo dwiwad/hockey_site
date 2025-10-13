@@ -31,54 +31,41 @@
 
   <main class="sub-main">
     <section class="game-card-row">
-      <article class="game-card">
-        <div class="game-card-body">
-          <!-- Left logo -->
-          <img class="team-logo"
-            src="/static/images/logos/{{ sog.away_abbrev }}_light.svg"
-            alt="{{ sog.away_abbrev }} logo">
-
-          <!-- Center stack -->
-          <div class="scoreboard">
-            <h1 class="score">{{ box.away_score }} - {{ box.home_score }}</h1>
-            {% if box.gameState == 'FINAL' or box.gameState == 'OFF' %}
-              <h2 class="progress">Final</h2>
-            {% elif box.gameState == 'FUT' %}
-              <h2 class="progress">Game not yet Started</h2>
-            {% else %}
-              <h2 class="progress">
-                 <span id="clock" data-initial="{{ clock.timeRemaining|trim }}">{{ clock.timeRemaining }}</span>
-                {% if clock.inIntermission == True and box.period == 1 %}
-                  |  <span id="period">1st Intermission</span>
-                {% elif clock.inIntermission == True and box.period == 2 %}
-                  | <span id="period">2nd Intermission</span>
-                {% else %}
-                  {% if box.period == 1 %} 
-                    | <span id="period">{{ box.period }}</span>st 
-                  {% elif box.period == 2 %} 
-                    | <span id="period">{{ box.period }}</span>nd 
-                  {% elif box.period == 3 %} 
-                    | <span id="period">{{ box.period }}</span>rd
-                  {% elif box.period == 4 %} 
-                    | <span id="period">OT</span>
-                  {% elif box.period == 5 %} 
-                    | <span id="period">SO</span>
-                  {% else %}
-                    | <span id="period">{{ box.period }}</span> 
-                  {% endif %}
-                {% endif %}
-              </h2>
-            {% endif %}
-          </div>
-          
-          <!-- Right logo -->
-          <img class="team-logo"
-            src="/static/images/logos/{{ sog.home_abbrev }}_light.svg"
-            alt="{{ sog.home_abbrev }} logo">
+      <div class="breadcrumb-scoreboard-stacked">
+        <div class="back-link-row">
+          <a href="/dashboard/games/{{ season }}/{{ game_id }}">
+            ← Back to Game
+          </a>
         </div>
-      </article>
 
-      <h1>Shape of the Game</h1>
+        <div class="score-info-row">
+          <span class="inline-score">
+            {{ sog.away_abbrev }} {{ box.away_score }} - {{ box.home_score }} {{ sog.home_abbrev }}
+          </span>
+
+          <span class="divider">|</span>
+
+          <span class="game-time">
+            {% if box.gameState == 'FINAL' or box.gameState == 'OFF' %}
+              Final
+            {% elif box.gameState == 'FUT' %}
+              Not Started
+            {% else %}
+              {% if clock.inIntermission == True and box.period == 1 %}
+                1st Intermission
+              {% elif clock.inIntermission == True and box.period == 2 %}
+                2nd Intermission
+              {% else %}
+                {% if box.period == 1 %}1st{% elif box.period == 2 %}2nd{% elif box.period == 3 %}3rd{% elif box.period == 4
+          %}OT{% else %}{{ box.period }}{% endif %}
+                {{ clock.timeRemaining }}
+              {% endif %}
+            {% endif %}
+          </span>
+        </div>
+      </div>
+
+      <h1>Detailed Depth Breakdown</h1>
 
       <article class="game-card">
         <h2>Depth</h2>
@@ -189,11 +176,6 @@
                 data-depth="{{ '%.3f'|format(toidp.toi_home.depth) }}"></div>
           {% endif %}
         </div>
-        <p class="depth-link">
-          <a href="/dashboard/games/{{ season }}/{{ game_id }}/depth">
-            <em>View detailed breakdown →</em>
-          </a>
-        </p>
       </article>
 
       <article class="game-card">
