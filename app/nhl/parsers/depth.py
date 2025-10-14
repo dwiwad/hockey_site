@@ -2,6 +2,7 @@
 from __future__ import annotations
 from typing import Dict, Any, List, Tuple, Optional
 import pandas as pd
+from app.nhl.models.depth_sem_config import FACTOR_SCORE_COEFFICIENTS, DEPTH_MEANS, DEPTH_SDS, FACTOR_SCORE_MEAN, FACTOR_SCORE_SD
 
 # ---------- mirror sogs.py helpers ----------
 def _is_sog(play: dict) -> bool:
@@ -39,19 +40,28 @@ def _home_away_meta(pbp: dict) -> Tuple[dict, dict]:
 
 # ---------- math ----------
 def _gini(values: List[int]) -> float:
-    n = len(values)
+    """Gini coefficient using efficient sorted-array formula (matches historical calculation)."""
+    import numpy as np
+
+    a = np.asarray(values, dtype=np.float64)
+    n = a.size
+
     if n < 2:
         return 0.0
-    s = sum(values)
-    if s == 0:
+
+    # Shift up if any negatives
+    amin = a.min()
+    if amin < 0:
+        a = a - amin
+
+    s = a.sum()
+    if s <= 0:
         return 0.0
-    diffsum = 0
-    for i in range(n):
-        vi = values[i]
-        for j in range(n):
-            diffsum += abs(vi - values[j])
-    mean = s / n
-    return diffsum / (2.0 * n * n * mean)
+
+    # Sort and apply vectorized formula
+    a = np.sort(a)
+    idx = np.arange(1, n + 1, dtype=np.float64)
+    return ((2 * idx - n - 1) @ a) / (n * s + 1e-9)
 
 def _safe_5050(home_abbrev: str | None, away_abbrev: str | None) -> Dict[str, Any]:
     return {
@@ -121,6 +131,10 @@ def shot_depth_from_pbp(pbp: Dict[str, Any], roster_rows: List[Dict[str, Any]]) 
         ab = r.get("teamAbbrev")
         pid = r.get("playerId")
         if pid is None or ab not in (home_abbrev, away_abbrev):
+            continue
+        # Exclude goalies (match historical calculation)
+        pos = (r.get("position") or r.get("positionCode") or "").upper()
+        if pos == "G":
             continue
         try:
             pid = str(int(pid))
@@ -223,20 +237,24 @@ def cf_depth_from_pbp(pbp: Dict[str, Any], roster_rows: List[Dict[str, Any]]) ->
             cf_away[pid] = cf_away.get(pid, 0) + 1
         # else: ignore stray/neutral entries
 
-    # Back-fill zeros from roster so Gini sees full roster distribution
-    for r in (roster_rows or []):
-        ab = r.get("teamAbbrev")
-        pid = r.get("playerId")
-        if pid is None or ab not in (home_abbrev, away_abbrev):
-            continue
-        try:
-            pid = str(int(pid))
-        except Exception:
-            pid = str(pid)
-        if ab == home_abbrev:
-            cf_home.setdefault(pid, 0)
-        else:
-            cf_away.setdefault(pid, 0)
+        # Back-fill zeros from roster so Gini sees full roster distribution
+        for r in (roster_rows or []):
+            ab = r.get("teamAbbrev")
+            pid = r.get("playerId")
+            if pid is None or ab not in (home_abbrev, away_abbrev):
+                continue
+            # Exclude goalies (match historical calculation)
+            pos = (r.get("position") or r.get("positionCode") or "").upper()
+            if pos == "G":
+                continue
+            try:
+                pid = str(int(pid))
+            except Exception:
+                pid = str(pid)
+            if ab == home_abbrev:
+                cf_home.setdefault(pid, 0)
+            else:
+                cf_away.setdefault(pid, 0)
 
     home_total = sum(cf_home.values())
     away_total = sum(cf_away.values())
@@ -585,3 +603,46 @@ def toi_depth_from_shifts(
         "toi": {"toi_home": toi_home, "toi_away": toi_away},
         "params": {"include_goalies": include_goalies},
     }
+
+def calculate_tdi(cf_gini: float, sog_gini: float, toi_gini: float, xgoal_gini: float) -> float:
+      """
+      Calculate Total Depth Index (TDI) using SEM factor loadings.
+      
+      This implements the structural equation model:
+          depth =~ cf_depth_z + sog_depth_z + toi_depth_z + xgoal_depth_z
+      
+      Args:
+          cf_gini: Corsi For Gini coefficient (raw, unstandardized)
+          sog_gini: Shots on Goal Gini coefficient (raw)
+          toi_gini: Time on Ice Gini coefficient (raw)
+          xgoal_gini: Expected Goals Gini coefficient (raw)
+      
+      Returns:
+          Total Depth Index (TDI) - latent factor score
+          Higher values = more depth (more equal distribution)
+          Lower values = less depth (more concentrated)
+      """
+      # Step 1: Convert Gini to Depth (1 - Gini)
+      cf_depth = 1.0 - cf_gini
+      sog_depth = 1.0 - sog_gini
+      toi_depth = 1.0 - toi_gini
+      xgoal_depth = 1.0 - xgoal_gini
+
+      # Step 2: Z-score depth values using training data parameters
+      cf_z = (cf_depth - DEPTH_MEANS['cf_depth']) / DEPTH_SDS['cf_depth']
+      sog_z = (sog_depth - DEPTH_MEANS['sog_depth']) / DEPTH_SDS['sog_depth']
+      toi_z = (toi_depth - DEPTH_MEANS['toi_depth']) / DEPTH_SDS['toi_depth']
+      xgoal_z = (xgoal_depth - DEPTH_MEANS['xgoal_depth']) / DEPTH_SDS['xgoal_depth']
+
+      # Step 3: Apply factor score coefficients (weighted sum)
+      raw_tdi = (
+          FACTOR_SCORE_COEFFICIENTS['cf_depth_z'] * cf_z +
+          FACTOR_SCORE_COEFFICIENTS['sog_depth_z'] * sog_z +
+          FACTOR_SCORE_COEFFICIENTS['toi_depth_z'] * toi_z +
+          FACTOR_SCORE_COEFFICIENTS['xgoal_depth_z'] * xgoal_z
+      )
+
+      # Step 4: Z-score the factor scores (matches scipy.stats.zscore in analysis.py)
+      tdi = (raw_tdi - FACTOR_SCORE_MEAN) / FACTOR_SCORE_SD
+
+      return tdi

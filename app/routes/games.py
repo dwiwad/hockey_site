@@ -9,7 +9,7 @@ from app.nhl.parsers.sogs import sog_by_team
 from app.nhl.parsers.hits import hits_by_team
 from app.nhl.parsers.rosters import roster_by_team
 from app.nhl.parsers.scoreboard import scoreboard
-from app.nhl.parsers.depth import shot_depth_from_pbp, cf_depth_from_pbp, xgoal_depth_from_players, toi_depth_from_shifts
+from app.nhl.parsers.depth import shot_depth_from_pbp, cf_depth_from_pbp, xgoal_depth_from_players, toi_depth_from_shifts, calculate_tdi
 
 # Anchor templates to project root so it works no matter where you run uvicorn
 # PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -29,15 +29,42 @@ async def game_dashboard(request: Request, season: int, game_id: int, fresh: boo
     shot_depth_payload = shot_depth_from_pbp(pbp, rosters) 
     cf_depth_payload = cf_depth_from_pbp(pbp, rosters)
     toi_depth_payload = toi_depth_from_shifts(pbp, shifts, rosters)
-
     xg_depth_payload = xgoal_depth_from_players(
-        pbp=pbp,
-        roster_rows=rosters,
-        xg_df=xg,
-        situation="all",        
-        adjusted=False,         
-        include_goalies=False,
+    pbp=pbp,
+    roster_rows=rosters,
+    xg_df=xg,
+    situation="all",        
+    adjusted=False,         
+    include_goalies=False,
     )
+
+    # Check if we have enough data to calculate TDI
+    has_shot_data = not shot_depth_payload.get('no_shots', True)
+    has_cf_data = not cf_depth_payload.get('no_shots', True)
+    has_xg_data = not xg_depth_payload.get('no_xg', True)
+    has_toi_data = not toi_depth_payload.get('no_toi', True)
+
+    if has_shot_data and has_cf_data and has_xg_data and has_toi_data:
+        # Extract Gini coefficients
+        home_sog_gini = shot_depth_payload['home']['ineq']
+        away_sog_gini = shot_depth_payload['away']['ineq']
+
+        home_cf_gini = cf_depth_payload['cf_home']['ineq']
+        away_cf_gini = cf_depth_payload['cf_away']['ineq']
+
+        home_xg_gini = xg_depth_payload['xg_home']['ineq']
+        away_xg_gini = xg_depth_payload['xg_away']['ineq']
+
+        home_toi_gini = toi_depth_payload['toi_home']['ineq']
+        away_toi_gini = toi_depth_payload['toi_away']['ineq']
+
+        # Calculate TDI
+        home_tdi = calculate_tdi(home_cf_gini, home_sog_gini, home_toi_gini, home_xg_gini)
+        away_tdi = calculate_tdi(away_cf_gini, away_sog_gini, away_toi_gini, away_xg_gini)
+    else:
+        # Not enough data yet (pregame or very early in game)
+        home_tdi = None
+        away_tdi = None
 
     # Parsers to actually work with the data
     data = sog_by_team(pbp)
@@ -65,6 +92,8 @@ async def game_dashboard(request: Request, season: int, game_id: int, fresh: boo
          "cf_depth_payload": cf_depth_payload,
          "xg_depth_payload": xg_depth_payload,
          "toi_depth_payload": toi_depth_payload,
+         "home_tdi": home_tdi,
+         "away_tdi": away_tdi,
          }
     )
 

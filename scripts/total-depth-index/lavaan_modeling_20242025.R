@@ -108,6 +108,11 @@ total := c + (a1*b1) + (a2*b2)
 
 fit <- sem(model, data = data)
 summary(fit, fit.measures = T)
+fscores <- lavPredict(fit, method = "regression", fsm = TRUE)
+attr(fscores, "fsm")
+# Check if there are any intercepts in the model
+lavInspect(fit, "est")$alpha
+lavInspect(fit, "est")$nu
 
 lavaanPlot(model = fit, 
            node_options = list(shape = "box", fontname = "Helvetica"), 
