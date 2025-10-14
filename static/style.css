@@ -47,7 +47,7 @@
 .depth-link {
   margin-top: 1rem;
   margin-bottom: 0;
-  text-align: right;  /* Right side instead */
+  text-align: right;  
   font-size: 0.9rem;
 }
 
@@ -60,6 +60,15 @@
 .depth-link a:hover {
   color: var(--orange);
   text-decoration: underline;
+}
+
+.tdi-explainer {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--blue);
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  font-style: italic;
 }
 
  /* ==========================================================================

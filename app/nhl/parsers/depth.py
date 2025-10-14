@@ -643,6 +643,6 @@ def calculate_tdi(cf_gini: float, sog_gini: float, toi_gini: float, xgoal_gini: 
       )
 
       # Step 4: Z-score the factor scores (matches scipy.stats.zscore in analysis.py)
-      tdi = (raw_tdi - FACTOR_SCORE_MEAN) / FACTOR_SCORE_SD
+      tdi_zscore = (raw_tdi - FACTOR_SCORE_MEAN) / FACTOR_SCORE_SD
 
-      return tdi
+      return tdi_zscore, raw_tdi

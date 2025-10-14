@@ -10,6 +10,7 @@ from app.nhl.parsers.hits import hits_by_team
 from app.nhl.parsers.rosters import roster_by_team
 from app.nhl.parsers.scoreboard import scoreboard
 from app.nhl.parsers.depth import shot_depth_from_pbp, cf_depth_from_pbp, xgoal_depth_from_players, toi_depth_from_shifts, calculate_tdi
+from app.nhl.models.depth_sem_config import FACTOR_SCORE_COEFFICIENTS
 
 # Anchor templates to project root so it works no matter where you run uvicorn
 # PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -59,12 +60,39 @@ async def game_dashboard(request: Request, season: int, game_id: int, fresh: boo
         away_toi_gini = toi_depth_payload['toi_away']['ineq']
 
         # Calculate TDI
-        home_tdi = calculate_tdi(home_cf_gini, home_sog_gini, home_toi_gini, home_xg_gini)
-        away_tdi = calculate_tdi(away_cf_gini, away_sog_gini, away_toi_gini, away_xg_gini)
+        home_tdi, home_raw_tdi = calculate_tdi(home_cf_gini, home_sog_gini, home_toi_gini, home_xg_gini)
+        away_tdi, away_raw_tdi = calculate_tdi(away_cf_gini, away_sog_gini, away_toi_gini, away_xg_gini)
+
     else:
         # Not enough data yet (pregame or very early in game)
         home_tdi = None
         away_tdi = None
+        home_raw_tdi = None
+        away_raw_tdi = None
+
+    # Bar visualization using weighted raw depths (not z-scored)
+    if home_tdi is not None and away_tdi is not None:
+        # Use raw depths (not z-scored) weighted by factor coefficients
+        home_weighted_depth = (
+            FACTOR_SCORE_COEFFICIENTS['cf_depth_z'] * (1 - home_cf_gini) +
+            FACTOR_SCORE_COEFFICIENTS['sog_depth_z'] * (1 - home_sog_gini) +
+            FACTOR_SCORE_COEFFICIENTS['toi_depth_z'] * (1 - home_toi_gini) +
+            FACTOR_SCORE_COEFFICIENTS['xgoal_depth_z'] * (1 - home_xg_gini)
+        )
+
+        away_weighted_depth = (
+            FACTOR_SCORE_COEFFICIENTS['cf_depth_z'] * (1 - away_cf_gini) +
+            FACTOR_SCORE_COEFFICIENTS['sog_depth_z'] * (1 - away_sog_gini) +
+            FACTOR_SCORE_COEFFICIENTS['toi_depth_z'] * (1 - away_toi_gini) +
+            FACTOR_SCORE_COEFFICIENTS['xgoal_depth_z'] * (1 - away_xg_gini)
+        )
+
+        total = home_weighted_depth + away_weighted_depth
+        home_tdi_pct = round(100.0 * (home_weighted_depth / total), 1)
+        away_tdi_pct = round(100.0 - home_tdi_pct, 1)
+    else:
+        home_tdi_pct = 50.0
+        away_tdi_pct = 50.0
 
     # Parsers to actually work with the data
     data = sog_by_team(pbp)
@@ -94,7 +122,11 @@ async def game_dashboard(request: Request, season: int, game_id: int, fresh: boo
          "toi_depth_payload": toi_depth_payload,
          "home_tdi": home_tdi,
          "away_tdi": away_tdi,
-         }
+         "home_tdi_pct": home_tdi_pct,
+         "away_tdi_pct": away_tdi_pct,
+         "home_weighted_depth": home_weighted_depth if home_tdi is not None else None,
+         "away_weighted_depth": away_weighted_depth if home_tdi is not None else None,
+        }
     )
 
 @games_router.get("/dashboard/games/{season}/{game_id}/depth")

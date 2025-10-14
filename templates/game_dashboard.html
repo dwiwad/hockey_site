@@ -81,125 +81,40 @@
       <h1>Shape of the Game</h1>
 
       <article class="game-card">
-        <h2>Depth</h2>
-        <h3>Shot Depth</h3>
-        {% set dp = shot_depth_payload if shot_depth_payload is defined else None %}
+        <h2>Total Depth Index</h2>
+        <p class="tdi-explainer">
+        Higher TDI means a more balanced contribution across the lineup.
+        </p>
 
         <div class="shot-bar depth-bar">
-          {% if dp is none or dp.no_shots %}
-            <div class="away-segment"
-                style="width:50%;"
-                data-team="{{ dp.away.team if dp else 'AWAY' }}"
-                data-depth="N/A"></div>
+        {% if home_tdi is none or away_tdi is none %}
+          <div class="away-segment"
+              style="width:50%;"
+              data-team="{{ sog.away_abbrev }}"
+              data-depth="N/A"></div>
 
-            <div class="home-segment"
-                style="width:50%;"
-                data-team="{{ dp.home.team if dp else 'HOME' }}"
-                data-depth="N/A"></div>
-          {% else %}
-            <div class="away-segment"
-                style="width: {{ dp.depth_share.away_pct }}%;"
-                data-team="{{ dp.away.team }}"
-                data-depth="{{ '%.3f'|format(dp.away.depth) }}"></div>
+          <div class="home-segment"
+              style="width:50%;"
+              data-team="{{ sog.home_abbrev }}"
+              data-depth="N/A"></div>
+        {% else %}
+          <div class="away-segment"
+              style="width: {{ away_tdi_pct }}%;"
+              data-team="{{ sog.away_abbrev }}"
+              data-depth="{{ '%.3f'|format(away_weighted_depth) }}"></div>
 
-            <div class="home-segment"
-                style="width: {{ dp.depth_share.home_pct }}%;"
-                data-team="{{ dp.home.team }}"
-                data-depth="{{ '%.3f'|format(dp.home.depth) }}"></div>
-          {% endif %}
+          <div class="home-segment"
+              style="width: {{ home_tdi_pct }}%;"
+              data-team="{{ sog.home_abbrev }}"
+              data-depth="{{ '%.3f'|format(home_weighted_depth) }}"></div>
+        {% endif %}
         </div>
 
-        <h3>CF Depth</h3>
-        {% set cfdp = cf_depth_payload if cf_depth_payload is defined else None %}
-
-        <div class="shot-bar depth-bar">
-          {% if cfdp is none or cfdp.no_shots %}
-            <div class="away-segment"
-                style="width:50%;"
-                data-team="{{ cfdp.cf_away.team if cfdp else 'AWAY' }}"
-                data-depth="N/A"></div>
-
-            <div class="home-segment"
-                style="width:50%;"
-                data-team="{{ cfdp.cf_home.team if cfdp else 'HOME' }}"
-                data-depth="N/A"></div>
-          {% else %}
-            <div class="away-segment"
-                style="width: {{ cfdp.cf_depth_share.away_pct }}%;"
-                data-team="{{ cfdp.cf_away.team }}"
-                data-depth="{{ '%.3f'|format(cfdp.cf_away.depth) }}"></div>
-
-            <div class="home-segment"
-                style="width: {{ cfdp.cf_depth_share.home_pct }}%;"
-                data-team="{{ cfdp.cf_home.team }}"
-                data-depth="{{ '%.3f'|format(cfdp.cf_home.depth) }}"></div>
-          {% endif %}
-        </div>
-
-        <h3>xG Depth</h3>
-        {% set xgdp = xg_depth_payload if xg_depth_payload is defined else None %}
-
-        <div class="shot-bar depth-bar">
-          {% if xgdp is none or xgdp.no_xg %}
-            <div class="away-segment"
-                style="width:50%;"
-                data-team="{{ xgdp.xg_away.team if xgdp else 'AWAY' }}"
-                data-depth="N/A"></div>
-
-            <div class="home-segment"
-                style="width:50%;"
-                data-team="{{ xgdp.xg_home.team if xgdp else 'HOME' }}"
-                data-depth="N/A"></div>
-          {% else %}
-            <div class="away-segment"
-                style="width: {{ xgdp.xg_depth_share.away_pct }}%;"
-                data-team="{{ xgdp.xg_away.team }}"
-                data-depth="{{ '%.3f'|format(xgdp.xg_away.depth) }}"></div>
-
-            <div class="home-segment"
-                style="width: {{ xgdp.xg_depth_share.home_pct }}%;"
-                data-team="{{ xgdp.xg_home.team }}"
-                data-depth="{{ '%.3f'|format(xgdp.xg_home.depth) }}"></div>
-          {% endif %}
-        </div>
-
-        <h3>TOI Depth</h3>
-        {% set toidp = toi_depth_payload if toi_depth_payload is defined else None %}
-
-        <div class="shot-bar depth-bar">
-          {% if toidp is none or toidp.no_toi %}
-            <div class="away-segment"
-                style="width:50%;"
-                data-team="{{ toidp.toi_away.team if toidp else 'AWAY' }}"
-                data-depth="N/A"></div>
-
-            <div class="home-segment"
-                style="width:50%;"
-                data-team="{{ toidp.toi_home.team if toidp else 'HOME' }}"
-                data-depth="N/A"></div>
-          {% else %}
-            <div class="away-segment"
-                style="width: {{ toidp.toi_depth_share.away_pct }}%;"
-                data-team="{{ toidp.toi_away.team }}"
-                data-depth="{{ '%.3f'|format(toidp.toi_away.depth) }}"></div>
-
-            <div class="home-segment"
-                style="width: {{ toidp.toi_depth_share.home_pct }}%;"
-                data-team="{{ toidp.toi_home.team }}"
-                data-depth="{{ '%.3f'|format(toidp.toi_home.depth) }}"></div>
-          {% endif %}
-        </div>
         <p class="depth-link">
           <a href="/dashboard/games/{{ season }}/{{ game_id }}/depth">
             <em>View detailed breakdown →</em>
           </a>
         </p>
-      </article>
-
-      <article class="game-card">
-        <h2>Shots</h2>
-        <p>Total {{ sog.away_label }} shots: <strong>{{ sog.away_sog }}</strong></p>
-        <p>Total {{ sog.home_label }} shots: <strong>{{ sog.home_sog }}</strong></p>
       </article>
   </main>
 
