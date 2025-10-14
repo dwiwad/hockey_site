@@ -18,6 +18,8 @@ This project is a personal hockey data website built using primarily Python, R, 
 
 ## Status
 
+10/14/25; New goal - let's try to have the site live, and the TDI paper under review, by the end of the year!
+
 10/03/2025; Everything is actually pretty far along now. It's really close to what I would consider publishable. I have done a ton of work stylistically and also to have a few blog posts and dashboards stood up. I am currently working on the Total Depth Index. I think once I have a full draft of a whitepaper, and then figure out how to stand up a live in game version of the TDI, it will be ready to launch. At the end of October every team (I think) will have 10 regular season games, which is enough to start calculating a rolling 10 game depth index for dashboard priors. xG will be challenging. But I feel like this has come a LONG way since I stood up an empty website in June.
 
 08/17/2025; This project is in very early development. I have the bare bones structure stood up for my deep dive posts. I'm beginning to play around with bringing in live data from the NHL api for my dashboarding. Would like to continue writing the deep dives I have planned, but then also starting the dashboarding build out.
@@ -34,7 +36,8 @@ I'm beginning to think about database management. Right now there is no database
 ## To-Do
 
 Tech Debt
-	- [ ] Clean up style.css; Maybe migrate to separate files later.
+	- [ ] Clean up style.css; Maybe migrate to separate files.
+	- [ ] Generalize depth functions
 
 Website launch. Right now (July 1, 2025) I'm thinking I will launch and make live when I have:
 - [ ] Five deep dive posts:
@@ -53,7 +56,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 		- [X] Wire up TOI depth
 		- [X] Wire up xG depth
 		- [ ] Create the game level table of 10 game depth rolling ave for priors
-		- [ ] Wire up the live depth table for display - the sem model
+		- [X] Wire up the live depth table for display - the sem model
 			- [ ] I'm thinking a dataset for the game that mirrors my analyses dataset, but checks, computes changes, and appends every 15-30 seconds
 - [X] Data Storage - Migrate to S3; this is fine for now.
 	- [X] How do I store previous games so people can look at history?

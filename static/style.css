@@ -71,13 +71,57 @@
   font-style: italic;
 }
 
+.explainer-card {
+  background: var(--bg-cream);
+  width: 1250px !important;
+  padding: 1rem 2rem;  /* Less vertical padding */
+}
+
+.explainer-card h2 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.explainer-card h3 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.explainer-card p {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;  /* Tighter line spacing */
+}
+
+.explainer-card ul {
+  margin-left: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: .9rem;
+}
+
+.explainer-card li {
+  margin-bottom: 0.25rem;  /* Tighter list spacing */
+  font-size: .9rem;
+}
+
+.note {
+  margin-top: 1rem;  /* Less space before note */
+  padding: 0.75rem;  /* Less padding inside */
+  background: #f0f4f8;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
  /* ==========================================================================
      BREADCRUMB SCOREBOARD - STACKED VERSION (for depth page)
      ========================================================================== */
 
 .breadcrumb-scoreboard-stacked {
       max-width: 900px;
-      margin: 2rem auto 1.5rem auto;
+      margin-top: 2rem;
+      margin-bottom: 0rem;
       padding: 1.5rem 2rem;
       background: var(--white);
       border: 1px solid var(--blue-light);
