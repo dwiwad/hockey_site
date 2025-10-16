@@ -13,6 +13,7 @@ from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 import s3fs
+import fastparquet
 
 TZ_APP = ZoneInfo("America/Toronto")   # your app/user timezone
 TZ_ET  = ZoneInfo("America/Toronto")   # ET == Toronto for NHL use
@@ -36,7 +37,7 @@ def get_games_for_date(target_date: date, force_refresh: bool = False) -> pd.Dat
 
     # 1) If exists on S3 and not forcing, read from S3
     if fs.exists(s3_path) and not force_refresh:
-        return pd.read_parquet(s3_path)
+        return pd.read_parquet(s3_path, engine='fastparquet')
 
     # 2) Otherwise fetch from NHL API
     url = f"https://api-web.nhle.com/v1/schedule/{target_date.isoformat()}"
@@ -78,12 +79,59 @@ def get_games_for_date(target_date: date, force_refresh: bool = False) -> pd.Dat
         })
 
         # 3) Write to S3 and return
-        df.to_parquet(s3_path, index=False)
+        df.to_parquet(s3_path, index=False, engine='fastparquet')
         return df
 
     except (requests.RequestException, ValueError, KeyError) as e:
         print(f"Error fetching NHL schedule for {target_date}: {e}")
         return pd.DataFrame(columns=["game_id","season","start","away","home","away_tri","home_tri"])
 
+def get_active_games() -> list[tuple[int, int]]:
+    """
+    Get list of (game_id, season) tuples for games currently LIVE.
+    
+    Returns:
+        List of tuples: [(game_id, season), ...]
+        Empty list if no games are active.
+    """
+    import logging
+    from datetime import datetime
+    logger = logging.getLogger(__name__)
 
+    # Get today's schedule using the actual function name
+    today = datetime.now().date()  # Returns date object, not string
+    df = get_games_for_date(today)
+
+    if df is None or len(df) == 0:
+        logger.debug("No games scheduled today")
+        return []
+
+    # The DataFrame needs gameState - we need to fetch live game data from NHL API
+    # The schedule doesn't include gameState, we need to check each game
+    # For now, let's get all games and check their status
+
+    active = []
+    for _, game in df.iterrows():
+        game_id = game.get('game_id')
+        season = game.get('season')
+
+        if not game_id or not season:
+            continue
+
+        try:
+            # Quick check: fetch box score to get game state
+            from app.nhl.service import fetch_game_box
+            box = fetch_game_box(game_id, season, ttl_seconds=30)
+
+            if box:
+                game_state = box.get('gameState', '')
+                if game_state in ['LIVE', 'CRIT']:
+                    active.append((game_id, season))
+                    logger.debug(f"Game {game_id} is {game_state}")
+        except Exception as e:
+            logger.debug(f"Could not check game {game_id}: {e}")
+            continue
+
+    logger.debug(f"Found {len(active)} active games")
+    return active
     

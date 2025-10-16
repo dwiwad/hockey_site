@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from app.routes import core_router, deepdive_router, dashboard_router, games_router
+from app.core.depth_job import track_live_game_depth, schedule_depth_tracking_for_today
 
 # Scheduler imports
 from app.core.scheduler import get_scheduler, daily_trigger, every_5s_trigger
@@ -40,6 +41,17 @@ async def lifespan(app: FastAPI):
         coalesce=True,
         max_instances=1,
         misfire_grace_time=300,
+    )
+
+    # Add MANAGER job that runs once per day at 5 AM
+
+    scheduler.add_job(
+        schedule_depth_tracking_for_today,
+        trigger=daily_trigger(hour=5, minute=0),
+        id="depth_tracking_manager",
+        replace_existing=True,
+        coalesce=True,
+        max_instances=1,
     )
 
     scheduler.start()
