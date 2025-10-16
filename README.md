@@ -58,6 +58,8 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 		- [ ] Create the game level table of 10 game depth rolling ave for priors
 		- [X] Wire up the live depth table for display - the sem model
 			- [ ] I'm thinking a dataset for the game that mirrors my analyses dataset, but checks, computes changes, and appends every 15-30 seconds
+		- [ ] Add new info to the hovers. For shots, X shots from Y players, X CF from Y players, X xG from Y players, MM:SS total shift time across Y players
+		- [ ] Add total depth minute by minute beside the bar, a second card. This I can do once the data are stored.
 - [X] Data Storage - Migrate to S3; this is fine for now.
 	- [X] How do I store previous games so people can look at history?
 	- [X] S3 migration; reading and writing to s3 instead of locally
