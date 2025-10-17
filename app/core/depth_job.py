@@ -1,13 +1,15 @@
 import logging
 from datetime import datetime, timedelta
+from pytz import timezone
 import re
+from apscheduler.triggers.cron import CronTrigger
 
 logger = logging.getLogger(__name__)
 
 
 def _parse_game_start_time(start_str: str, game_date) -> datetime:
     """
-    Parse NHL start time string like '7:00 PM ET' to datetime.
+    Parse NHL start time string like '7:00 PM ET' to datetime in Eastern Time.
     """
     if not start_str:
         return None
@@ -15,7 +17,7 @@ def _parse_game_start_time(start_str: str, game_date) -> datetime:
 
     if not match:
         return None
-    
+
     hour = int(match.group(1))
     minute = int(match.group(2))
     am_pm = match.group(3)
@@ -26,12 +28,15 @@ def _parse_game_start_time(start_str: str, game_date) -> datetime:
         hour = 0
 
     try:
-        return datetime.combine(game_date, datetime.min.time().replace(hour=hour, minute=minute))
+        # NHL times are in Eastern Time
+        et = timezone('America/Toronto')
+        naive_dt = datetime.combine(game_date, datetime.min.time().replace(hour=hour, minute=minute))
+        return et.localize(naive_dt)
     except ValueError:
         return None
 
 
-def schedule_depth_tracking_for_today():
+def schedule_depth_tracking_for_today(scheduler):
     """
     Manager job that runs once per day at 5 AM.
     
@@ -61,41 +66,45 @@ def schedule_depth_tracking_for_today():
                     earliest_start = game_start
 
     if not earliest_start:
-        logger.warning("Games scheduled but couldn't parse start times - defaulting to 4 PM start")
-        earliest_start = datetime.combine(today, datetime.min.time().replace(hour=16))
+        logger.warning("Games scheduled but couldn't parse start times - defaulting to 4 PM ET start")
+        et = timezone('America/Toronto')
+        naive_dt = datetime.combine(today, datetime.min.time().replace(hour=16))
+        earliest_start = et.localize(naive_dt)
 
     # Calculate tracking window
     tracking_start = earliest_start - timedelta(minutes=30)
-    tracking_end = datetime.combine(today, datetime.min.time().replace(hour=2)) + timedelta(days=1)  # 2 AM next day
+    et = timezone('America/Toronto')
+    naive_end = datetime.combine(today, datetime.min.time().replace(hour=2)) + timedelta(days=1)
+    tracking_end = et.localize(naive_end)
 
     logger.info(f"Games today! Scheduling depth tracking from {tracking_start.strftime('%I:%M %p')} to {tracking_end.strftime('%I:%M %p')}")
-
-    # Get scheduler and add the minute-by-minute job
-    from fastapi import FastAPI
-    from app.core.scheduler import get_scheduler
-    from apscheduler.triggers.cron import CronTrigger
-
-    scheduler = get_scheduler()
 
     # Remove existing tracking job if it exists
     try:
         scheduler.remove_job('track_live_depth_active')
-    except:
-        pass
+        logger.info("Removed existing tracking job")
+    except Exception as e:
+        logger.info(f"No existing tracking job to remove: {e}")
 
     # Add minute-by-minute job for today's game window
-    scheduler.add_job(
-        track_live_game_depth,
-        trigger=CronTrigger(
-            hour=f'{tracking_start.hour}-23,0-{tracking_end.hour}',
-            minute='*'
-        ),
-        id='track_live_depth_active',
-        replace_existing=True,
-        coalesce=True,
-        max_instances=1,
-        misfire_grace_time=30,
-    )
+    from apscheduler.triggers.interval import IntervalTrigger
+    try:
+        scheduler.add_job(
+            track_live_game_depth,
+            trigger=CronTrigger(
+                hour=f'{tracking_start.hour}-23,0-{tracking_end.hour}',
+                minute='*',
+                timezone=timezone('America/Toronto')
+            ),
+            id='track_live_depth_active',
+            replace_existing=True,
+            coalesce=True,
+            max_instances=1,
+            misfire_grace_time=30,
+        )
+        logger.info("✅ Tracking job ADDED to scheduler")
+    except Exception as e:
+        logger.error(f"❌ Failed to add tracking job: {e}", exc_info=True)
 
     logger.info("Depth tracking job scheduled for today's game window")
 

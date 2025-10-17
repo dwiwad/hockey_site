@@ -6,7 +6,7 @@ Created on Sat Aug 16 09:32:12 2025
 
 @author: dwiwad
 """
-# app/nhl/get_todays_games.py  (rename if you like)
+# app/nhl/get_todays_games.py 
 import requests
 import pandas as pd
 from datetime import date, datetime

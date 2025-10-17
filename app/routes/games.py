@@ -11,6 +11,7 @@ from app.nhl.parsers.rosters import roster_by_team
 from app.nhl.parsers.scoreboard import scoreboard
 from app.nhl.parsers.depth import shot_depth_from_pbp, cf_depth_from_pbp, xgoal_depth_from_players, toi_depth_from_shifts, calculate_tdi
 from app.nhl.models.depth_sem_config import FACTOR_SCORE_COEFFICIENTS
+from app.config.team_colors import TEAM_COLORS
 
 # Anchor templates to project root so it works no matter where you run uvicorn
 # PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -126,6 +127,8 @@ async def game_dashboard(request: Request, season: int, game_id: int, fresh: boo
          "away_tdi_pct": away_tdi_pct,
          "home_weighted_depth": home_weighted_depth if home_tdi is not None else None,
          "away_weighted_depth": away_weighted_depth if home_tdi is not None else None,
+         "away_color": TEAM_COLORS.get(data['away_abbrev'], '#999999'),
+        "home_color": TEAM_COLORS.get(data['home_abbrev'], '#999999'),
         }
     )
 
@@ -178,5 +181,7 @@ async def game_depth_breakdown(request: Request, season: int, game_id: int):
          "cf_depth_payload": cf_depth_payload,
          "xg_depth_payload": xg_depth_payload,
          "toi_depth_payload": toi_depth_payload,
+         "away_color": TEAM_COLORS.get(data['away_abbrev'], '#999999'),
+        "home_color": TEAM_COLORS.get(data['home_abbrev'], '#999999'),
          }
     )

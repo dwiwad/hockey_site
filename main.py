@@ -44,15 +44,17 @@ async def lifespan(app: FastAPI):
     )
 
     # Add MANAGER job that runs once per day at 5 AM
+    from apscheduler.triggers.interval import IntervalTrigger
 
     scheduler.add_job(
-        schedule_depth_tracking_for_today,
-        trigger=daily_trigger(hour=5, minute=0),
-        id="depth_tracking_manager",
-        replace_existing=True,
-        coalesce=True,
-        max_instances=1,
-    )
+      lambda: schedule_depth_tracking_for_today(scheduler),  # Pass scheduler
+      trigger=IntervalTrigger(minutes=45),
+      #trigger=daily_trigger(hour=5, minute=0),
+      id="depth_tracking_manager",
+      replace_existing=True,
+      coalesce=True,
+      max_instances=1,
+  )
 
     scheduler.start()
     try:
