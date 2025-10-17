@@ -75,22 +75,22 @@
         <div class="shot-bar depth-bar">
           {% if dp is none or dp.no_shots %}
             <div class="away-segment"
-                style="width:50%;"
+                style="width:50%; background-color: {{ away_color }};"
                 data-team="{{ dp.away.team if dp else 'AWAY' }}"
                 data-depth="N/A"></div>
 
             <div class="home-segment"
-                style="width:50%;"
+                style="width:50%; background-color: {{ home_color }};"
                 data-team="{{ dp.home.team if dp else 'HOME' }}"
                 data-depth="N/A"></div>
           {% else %}
             <div class="away-segment"
-                style="width: {{ dp.depth_share.away_pct }}%;"
+                style="width: {{ dp.depth_share.away_pct }}%; background-color: {{ away_color }};"
                 data-team="{{ dp.away.team }}"
                 data-depth="{{ '%.3f'|format(dp.away.depth) }}"></div>
 
             <div class="home-segment"
-                style="width: {{ dp.depth_share.home_pct }}%;"
+                style="width: {{ dp.depth_share.home_pct }}%; background-color: {{ home_color }};"
                 data-team="{{ dp.home.team }}"
                 data-depth="{{ '%.3f'|format(dp.home.depth) }}"></div>
           {% endif %}
@@ -102,22 +102,22 @@
         <div class="shot-bar depth-bar">
           {% if cfdp is none or cfdp.no_shots %}
             <div class="away-segment"
-                style="width:50%;"
+                style="width:50%; background-color: {{ away_color }};"
                 data-team="{{ cfdp.cf_away.team if cfdp else 'AWAY' }}"
                 data-depth="N/A"></div>
 
             <div class="home-segment"
-                style="width:50%;"
+                style="width:50%; background-color: {{ home_color }};"
                 data-team="{{ cfdp.cf_home.team if cfdp else 'HOME' }}"
                 data-depth="N/A"></div>
           {% else %}
             <div class="away-segment"
-                style="width: {{ cfdp.cf_depth_share.away_pct }}%;"
+                style="width: {{ cfdp.cf_depth_share.away_pct }}%; background-color: {{ away_color }};"
                 data-team="{{ cfdp.cf_away.team }}"
                 data-depth="{{ '%.3f'|format(cfdp.cf_away.depth) }}"></div>
 
             <div class="home-segment"
-                style="width: {{ cfdp.cf_depth_share.home_pct }}%;"
+                style="width: {{ cfdp.cf_depth_share.home_pct }}%; background-color: {{ home_color }};"
                 data-team="{{ cfdp.cf_home.team }}"
                 data-depth="{{ '%.3f'|format(cfdp.cf_home.depth) }}"></div>
           {% endif %}
@@ -129,22 +129,22 @@
         <div class="shot-bar depth-bar">
           {% if xgdp is none or xgdp.no_xg %}
             <div class="away-segment"
-                style="width:50%;"
+                style="width:50%; background-color: {{ away_color }};"
                 data-team="{{ xgdp.xg_away.team if xgdp else 'AWAY' }}"
                 data-depth="N/A"></div>
 
             <div class="home-segment"
-                style="width:50%;"
+                style="width:50%; background-color: {{ home_color }};"
                 data-team="{{ xgdp.xg_home.team if xgdp else 'HOME' }}"
                 data-depth="N/A"></div>
           {% else %}
             <div class="away-segment"
-                style="width: {{ xgdp.xg_depth_share.away_pct }}%;"
+                style="width: {{ xgdp.xg_depth_share.away_pct }}%; background-color: {{ away_color }};"
                 data-team="{{ xgdp.xg_away.team }}"
                 data-depth="{{ '%.3f'|format(xgdp.xg_away.depth) }}"></div>
 
             <div class="home-segment"
-                style="width: {{ xgdp.xg_depth_share.home_pct }}%;"
+                style="width: {{ xgdp.xg_depth_share.home_pct }}%; background-color: {{ home_color }};"
                 data-team="{{ xgdp.xg_home.team }}"
                 data-depth="{{ '%.3f'|format(xgdp.xg_home.depth) }}"></div>
           {% endif %}
@@ -156,22 +156,22 @@
         <div class="shot-bar depth-bar">
           {% if toidp is none or toidp.no_toi %}
             <div class="away-segment"
-                style="width:50%;"
+                style="width:50%; background-color: {{ away_color }};"
                 data-team="{{ toidp.toi_away.team if toidp else 'AWAY' }}"
                 data-depth="N/A"></div>
 
             <div class="home-segment"
-                style="width:50%;"
+                style="width:50%; background-color: {{ home_color }};"
                 data-team="{{ toidp.toi_home.team if toidp else 'HOME' }}"
                 data-depth="N/A"></div>
           {% else %}
             <div class="away-segment"
-                style="width: {{ toidp.toi_depth_share.away_pct }}%;"
+                style="width: {{ toidp.toi_depth_share.away_pct }}%; background-color: {{ away_color }};"
                 data-team="{{ toidp.toi_away.team }}"
                 data-depth="{{ '%.3f'|format(toidp.toi_away.depth) }}"></div>
 
             <div class="home-segment"
-                style="width: {{ toidp.toi_depth_share.home_pct }}%;"
+                style="width: {{ toidp.toi_depth_share.home_pct }}%; background-color: {{ home_color }};"
                 data-team="{{ toidp.toi_home.team }}"
                 data-depth="{{ '%.3f'|format(toidp.toi_home.depth) }}"></div>
           {% endif %}
