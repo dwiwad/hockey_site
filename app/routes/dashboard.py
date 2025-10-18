@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 from datetime import datetime, date, timedelta
 from zoneinfo import ZoneInfo
 from app.nhl.get_todays_games import get_games_for_date
+from app.nhl.league_stats import get_league_depth_data, create_league_depth_boxplot
 
 # Tell Jinja where to find the html
 templates = Jinja2Templates(directory = "templates")
@@ -33,6 +34,15 @@ async def dashboard(request: Request, date_str: str | None = Query(default=None,
     is_today = (d == datetime.now(TZ).date())
     pretty_date = d.strftime("%B %-d, %Y")
 
+    # Generate league depth chart
+    try:
+        df_depth = get_league_depth_data(season=2025)
+        fig = create_league_depth_boxplot(df_depth)
+        depth_chart_html = fig.to_html(include_plotlyjs='cdn', div_id='league-depth-chart')
+    except Exception as e:
+        # If chart fails, just show an error message instead of breaking the page
+        depth_chart_html = f"<p>Chart unavailable: {e}</p>"
+
     return templates.TemplateResponse(
         "dashboard.html",
         {
@@ -43,5 +53,6 @@ async def dashboard(request: Request, date_str: str | None = Query(default=None,
             "next_day": next_day,
             "is_today": is_today,
             "games_today": games_today,
+            "depth_chart_html": depth_chart_html,
         },
     )

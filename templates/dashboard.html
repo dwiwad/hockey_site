@@ -82,6 +82,23 @@
             </div>
         </div>
 
+        <!-- League Depth Chart Section -->
+        <section style="max-width:1200px; margin:40px auto 80px auto; padding:0 24px;">
+            <h1>Detailed Dashboards</h1>
+
+            <!-- Chart Card -->
+            <div style="
+                background-color: white;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                padding: 2rem;
+                margin-top: 1.5rem;
+                margin-bottom: 2rem;
+            ">
+                {{ depth_chart_html|safe }}
+            </div>
+        </section>
+
         <!-- <h1>Shape of the Season</h1> -->
         <!-- <h1>Static Dashboards</h1> -->
             <!-- I might want static or historical dashboards to be below but that sort of goes against the clean design philosophy. Link to elsewhere? --> 

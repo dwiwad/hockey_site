@@ -55,7 +55,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 		- [X] Wire up CF depth
 		- [X] Wire up TOI depth
 		- [X] Wire up xG depth
-		- [ ] Create the game level table of 10 game depth rolling ave for priors
+		- [X] Create the game level table of 10 game depth rolling ave for priors
 		- [X] Wire up the live depth table for display - the sem model
 			- [ ] I'm thinking a dataset for the game that mirrors my analyses dataset, but checks, computes changes, and appends every 15-30 seconds
 		- [ ] Add new info to the hovers. For shots, X shots from Y players, X CF from Y players, X xG from Y players, MM:SS total shift time across Y players
@@ -70,26 +70,25 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [ ] Look into DuckDB
 - [X] Write a shot depth function once rosters are in and replace shot share figure
 - [X] Check the math on the depth.py
-- [ ] Add primary and secondary team colors to css or a python dict
+- [X] Add primary and secondary team colors to css or a python dict
 - [ ] For the shape of the game would it be better to have a running line? like moneypuck. I'm finding myself wanting to see how depth balance has evolved over the game...
 	- [ ] Like 4 side by side moving line figures. One for each element of depth or each shape of the game element
-- [ ] Change the shot share/depth bar plot to be away and home team primary colors
-- [ ] Shot depth dash, need to find where depth stabilizes
-	- [ ] Look at Y depth X shot, line team-game. Where does depth stabilize? Check my bookmark.
+- [X] Change the shot share/depth bar plot to be away and home team primary colors
+- [ ] Detailed Dashboards card and page
 - [ ] Problem: Spoilers!
 	- [ ] Create a listener that looks at the box score endpoint, pings every 10 seconds. Updates pages when clock running turns false.
 - [ ] Start looking into hosting on AWS
-- [ ] Localize timezone
+- [X] Localize timezone
 - [ ] TDI
 	- [ ] Start scoping the deep dive
 	- [ ] Stand up an empty post for it
 
 ### Sept. 6, 2025 - Keep on keepin on
 - [X] Write the demographics deep dive notebook file
-- [ ] Total Depth Index
+- [X] Total Depth Index
 	- [X] Do the ground exploration and analysis to define TDI in last season; Need this for the blog post and dash
 	- [X] Pull the data for 2010 to 2025
-	- [ ] Analyze - Big data is big 😬
+	- [X] Analyze - Big data is big 😬
 - [ ] Find the right icons for about page that are thin in each case
 - [X] Live dashboarding
 	- [X] Learn how to bring in the live data
@@ -103,7 +102,6 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 		- [X] Stylize the date selector
 	- [ ] Add javascripting to auto-refresh the clock every 5 seconds, builds the base for depth to do the same. (nhl.com updates every 10s)
 	- [ ] Add javascripting to update goals if the data updates
-- [ ] Find the best way to add team colors for the balance bars. CSS or a python dict
 
 ## Working History - DONE
 

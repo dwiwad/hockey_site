@@ -433,6 +433,10 @@ body {
     padding-bottom: 2rem;
 }
 
+.sub-main {
+      padding-bottom: 1rem;
+  }
+
 .sub-main h1 {
     margin-top: 3rem;
     margin-bottom: 1rem;

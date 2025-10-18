@@ -48,8 +48,8 @@ async def lifespan(app: FastAPI):
 
     scheduler.add_job(
       lambda: schedule_depth_tracking_for_today(scheduler),  # Pass scheduler
-      trigger=IntervalTrigger(minutes=45),
-      #trigger=daily_trigger(hour=5, minute=0),
+      #trigger=IntervalTrigger(minutes=45),
+      trigger=daily_trigger(hour=5, minute=0),
       id="depth_tracking_manager",
       replace_existing=True,
       coalesce=True,
