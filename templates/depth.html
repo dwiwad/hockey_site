@@ -14,6 +14,7 @@
     </script>
     <title>{{ sog.away_abbrev }} at {{ sog.home_abbrev }} | Hockey Decoded</title>
     <link rel="stylesheet" href="/static/style.css">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 </head>
 
 <body>
@@ -38,7 +39,11 @@
           </a>
         </div>
 
-        <div class="score-info-row">
+        <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}/depth"
+                hx-trigger="every 15s"
+                hx-select=".inline-score"
+                hx-swap="outerHTML" 
+                class="score-info-row">
           <span class="inline-score">
             {{ sog.away_abbrev }} {{ box.away_score }} - {{ box.home_score }} {{ sog.home_abbrev }}
           </span>
@@ -72,7 +77,11 @@
         <h3>Shot Depth</h3>
         {% set dp = shot_depth_payload if shot_depth_payload is defined else None %}
 
-        <div class="shot-bar depth-bar">
+        <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}/depth"
+              hx-trigger="every 15s"
+              hx-select=".shot-depth-bar"
+              hx-swap="outerHTML"
+              class="shot-bar depth-bar shot-depth-bar">
           {% if dp is none or dp.no_shots %}
             <div class="away-segment"
                 style="width:50%; background-color: {{ away_color }};"
@@ -99,7 +108,11 @@
         <h3>CF Depth</h3>
         {% set cfdp = cf_depth_payload if cf_depth_payload is defined else None %}
 
-        <div class="shot-bar depth-bar">
+        <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}/depth"
+              hx-trigger="every 15s"
+              hx-select=".cf-depth-bar"
+              hx-swap="outerHTML"
+              class="shot-bar depth-bar cf-depth-bar">
           {% if cfdp is none or cfdp.no_shots %}
             <div class="away-segment"
                 style="width:50%; background-color: {{ away_color }};"
@@ -126,7 +139,11 @@
         <h3>xG Depth</h3>
         {% set xgdp = xg_depth_payload if xg_depth_payload is defined else None %}
 
-        <div class="shot-bar depth-bar">
+        <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}/depth"
+              hx-trigger="every 15s"
+              hx-select=".xg-depth-bar"
+              hx-swap="outerHTML"
+              class="shot-bar depth-bar xg-depth-bar">
           {% if xgdp is none or xgdp.no_xg %}
             <div class="away-segment"
                 style="width:50%; background-color: {{ away_color }};"
@@ -153,10 +170,14 @@
         <h3>TOI Depth</h3>
         {% set toidp = toi_depth_payload if toi_depth_payload is defined else None %}
 
-        <div class="shot-bar depth-bar">
+        <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}/depth"
+              hx-trigger="every 15s"
+              hx-select=".toi-depth-bar"
+              hx-swap="outerHTML"
+              class="shot-bar depth-bar toi-depth-bar">
           {% if toidp is none or toidp.no_toi %}
             <div class="away-segment"
-                style="width:50%; background-color: {{ away_color }};"
+                style="width:50%; background-color: {{ home_color }};"
                 data-team="{{ toidp.toi_away.team if toidp else 'AWAY' }}"
                 data-depth="N/A"></div>
 
@@ -212,14 +233,15 @@
   <script>
   (function () {
     const tip = document.getElementById('shot-tooltip');
-    const segments = document.querySelectorAll('.shot-bar .away-segment, .shot-bar .home-segment');
 
     function setTipText(el) {
       const depth = el.dataset.depth || "N/A";
       tip.textContent = `${el.dataset.team}: ${depth}`;
     }
     function showTip(e) {
-      setTipText(e.currentTarget || e.target);
+      const target = e.target.closest('.away-segment, .home-segment');
+      if (!target) return;
+      setTipText(target);
       tip.classList.add('show');
       tip.setAttribute('aria-hidden', 'false');
       moveTip(e);
@@ -234,19 +256,56 @@
       tip.setAttribute('aria-hidden', 'true');
     }
 
-    segments.forEach(el => {
-      // Mouse
-      el.addEventListener('mouseenter', showTip);
-      el.addEventListener('mousemove', moveTip);
-      el.addEventListener('mouseleave', hideTip);
-      // Keyboard
-      el.addEventListener('focus', (e) => { setTipText(e.target); tip.classList.add('show'); tip.setAttribute('aria-hidden','false'); });
-      el.addEventListener('blur', hideTip);
-      // Touch (basic)
-      el.addEventListener('touchstart', showTip, {passive:true});
-      el.addEventListener('touchmove',  moveTip, {passive:true});
-      el.addEventListener('touchend',   hideTip, {passive:true});
-    });
+    // Event delegation - attach to document
+    document.addEventListener('mouseenter', function(e) {
+      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+        showTip(e);
+      }
+    }, true);
+
+    document.addEventListener('mousemove', function(e) {
+      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+        moveTip(e);
+      }
+    }, true);
+
+    document.addEventListener('mouseleave', function(e) {
+      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+        hideTip();
+      }
+    }, true);
+
+    document.addEventListener('focus', function(e) {
+      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+        setTipText(e.target);
+        tip.classList.add('show');
+        tip.setAttribute('aria-hidden','false');
+      }
+    }, true);
+
+    document.addEventListener('blur', function(e) {
+      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+        hideTip();
+      }
+    }, true);
+
+    document.addEventListener('touchstart', function(e) {
+      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+        showTip(e);
+      }
+    }, {passive:true, capture:true});
+
+    document.addEventListener('touchmove', function(e) {
+      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+        moveTip(e);
+      }
+    }, {passive:true, capture:true});
+
+    document.addEventListener('touchend', function(e) {
+      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+        hideTip();
+      }
+    }, {passive:true, capture:true});
   })();
   </script>
 </body>

@@ -93,6 +93,8 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [ ] Try card header and button centered with text aligned left
 - [ ] Get all the old team logos
 
+## Working History - DONE
+
 ### Sept. 6, 2025 - Keep on keepin on
 - [X] Write the demographics deep dive notebook file
 - [X] Total Depth Index
@@ -110,10 +112,8 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 	- [X] A shot depth balance bar
 	- [X] Add Yesterdays games page + date selector; this might require rewriting my game fetcher and router
 		- [X] Stylize the date selector
-	- [ ] Add javascripting to auto-refresh the clock every 5 seconds, builds the base for depth to do the same. (nhl.com updates every 10s)
-	- [ ] Add javascripting to update goals if the data updates
-
-## Working History - DONE
+	- [X] Add javascripting to auto-refresh the clock every 5 seconds, builds the base for depth to do the same. (nhl.com updates every 10s)
+	- [X] Add javascripting to update goals if the data updates
 
 ### Sept. 22, 2025 - Turn the dashboards live
 - [X] Change functions from static and historical to live
