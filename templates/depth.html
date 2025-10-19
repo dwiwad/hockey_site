@@ -41,7 +41,7 @@
 
         <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}/depth"
                 hx-trigger="every 15s"
-                hx-select=".inline-score"
+                hx-select=".score-info-row"
                 hx-swap="outerHTML" 
                 class="score-info-row">
           <span class="inline-score">
