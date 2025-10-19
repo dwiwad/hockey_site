@@ -61,7 +61,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 		- [ ] Add new info to the hovers. For shots, X shots from Y players, X CF from Y players, X xG from Y players, MM:SS total shift time across Y players
 		- [ ] Add total depth minute by minute beside the bars on the detail page, a second card. This I can do once the data are stored.
 	- [ ] Add weighted average decay to fix starting points
-	- [ ] Fix to pull TOI from the boxscore endpoint, not the shift chart end point!
+	- [X] Fix to pull TOI from the boxscore endpoint, not the shift chart end point!
 - [X] Data Storage - Migrate to S3; this is fine for now.
 	- [X] How do I store previous games so people can look at history?
 	- [X] S3 migration; reading and writing to s3 instead of locally

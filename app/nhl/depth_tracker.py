@@ -6,7 +6,7 @@ from app.nhl.parsers.depth import (
     shot_depth_from_pbp,
     cf_depth_from_pbp,
     xgoal_depth_from_players,
-    toi_depth_from_shifts,
+    toi_depth_from_boxscore,
     calculate_tdi
 )
 
@@ -20,8 +20,7 @@ def calculate_game_depth_snapshot(
     season: int,
     pbp: dict,
     box: dict,
-    xg,  # pandas DataFrame
-    shifts: dict
+    xg  # pandas DataFrame
 ) -> dict | None:
     """
     Calculate all depth metrics for a game at this moment in time.
@@ -32,7 +31,6 @@ def calculate_game_depth_snapshot(
         pbp: Play-by-play data from fetch_game_pbp()
         box: Box score data from fetch_game_box()
         xg: Expected goals data from fetch_moneypuck_player_xg_csv()
-        shifts: Shift data from fetch_game_shifts()
       
     Returns:
         Dict with depth snapshot data including:
@@ -46,12 +44,7 @@ def calculate_game_depth_snapshot(
         Returns None if insufficient data to calculate TDI.
     """
     # Check if we have the required data
-    if pbp is None or box is None or xg is None or shifts is None:
-        logger.warning(f"Game {game_id} - missing source data (game may not have started)")
-        return None
-    
-      # Check if we have the required data
-    if pbp is None or box is None or xg is None or shifts is None:
+    if pbp is None or box is None or xg is None:
         logger.warning(f"Game {game_id} - missing source data (game may not have started)")
         return None
 
@@ -68,7 +61,7 @@ def calculate_game_depth_snapshot(
     # Calculate the 4 depth metrics
     shot_depth_payload = shot_depth_from_pbp(pbp, rosters)
     cf_depth_payload = cf_depth_from_pbp(pbp, rosters)
-    toi_depth_payload = toi_depth_from_shifts(pbp, shifts, rosters)
+    toi_depth_payload = toi_depth_from_boxscore(pbp, box, rosters)
     xg_depth_payload = xgoal_depth_from_players(
         pbp=pbp,
         roster_rows=rosters,

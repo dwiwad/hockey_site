@@ -4,12 +4,12 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from app.nhl.service import fetch_game_pbp, fetch_game_box, fetch_moneypuck_player_xg_csv, fetch_game_shifts
+from app.nhl.service import fetch_game_pbp, fetch_game_box, fetch_moneypuck_player_xg_csv
 from app.nhl.parsers.sogs import sog_by_team
 from app.nhl.parsers.hits import hits_by_team
 from app.nhl.parsers.rosters import roster_by_team
 from app.nhl.parsers.scoreboard import scoreboard
-from app.nhl.parsers.depth import shot_depth_from_pbp, cf_depth_from_pbp, xgoal_depth_from_players, toi_depth_from_shifts, calculate_tdi
+from app.nhl.parsers.depth import shot_depth_from_pbp, cf_depth_from_pbp, xgoal_depth_from_players, toi_depth_from_boxscore, calculate_tdi
 from app.nhl.models.depth_sem_config import FACTOR_SCORE_COEFFICIENTS
 from app.config.team_colors import TEAM_COLORS
 
@@ -25,12 +25,11 @@ async def game_dashboard(request: Request, season: int, game_id: int, fresh: boo
     pbp = fetch_game_pbp(game_id, season, ttl_seconds=5)
     box = fetch_game_box(game_id, season, ttl_seconds=5)
     xg = fetch_moneypuck_player_xg_csv(game_id, season, ttl_seconds=5)
-    shifts = fetch_game_shifts(game_id, season, ttl_seconds=5)
 
     rosters = roster_by_team(pbp)
     shot_depth_payload = shot_depth_from_pbp(pbp, rosters) 
     cf_depth_payload = cf_depth_from_pbp(pbp, rosters)
-    toi_depth_payload = toi_depth_from_shifts(pbp, shifts, rosters)
+    toi_depth_payload = toi_depth_from_boxscore(pbp, box, rosters)
     xg_depth_payload = xgoal_depth_from_players(
     pbp=pbp,
     roster_rows=rosters,
@@ -139,12 +138,11 @@ async def game_depth_breakdown(request: Request, season: int, game_id: int):
     pbp = fetch_game_pbp(game_id, season, ttl_seconds=5)
     box = fetch_game_box(game_id, season, ttl_seconds=5)
     xg = fetch_moneypuck_player_xg_csv(game_id, season, ttl_seconds=5)
-    shifts = fetch_game_shifts(game_id, season, ttl_seconds=5)
 
     rosters = roster_by_team(pbp)
     shot_depth_payload = shot_depth_from_pbp(pbp, rosters) 
     cf_depth_payload = cf_depth_from_pbp(pbp, rosters)
-    toi_depth_payload = toi_depth_from_shifts(pbp, shifts, rosters)
+    toi_depth_payload = toi_depth_from_boxscore(pbp, box, rosters)
 
     xg_depth_payload = xgoal_depth_from_players(
         pbp=pbp,

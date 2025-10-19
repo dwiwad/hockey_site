@@ -437,7 +437,7 @@ def xgoal_depth_from_players(
         },
     }
 
-# ---------- SHIFT (TOI) depth from shiftcharts JSON ----------
+# ---------- SHIFT (TOI) depth from boxscore JSON ----------
 
 from math import isnan
 
@@ -473,7 +473,7 @@ def toi_depth_from_shifts(
     pbp : dict
         The game PBP JSON (used only to resolve home/away abbrevs/ids).
     shifts_json : dict
-        Raw shiftcharts payload as cached by service (shape: {"data": [...]}).
+        Raw toi payload as cached by service (shape: {"data": [...]}).
     roster_rows : list of dict, optional
         Roster rows to back-fill zeros per player (keys: teamAbbrev, playerId, position/positionCode).
     include_goalies : bool
@@ -646,3 +646,119 @@ def calculate_tdi(cf_gini: float, sog_gini: float, toi_gini: float, xgoal_gini: 
       tdi_zscore = (raw_tdi - FACTOR_SCORE_MEAN) / FACTOR_SCORE_SD
 
       return tdi_zscore, raw_tdi
+
+def toi_depth_from_boxscore(
+      pbp: Dict[str, Any],
+      box: Dict[str, Any],
+      roster_rows: List[Dict[str, Any]] | None = None,
+      include_goalies: bool = False
+  ) -> Dict[str, Any]:
+      """
+      Compute TOI-based depth (1 - Gini) from NHL boxscore JSON.
+      
+      Parameters
+      ----------
+      pbp : dict
+          The game PBP JSON (used only to resolve home/away abbrevs/ids).
+      box : dict
+          Boxscore data with playerByGameStats section.
+      roster_rows : list of dict, optional
+          Roster rows to back-fill zeros per player (keys: teamAbbrev, playerId, position/positionCode).
+      include_goalies : bool
+          Include goalies in the Gini distribution (default False).
+      
+      Returns
+      -------
+      dict shaped like other depth payloads, using 'toi_*' keys.
+      """
+      home_meta, away_meta = _home_away_meta(pbp)
+      home_abbrev = home_meta.get("abbrev") or home_meta.get("triCode")
+      away_abbrev = away_meta.get("abbrev") or away_meta.get("triCode")
+      if not home_abbrev or not away_abbrev:
+          return _safe_toi_5050(home_abbrev, away_abbrev)
+
+      # Check if playerByGameStats exists (won't exist in pre-game)
+      player_stats = box.get("playerByGameStats")
+      if not player_stats:
+          return _safe_toi_5050(home_abbrev, away_abbrev)
+
+      # Accumulate seconds per player by team
+      toi_home: Dict[str, int] = {}
+      toi_away: Dict[str, int] = {}
+
+      # Process both teams
+      for team_key, toi_dict in [("homeTeam", toi_home), ("awayTeam", toi_away)]:
+          team_data = player_stats.get(team_key, {})
+
+          # Loop through all position groups (forwards, defense, goalies)
+          for position_group in ["forwards", "defense", "goalies"]:
+              players = team_data.get(position_group, [])
+
+              for player in players:
+                  # Skip goalies if not including them
+                  pos = player.get("position", "").upper()
+                  if not include_goalies and pos == "G":
+                      continue
+
+                  # Get player ID
+                  pid = player.get("playerId")
+                  if pid is None:
+                      continue
+                  try:
+                      pid_str = str(int(pid))
+                  except Exception:
+                      pid_str = str(pid)
+
+                  # Get TOI string (format: "12:40")
+                  toi_str = player.get("toi", "0:00")
+                  sec = _parse_mmss_to_sec(toi_str)
+
+                  if sec > 0:
+                      toi_dict[pid_str] = toi_dict.get(pid_str, 0) + sec
+
+      # Back-fill zeros using roster so the distribution includes all skaters
+      for rr in (roster_rows or []):
+          ab = rr.get("teamAbbrev")
+          if ab not in (home_abbrev, away_abbrev):
+              continue
+          pid = rr.get("playerId")
+          if pid is None:
+              continue
+          pos = (rr.get("position") or rr.get("positionCode") or "").upper()
+          if not include_goalies and pos == "G":
+              continue
+          try:
+              pid_str = str(int(pid))
+          except Exception:
+              pid_str = str(pid)
+          if ab == home_abbrev:
+              toi_home.setdefault(pid_str, 0)
+          else:
+              toi_away.setdefault(pid_str, 0)
+
+      home_total = sum(toi_home.values())
+      away_total = sum(toi_away.values())
+      if (home_total + away_total) == 0:
+          return _safe_toi_5050(home_abbrev, away_abbrev)
+
+      def _team_stats(d: Dict[str, int]) -> Dict[str, float]:
+          vals = list(d.values())
+          g = _gini(vals)
+          return {"ineq": g, "depth": 1.0 - g}
+
+      h_stats = _team_stats(toi_home)
+      a_stats = _team_stats(toi_away)
+
+      h, a = h_stats["depth"], a_stats["depth"]
+      denom = (h + a) if (h + a) > 0 else 1.0
+      home_pct = round(100.0 * (h / denom), 1)
+      away_pct = round(100.0 - home_pct, 1)
+
+      return {
+          "no_toi": False,
+          "toi_home": {"team": home_abbrev, "total_seconds": int(home_total), **h_stats},
+          "toi_away": {"team": away_abbrev, "total_seconds": int(away_total), **a_stats},
+          "toi_depth_share": {"home_pct": home_pct, "away_pct": away_pct},
+          "toi": {"toi_home": toi_home, "toi_away": toi_away},
+          "params": {"include_goalies": include_goalies},
+      }
