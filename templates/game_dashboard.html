@@ -14,6 +14,8 @@
     </script>
     <title>{{ sog.away_abbrev }} at {{ sog.home_abbrev }} | Hockey Decoded</title>
     <link rel="stylesheet" href="/static/style.css">
+
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 </head>
 
 <body>
@@ -39,7 +41,12 @@
             alt="{{ sog.away_abbrev }} logo">
 
           <!-- Center stack -->
-          <div class="scoreboard">
+          <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}"
+                hx-trigger="every 15s"
+                hx-select=".scoreboard"
+                hx-swap="outerHTML"
+                class="scoreboard">
+
             <h1 class="score">{{ box.away_score }} - {{ box.home_score }}</h1>
             {% if box.gameState == 'FINAL' or box.gameState == 'OFF' %}
               <h2 class="progress">Final</h2>
@@ -86,7 +93,13 @@
         Higher TDI means a more balanced contribution across the lineup.
         </p>
 
-        <div class="shot-bar depth-bar">
+        <div 
+        hx-get="/dashboard/games/{{ season }}/{{ game_id }}"
+        hx-trigger="every 15s"
+        hx-select=".shot-bar"
+        hx-swap="outerHTML"
+        class="shot-bar depth-bar">
+        
         {% if home_tdi is none or away_tdi is none %}
           <div class="away-segment"
               style="width:50%; background-color: {{ away_color }};"
@@ -125,14 +138,15 @@
   <script>
   (function () {
     const tip = document.getElementById('shot-tooltip');
-    const segments = document.querySelectorAll('.shot-bar .away-segment, .shot-bar .home-segment');
 
     function setTipText(el) {
       const depth = el.dataset.depth || "N/A";
       tip.textContent = `${el.dataset.team}: ${depth}`;
     }
     function showTip(e) {
-      setTipText(e.currentTarget || e.target);
+      const target = e.target.closest('.away-segment, .home-segment');
+      if (!target) return;
+      setTipText(target);
       tip.classList.add('show');
       tip.setAttribute('aria-hidden', 'false');
       moveTip(e);
@@ -147,19 +161,56 @@
       tip.setAttribute('aria-hidden', 'true');
     }
 
-    segments.forEach(el => {
-      // Mouse
-      el.addEventListener('mouseenter', showTip);
-      el.addEventListener('mousemove', moveTip);
-      el.addEventListener('mouseleave', hideTip);
-      // Keyboard
-      el.addEventListener('focus', (e) => { setTipText(e.target); tip.classList.add('show'); tip.setAttribute('aria-hidden','false'); });
-      el.addEventListener('blur', hideTip);
-      // Touch (basic)
-      el.addEventListener('touchstart', showTip, {passive:true});
-      el.addEventListener('touchmove',  moveTip, {passive:true});
-      el.addEventListener('touchend',   hideTip, {passive:true});
-    });
+    // Attach to document, not individual elements (event delegation)
+    document.addEventListener('mouseenter', function(e) {
+      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+        showTip(e);
+      }
+    }, true);
+
+    document.addEventListener('mousemove', function(e) {
+      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+        moveTip(e);
+      }
+    }, true);
+
+    document.addEventListener('mouseleave', function(e) {
+      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+        hideTip();
+      }
+    }, true);
+
+    document.addEventListener('focus', function(e) {
+      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+        setTipText(e.target);
+        tip.classList.add('show');
+        tip.setAttribute('aria-hidden','false');
+      }
+    }, true);
+
+    document.addEventListener('blur', function(e) {
+      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+        hideTip();
+      }
+    }, true);
+
+    document.addEventListener('touchstart', function(e) {
+      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+        showTip(e);
+      }
+    }, {passive:true, capture:true});
+
+    document.addEventListener('touchmove', function(e) {
+      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+        moveTip(e);
+      }
+    }, {passive:true, capture:true});
+
+    document.addEventListener('touchend', function(e) {
+      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+        hideTip();
+      }
+    }, {passive:true, capture:true});
   })();
   </script>
 </body>
