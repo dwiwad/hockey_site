@@ -57,9 +57,11 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 		- [X] Wire up xG depth
 		- [X] Create the game level table of 10 game depth rolling ave for priors
 		- [X] Wire up the live depth table for display - the sem model
-			- [ ] I'm thinking a dataset for the game that mirrors my analyses dataset, but checks, computes changes, and appends every 15-30 seconds
+			- [X] I'm thinking a dataset for the game that mirrors my analyses dataset, but checks, computes changes, and appends every 15-30 seconds
 		- [ ] Add new info to the hovers. For shots, X shots from Y players, X CF from Y players, X xG from Y players, MM:SS total shift time across Y players
-		- [ ] Add total depth minute by minute beside the bar, a second card. This I can do once the data are stored.
+		- [ ] Add total depth minute by minute beside the bars on the detail page, a second card. This I can do once the data are stored.
+	- [ ] Add weighted average decay to fix starting points
+	- [ ] Fix to pull TOI from the boxscore endpoint, not the shift chart end point!
 - [X] Data Storage - Migrate to S3; this is fine for now.
 	- [X] How do I store previous games so people can look at history?
 	- [X] S3 migration; reading and writing to s3 instead of locally
@@ -82,6 +84,14 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [ ] TDI
 	- [ ] Start scoping the deep dive
 	- [ ] Stand up an empty post for it
+- [ ] Season shape
+	- [ ] Add Card under detailed Dashboards header
+	- [ ] Add new Page for "Shape of the Season"
+	- [ ] Add depth plotly to that page
+		- [ ] Update plotly hover state
+		- [ ] Set plotly to auto scale 
+- [ ] Try card header and button centered with text aligned left
+- [ ] Get all the old team logos
 
 ### Sept. 6, 2025 - Keep on keepin on
 - [X] Write the demographics deep dive notebook file

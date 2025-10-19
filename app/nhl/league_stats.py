@@ -30,11 +30,11 @@ def get_league_depth_data(season=2025):
     # Step 5: Calculate 10-game rolling average of weighted_depth
     df_season['weighted_depth_rolling'] = (
         df_season.groupby('team_abbrev')['weighted_depth']
-        .transform(lambda x: x.rolling(window=10, min_periods=3).mean())
+        .transform(lambda x: x.rolling(window=10, min_periods=1).mean()) # Kept at 1 so we can get it for every game, but will stabilize closer to 10
     )
 
-    # Step 6: Keep only rows where we have the rolling average (game 10+)
-    df_rolling = df_season[df_season['game_number'] >= 3].copy()
+    # Step 6: Keep only rows where we have the rolling average (Which is starting at 1 in this case)
+    df_rolling = df_season[df_season['game_number'] >= 1].copy()
 
     return df_rolling
 
@@ -93,7 +93,7 @@ def create_league_depth_boxplot(df_rolling):
         # Axes
         xaxis=dict(
             title=dict(
-                text="Team",
+                text=None,
                 font=dict(
                     family="Charter, Bitstream Charter, Sitka Text, Cambria, serif",
                     size=20,
@@ -117,7 +117,6 @@ def create_league_depth_boxplot(df_rolling):
                     color="#041E42"
                 )
             ),
-            range=[0.2, 0.4],
             showgrid=False,
             gridcolor='rgba(0,0,0,0.1)',
             gridwidth=0.5,
