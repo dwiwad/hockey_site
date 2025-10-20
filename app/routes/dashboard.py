@@ -36,12 +36,19 @@ async def dashboard(request: Request, date_str: str | None = Query(default=None,
 
     # Generate league depth chart
     try:
-        df_depth = get_league_depth_data(season=2025)
+        df_depth, last_modified = get_league_depth_data(season=2025)  # Unpack tuple
         fig = create_league_depth_boxplot(df_depth)
         depth_chart_html = fig.to_html(include_plotlyjs='cdn', div_id='league-depth-chart')
+
+        # Format update timestamp from S3 file metadata
+        from zoneinfo import ZoneInfo
+        et = ZoneInfo("America/Toronto")
+        update_time = last_modified.astimezone(et).strftime('%B %-d, %Y at %I:%M %p ET')
+
     except Exception as e:
         # If chart fails, just show an error message instead of breaking the page
         depth_chart_html = f"<p>Chart unavailable: {e}</p>"
+        update_time = None
 
     return templates.TemplateResponse(
         "dashboard.html",
@@ -54,5 +61,6 @@ async def dashboard(request: Request, date_str: str | None = Query(default=None,
             "is_today": is_today,
             "games_today": games_today,
             "depth_chart_html": depth_chart_html,
+            "update_time": update_time,
         },
     )

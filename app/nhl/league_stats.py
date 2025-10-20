@@ -12,12 +12,17 @@ def get_league_depth_data(season=2025):
     Returns:
         DataFrame with columns: team_abbrev, game_number, weighted_depth_rolling
     """
-    # Step 1: Read the master parquet file from S3
-    df = pd.read_parquet('s3://hockey-decoded/depth_scores/depth_scores.parquet')
+    # Step 1: Read the master parquet file from S3 and get its metadata
+    s3 = s3fs.S3FileSystem()
+    file_path = 'hockey-decoded/depth_scores/depth_scores.parquet'
+
+    # Get file info (includes last modified time)
+    file_info = s3.info(file_path)
+    last_modified = file_info['LastModified']  # datetime object
+
+    df = pd.read_parquet(f's3://{file_path}')
 
     # Step 2: Filter to just this season's regular season games
-    # Regular season game_ids start with {season}02
-    # Example: 2024-25 regular season = 2024020001, 2024020002, etc.
     season_prefix = f"{season}02"
     df_season = df[df['game_id'].astype(str).str.startswith(season_prefix)]
 
@@ -36,7 +41,7 @@ def get_league_depth_data(season=2025):
     # Step 6: Keep only rows where we have the rolling average (Which is starting at 1 in this case)
     df_rolling = df_season[df_season['game_number'] >= 1].copy()
 
-    return df_rolling
+    return df_rolling, last_modified
 
 def create_league_depth_boxplot(df_rolling):
     """

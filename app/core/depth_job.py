@@ -40,11 +40,16 @@ def schedule_depth_tracking_for_today(scheduler):
     """
     Manager job that runs once per day at 5 AM.
     
-    Checks today's schedule and dynamically adds the minute-by-minute
+    1. Backfills yesterday's games to master
+    2. Checks today's schedule and dynamically adds the minute-by-minute
     tracking job ONLY if games are scheduled.
     """
     logger.info("=== Depth tracking scheduler manager started ===")
 
+    # STEP 1: Backfill yesterday's games
+    backfill_yesterday_games()
+
+    # STEP 2: Set up tracking for today
     # Get today's schedule
     today = datetime.now().date()
     from app.nhl.get_todays_games import get_games_for_date
@@ -167,3 +172,76 @@ def track_live_game_depth():
             continue
 
     logger.info(f"=== Depth tracking complete: tracked {tracked_count}, finalized {finalized_count} ===")
+
+def backfill_yesterday_games():
+  """
+  Backfill all games from yesterday into the master depth_scores.parquet.
+  Runs once per day at 5 AM.
+  """
+  from datetime import timedelta
+
+  logger.info("=== Backfilling yesterday's games ===")
+  
+  # Get yesterday's date
+  yesterday = datetime.now().date() - timedelta(days=1)
+  
+  # Get games for yesterday
+  from app.nhl.get_todays_games import get_games_for_date
+  
+  schedule_df = get_games_for_date(yesterday)
+  
+  if schedule_df is None or len(schedule_df) == 0:
+      logger.info(f"No games on {yesterday} - nothing to backfill")
+      return
+  
+  logger.info(f"Found {len(schedule_df)} game(s) from {yesterday}")
+  successful = 0
+  skipped = 0
+  errors = 0
+  
+  for idx, game_row in schedule_df.iterrows():
+      game_id = game_row.get('game_id')
+      season = game_row.get('season')
+      logger.info(f"Backfilling game {game_id}...")
+      
+      try:
+          # Fetch game data (use longer cache since these are historical)
+          from app.nhl.service import fetch_game_pbp, fetch_game_box, fetch_moneypuck_player_xg_csv
+          pbp = fetch_game_pbp(game_id, season, ttl_seconds=3600)
+          box = fetch_game_box(game_id, season, ttl_seconds=3600)
+          xg = fetch_moneypuck_player_xg_csv(game_id, season, ttl_seconds=3600)
+          
+          # Calculate snapshot
+          from app.nhl.depth_tracker import calculate_game_depth_snapshot
+          
+          snapshot = calculate_game_depth_snapshot(game_id, season, pbp, box, xg)
+          
+          if snapshot is None:
+              logger.info(f"  ⚠️ No snapshot (insufficient data)")
+              skipped += 1
+              continue
+          
+          # Check if game is finished
+          game_state = snapshot.get('game_state', '')
+          
+          if game_state not in ['FINAL', 'OFF']:
+              logger.info(f"  ⚠️ Not finished (state: {game_state})")
+              skipped += 1
+              continue
+          
+          # Write to master
+          from app.nhl.service_depth import write_final_depth
+          
+          wrote = write_final_depth(game_id, season, snapshot)
+          
+          if wrote:
+              successful += 1
+              logger.info(f"  ✅ Written to master")
+          else:
+              skipped += 1
+      
+      except Exception as e:
+          logger.error(f"  ❌ Error processing game {game_id}: {e}", exc_info=True)
+          errors += 1
+  
+  logger.info(f"=== Backfill complete: {successful} written, {skipped} skipped, {errors} errors ===")

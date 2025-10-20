@@ -96,6 +96,12 @@
                 margin-bottom: 2rem;
             ">
                 {{ depth_chart_html|safe }}
+
+                {% if update_time %}
+                  <p class="depth-link" style="text-align: right; margin-top: 1rem;">
+                      <em>Updated {{ update_time }}</em>
+                  </p>
+                {% endif %}
             </div>
         </section>
 
