@@ -41,7 +41,6 @@
 
           <!-- Center stack -->
           <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}"
-                hx-trigger="every 60s"
                 hx-select=".scoreboard"
                 hx-swap="outerHTML"
                 class="scoreboard">
@@ -94,7 +93,6 @@
 
         <div 
         hx-get="/dashboard/games/{{ season }}/{{ game_id }}"
-        hx-trigger="every 60s"
         hx-select=".shot-bar"
         hx-swap="outerHTML"
         class="shot-bar depth-bar">
@@ -162,25 +160,25 @@
 
     // Attach to document, not individual elements (event delegation)
     document.addEventListener('mouseenter', function(e) {
-      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+      if (e.target.matches && e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
         showTip(e);
       }
     }, true);
 
     document.addEventListener('mousemove', function(e) {
-      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+      if (e.target.matches && e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
         moveTip(e);
       }
     }, true);
 
     document.addEventListener('mouseleave', function(e) {
-      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+      if (e.target.matches && e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
         hideTip();
       }
     }, true);
 
     document.addEventListener('focus', function(e) {
-      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+      if (e.target.matches && e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
         setTipText(e.target);
         tip.classList.add('show');
         tip.setAttribute('aria-hidden','false');
@@ -188,29 +186,93 @@
     }, true);
 
     document.addEventListener('blur', function(e) {
-      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+      if (e.target.matches && e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
         hideTip();
       }
     }, true);
 
     document.addEventListener('touchstart', function(e) {
-      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+      if (e.target.matches && e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
         showTip(e);
       }
     }, {passive:true, capture:true});
 
     document.addEventListener('touchmove', function(e) {
-      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+      if (e.target.matches && e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
         moveTip(e);
       }
     }, {passive:true, capture:true});
 
     document.addEventListener('touchend', function(e) {
-      if (e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
+      if (e.target.matches && e.target.matches('.shot-bar .away-segment, .shot-bar .home-segment')) {
         hideTip();
       }
     }, {passive:true, capture:true});
   })();
+  </script>
+
+  <script>
+    // Conditional polling - only update when clock is running
+    (function() {
+      const POLL_INTERVAL = 15000; // 15 seconds
+      let lastPollTime = 0;
+
+      function shouldPoll() {
+        // After HTMX swaps, check the current DOM state
+        const progressElement = document.querySelector('.progress');
+        if (!progressElement) return false;
+
+        const text = progressElement.textContent.trim();
+
+        // Don't poll if game is over
+        if (text === 'Final' || text.includes('not yet Started')) {
+          return false;
+        }
+
+        // Don't poll during intermission
+        if (text.includes('Intermission')) {
+          return false;
+        }
+
+        // Otherwise, game is live - poll!
+        return true;
+      }
+
+      function conditionalPoll() {
+        const now = Date.now();
+
+        // Prevent double-polling
+        if (now - lastPollTime < POLL_INTERVAL - 1000) {
+          return;
+        }
+
+        if (shouldPoll()) {
+          console.log('⚡ Game live - updating...');
+          lastPollTime = now;
+
+          // Manually trigger HTMX updates
+          htmx.ajax('GET', window.location.pathname, {
+            target: '.scoreboard',
+            select: '.scoreboard',
+            swap: 'outerHTML'
+          });
+
+          htmx.ajax('GET', window.location.pathname, {
+            target: '.shot-bar',
+            select: '.shot-bar',
+            swap: 'outerHTML'
+          });
+        } else {
+          console.log('⏸️  Game paused - no update needed');
+        }
+      }
+
+      // Poll every 15 seconds
+      setInterval(conditionalPoll, POLL_INTERVAL);
+
+      // Initial poll after 1 second
+      setTimeout(conditionalPoll, 1000);
+    })();
   </script>
 </body>
 </html>
