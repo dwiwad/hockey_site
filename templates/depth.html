@@ -40,7 +40,7 @@
         </div>
 
         <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}/depth"
-                hx-trigger="every 15s"
+                hx-trigger="every 60s"
                 hx-select=".score-info-row"
                 hx-swap="outerHTML" 
                 class="score-info-row">
@@ -78,7 +78,7 @@
         {% set dp = shot_depth_payload if shot_depth_payload is defined else None %}
 
         <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}/depth"
-              hx-trigger="every 15s"
+              hx-trigger="every 60s"
               hx-select=".shot-depth-bar"
               hx-swap="outerHTML"
               class="shot-bar depth-bar shot-depth-bar">
@@ -109,7 +109,7 @@
         {% set cfdp = cf_depth_payload if cf_depth_payload is defined else None %}
 
         <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}/depth"
-              hx-trigger="every 15s"
+              hx-trigger="every 60s"
               hx-select=".cf-depth-bar"
               hx-swap="outerHTML"
               class="shot-bar depth-bar cf-depth-bar">
@@ -140,7 +140,7 @@
         {% set xgdp = xg_depth_payload if xg_depth_payload is defined else None %}
 
         <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}/depth"
-              hx-trigger="every 15s"
+              hx-trigger="every 60s"
               hx-select=".xg-depth-bar"
               hx-swap="outerHTML"
               class="shot-bar depth-bar xg-depth-bar">
@@ -171,7 +171,7 @@
         {% set toidp = toi_depth_payload if toi_depth_payload is defined else None %}
 
         <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}/depth"
-              hx-trigger="every 15s"
+              hx-trigger="every 60s"
               hx-select=".toi-depth-bar"
               hx-swap="outerHTML"
               class="shot-bar depth-bar toi-depth-bar">

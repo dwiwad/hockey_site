@@ -88,9 +88,8 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 	- [ ] Add Card under detailed Dashboards header
 	- [ ] Add new Page for "Shape of the Season"
 	- [ ] Add depth plotly to that page
-		- [ ] Update plotly hover state
-		- [ ] Set plotly to auto scale 
-- [ ] Try card header and button centered with text aligned left
+		- [X] Update plotly hover state
+		- [X] Set plotly to auto scale 
 - [ ] Get all the old team logos
 
 ## Working History - DONE

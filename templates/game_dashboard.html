@@ -41,7 +41,7 @@
 
           <!-- Center stack -->
           <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}"
-                hx-trigger="every 15s"
+                hx-trigger="every 60s"
                 hx-select=".scoreboard"
                 hx-swap="outerHTML"
                 class="scoreboard">
@@ -94,7 +94,7 @@
 
         <div 
         hx-get="/dashboard/games/{{ season }}/{{ game_id }}"
-        hx-trigger="every 15s"
+        hx-trigger="every 60s"
         hx-select=".shot-bar"
         hx-swap="outerHTML"
         class="shot-bar depth-bar">
