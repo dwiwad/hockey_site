@@ -38,7 +38,7 @@ async def dashboard(request: Request, date_str: str | None = Query(default=None,
     try:
         df_depth, last_modified = get_league_depth_data(season=2025)  # Unpack tuple
         fig = create_league_depth_boxplot(df_depth)
-        depth_chart_html = fig.to_html(include_plotlyjs='cdn', div_id='league-depth-chart')
+        depth_chart_html = fig.to_html(include_plotlyjs='cdn', div_id='league-depth-chart', config={'displayModeBar': False})
 
         # Format update timestamp from S3 file metadata
         from zoneinfo import ZoneInfo

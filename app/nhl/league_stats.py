@@ -44,137 +44,112 @@ def get_league_depth_data(season=2025):
     return df_rolling, last_modified
 
 def create_league_depth_boxplot(df_rolling):
-    """
-    Create Plotly box plot of team depth distribution.
-      
-    Args:
-        df_rolling: DataFrame from get_league_depth_data()
-      
-    Returns:
-        Plotly figure object
-    """
-    # Step 1: Calculate median depth for each team (for sorting)
-    team_medians = (
-        df_rolling.groupby('team_abbrev')['weighted_depth_rolling']
-        .median()
-        .sort_values()
-    )
-    sorted_teams = team_medians.index.tolist()
+      """
+      Create Plotly bar chart of team depth rankings.
+        
+      Args:
+          df_rolling: DataFrame from get_league_depth_data()
+        
+      Returns:
+          Plotly figure object
+      """
+      # Calculate median depth and games played for each team
+      team_stats = df_rolling.groupby('team_abbrev').agg({
+          'weighted_depth_rolling': 'last',
+          'game_number': 'max'
+      }).reset_index()
 
-    # Step 2: Get team colors
-    from app.config.team_colors import TEAM_COLORS
+      # Sort by median depth (lowest to highest)
+      team_stats = team_stats.sort_values('weighted_depth_rolling')
 
-    # Step 3: Create empty figure
-    fig = go.Figure()
+      # Get team colors
+      from app.config.team_colors import TEAM_COLORS
 
-    # Step 4: Add a box plot for each team
-    for team in sorted_teams:
-        # Get just this team's data
-        team_data = df_rolling[df_rolling['team_abbrev'] == team]
+      # Calculate league median for centering
+      overall_median = df_rolling['weighted_depth_rolling'].median()
 
-        # Add a box trace
-        fig.add_trace(go.Box(
-            y=team_data['weighted_depth_rolling'],  # The values to plot
-            name=team,                               # Team name (for hover)
-            marker_color=TEAM_COLORS.get(team, '#999999'),  # Team color
-            marker=dict(opacity=0.7),                # Make slightly transparent
-            boxmean=False,                            # don't show mean line
-            line=dict(width=1.5)
-        ))
+      # Calculate difference from median for each team
+      team_stats['diff_from_median'] = team_stats['weighted_depth_rolling'] - overall_median
 
-    fig.update_layout(
-        # Title
-        title=dict(
-            text="Team Depth Distribution (2024-25 Season)",
-            font=dict(
-                family="Charter, Bitstream Charter, Sitka Text, Cambria, serif",
-                size=24,
-                color="#041E42"  # var(--blue-dark)
-            ),
-            x=0.25,  # Center the title
-            xanchor='center'
-        ),
+      # Calculate range for y-axis
+      max_val = team_stats['weighted_depth_rolling'].max()
+      min_val = team_stats['weighted_depth_rolling'].min()
+      max_distance = max(abs(max_val - overall_median), abs(min_val - overall_median))
+      padding = max_distance * 0.1
 
-        # Axes
-        xaxis=dict(
-            title=dict(
-                text=None,
-                font=dict(
+      # Create bar chart
+      fig = go.Figure()
+
+      fig.add_trace(go.Bar(
+          x=team_stats['team_abbrev'],
+          y=team_stats['diff_from_median'],  # Difference from median
+          base=overall_median,  # Bars start from median line
+          marker_color=[TEAM_COLORS.get(team, '#999999') for team in team_stats['team_abbrev']],
+          marker=dict(opacity=0.8),
+          customdata=team_stats[['game_number', 'weighted_depth_rolling']],  # Include actual depth value
+          hovertemplate='<b>%{x}</b><br>' +
+                        '10-game Avg: %{customdata[1]:.3f}<br>' +  # Show actual value, not difference
+                        '%{customdata[0]:.0f} games played<br>' +
+                        '<extra></extra>'
+      ))
+
+      fig.update_layout(
+          # Title
+          title=dict(
+              text="Team Depth Rankings (2024-25 Season)",
+              font=dict(
+                  family="Charter, Bitstream Charter, Sitka Text, Cambria, serif",
+                  size=24,
+                  color="#041E42"
+              ),
+              x=0.25,
+              xanchor='center'
+          ),
+
+          # Axes
+          xaxis=dict(
+              title=None,
+              showgrid=False,
+              tickfont=dict(
+                  family="Charter, Bitstream Charter, Sitka Text, Cambria, serif",
+                  size=14,
+                  color="#041E42"
+              )
+          ),
+
+          yaxis=dict(  # Team names
+                title=None,
+                showgrid=False,
+                tickfont=dict(
                     family="Charter, Bitstream Charter, Sitka Text, Cambria, serif",
-                    size=20,
+                    size=14,
                     color="#041E42"
-                )
+                ),
+                ticks='outside',  # Add ticks extending outward
+                ticklen=8,  # Length of tick marks
+                tickwidth=1,
+                tickcolor='white'  # Make ticks white (invisible against white background)
             ),
-            showgrid=False,
-            tickfont=dict(
-                family="Charter, Bitstream Charter, Sitka Text, Cambria, serif",
-                size=14,
-                color="#041E42"
-            )
-        ),
 
-        yaxis=dict(
-            title=dict(
-                text="Weighted Average Depth",
-                font=dict(
-                    family="Charter, Bitstream Charter, Sitka Text, Cambria, serif",
-                    size=20,
-                    color="#041E42"
-                )
-            ),
-            showgrid=False,
-            gridcolor='rgba(0,0,0,0.1)',
-            gridwidth=0.5,
-            ticks='outside',
-            tickcolor='white',
-            tickfont=dict(
-                family="Charter, Bitstream Charter, Sitka Text, Cambria, serif",
-                size=14,
-                color="#041E42"
-            ),
-            side='left',  # Ensure ticks on left
-            ticklen=8,  # Length of tick marks extending from axis
-            tickwidth=1
-        ),
+          # Overall layout
+          showlegend=False,
+          height=500,
+          margin=dict(l=80, r=40, t=80, b=60),
+          plot_bgcolor='white',
+          paper_bgcolor='white',
+          font=dict(
+              family="Charter, Bitstream Charter, Sitka Text, Cambria, serif",
+              color="#041E42"
+          )
+      )
 
-        # Overall layout
-        showlegend=False,
-        height=500,
-        margin=dict(l=80, r=40, t=80, b=60),
-        plot_bgcolor='white',  
-        paper_bgcolor='white',  # White background for the whole chart
-        font=dict(
-            family="Charter, Bitstream Charter, Sitka Text, Cambria, serif",
-            color="#041E42"
-        )
-    )
+      # Add league median reference line with annotation
+      fig.add_hline(
+          y=overall_median,
+          line_dash="dash",
+          line_width=2,
+          opacity=0.6,
+          line_color="#3B4B64"
+          )
 
-    # Add custom y-axis label as annotation
-    # fig.add_annotation(
-    #     x=0.0,  # Position to the right of the plot (in paper coordinates)
-    #     y=0.4,   # At the top of the y-axis range
-    #     xref='paper',  # Use paper coordinates (0-1) for x
-    #     yref='y',      # Use data coordinates for y
-    #     text="(Weighted average depth)",
-    #     showarrow=False,
-    #     font=dict(
-    #         family="Charter, Bitstream Charter, Sitka Text, Cambria, serif",
-    #         size=14,
-    #         color="#041E42"
-    #     ),
-    #     xanchor='left',  # Anchor text to the left
-    #     yanchor='middle'  # Vertically center on 0.4
-    # )
-
-      # Step 6: Add horizontal reference line
-    overall_median = df_rolling['weighted_depth_rolling'].median()
-    fig.add_hline(
-        y=overall_median,
-        line_dash="dash",
-        line_width=1,
-        opacity=0.4,
-        line_color="#3B4B64"  # var(--blue)
-    )
-
-    return fig
-
+      return fig
