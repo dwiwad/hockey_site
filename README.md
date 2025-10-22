@@ -77,14 +77,12 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 	- [ ] Like 4 side by side moving line figures. One for each element of depth or each shape of the game element
 - [X] Change the shot share/depth bar plot to be away and home team primary colors
 - [ ] Detailed Dashboards card and page
-- [ ] Problem: Spoilers!
-	- [ ] Create a listener that looks at the box score endpoint, pings every 10 seconds. Updates pages when clock running turns false.
 - [ ] Start looking into hosting on AWS
 - [X] Localize timezone
 - [ ] TDI
 	- [ ] Start scoping the deep dive
 	- [ ] Stand up an empty post for it
-- [ ] Season shape
+- [ ] Season shape once I have more metrics than depth
 	- [ ] Add Card under detailed Dashboards header
 	- [ ] Add new Page for "Shape of the Season"
 	- [ ] Add depth plotly to that page

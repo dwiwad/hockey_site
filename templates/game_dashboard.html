@@ -224,7 +224,7 @@
 
         const text = progressElement.textContent.trim();
 
-        // Don't poll if game is over
+        // Don't poll if game is over or hasn't started
         if (text === 'Final' || text.includes('not yet Started')) {
           return false;
         }

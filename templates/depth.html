@@ -96,12 +96,18 @@
             <div class="away-segment"
                 style="width: {{ dp.depth_share.away_pct }}%; background-color: {{ away_color }};"
                 data-team="{{ dp.away.team }}"
-                data-depth="{{ '%.3f'|format(dp.away.depth) }}"></div>
+                data-depth="{{ '%.3f'|format(dp.away.depth) }}"
+                data-total="{{ dp.away.total_shots }}"
+                data-players="{{ dp.shots.away.values()|reject('equalto', 0)|list|length }}"
+                data-type="shots"></div>
 
             <div class="home-segment"
                 style="width: {{ dp.depth_share.home_pct }}%; background-color: {{ home_color }};"
                 data-team="{{ dp.home.team }}"
-                data-depth="{{ '%.3f'|format(dp.home.depth) }}"></div>
+                data-depth="{{ '%.3f'|format(dp.home.depth) }}"
+                data-total="{{ dp.home.total_shots }}"
+                data-players="{{ dp.shots.home.values()|reject('equalto', 0)|list|length }}"
+                data-type="shots"></div>
           {% endif %}
         </div>
 
@@ -127,12 +133,17 @@
             <div class="away-segment"
                 style="width: {{ cfdp.cf_depth_share.away_pct }}%; background-color: {{ away_color }};"
                 data-team="{{ cfdp.cf_away.team }}"
-                data-depth="{{ '%.3f'|format(cfdp.cf_away.depth) }}"></div>
-
+                data-depth="{{ '%.3f'|format(cfdp.cf_away.depth) }}"
+                data-total="{{ cfdp.cf_away.total_shots }}"
+                data-players="{{ cfdp.cf.cf_away.values()|reject('equalto', 0)|list|length }}"
+                data-type="cf"></div>
             <div class="home-segment"
                 style="width: {{ cfdp.cf_depth_share.home_pct }}%; background-color: {{ home_color }};"
                 data-team="{{ cfdp.cf_home.team }}"
-                data-depth="{{ '%.3f'|format(cfdp.cf_home.depth) }}"></div>
+                data-depth="{{ '%.3f'|format(cfdp.cf_home.depth) }}"
+                data-total="{{ cfdp.cf_home.total_shots }}"
+                data-players="{{ cfdp.cf.cf_home.values()|reject('equalto', 0)|list|length }}"
+                data-type="cf"></div>
           {% endif %}
         </div>
 
@@ -158,12 +169,18 @@
             <div class="away-segment"
                 style="width: {{ xgdp.xg_depth_share.away_pct }}%; background-color: {{ away_color }};"
                 data-team="{{ xgdp.xg_away.team }}"
-                data-depth="{{ '%.3f'|format(xgdp.xg_away.depth) }}"></div>
+                data-depth="{{ '%.3f'|format(xgdp.xg_away.depth) }}"
+                data-total="{{ xgdp.xg_away.total_xg }}"
+                data-players="{{ xgdp.xg.xg_away.values()|reject('equalto', 0)|list|length }}"
+                data-type="xg"></div>
 
             <div class="home-segment"
                 style="width: {{ xgdp.xg_depth_share.home_pct }}%; background-color: {{ home_color }};"
                 data-team="{{ xgdp.xg_home.team }}"
-                data-depth="{{ '%.3f'|format(xgdp.xg_home.depth) }}"></div>
+                data-depth="{{ '%.3f'|format(xgdp.xg_home.depth) }}"
+                data-total="{{ xgdp.xg_home.total_xg }}"
+                data-players="{{ xgdp.xg.xg_home.values()|reject('equalto', 0)|list|length }}"
+                data-type="xg"></div>
           {% endif %}
         </div>
 
@@ -235,9 +252,31 @@
     const tip = document.getElementById('shot-tooltip');
 
     function setTipText(el) {
-      const depth = el.dataset.depth || "N/A";
-      tip.textContent = `${el.dataset.team}: ${depth}`;
+    const depth = el.dataset.depth || "N/A";
+    const team = el.dataset.team;
+    const type = el.dataset.type;
+    const total = el.dataset.total;
+    const players = el.dataset.players;
+
+    if (depth === "N/A" || !type) {
+      tip.textContent = `${team}: ${depth}`;
+      return;
     }
+
+    let line2 = '';
+    if (type === 'shots') {
+      line2 = `${total} shots from ${players} players`;
+    } else if (type === 'cf') {
+      line2 = `${total} shot attempts from ${players} players`;
+    } else if (type === 'xg') {
+      line2 = `${parseFloat(total).toFixed(2)} xG from ${players} players`;
+    } else if (type === 'toi') {
+      const minutes = Math.floor(total / 60);
+      line2 = `${minutes} min from ${players} players`;
+    }
+
+    tip.innerHTML = `<strong>${team}: ${depth}</strong><br>${line2}`;
+  }
     function showTip(e) {
       const target = e.target.closest('.away-segment, .home-segment');
       if (!target) return;
