@@ -94,7 +94,7 @@ async def game_dashboard(request: Request, season: int, game_id: int, fresh: boo
         # Not enough data yet - check if game hasn't started
         boxscore = scoreboard(pbp)
 
-        if boxscore.get('gameState') == 'FUT':
+        if boxscore.get('gameState') in ('FUT', 'PRE'):
             # Game hasn't started - use rolling averages
             from app.nhl.league_stats import get_current_rolling_averages
             rolling_avgs = get_current_rolling_averages(season=2025)
@@ -104,10 +104,14 @@ async def game_dashboard(request: Request, season: int, game_id: int, fresh: boo
                 home_abbrev = data['home_abbrev']
                 away_abbrev = data['away_abbrev']
 
-                home_weighted_depth = rolling_avgs.get(home_abbrev)
-                away_weighted_depth = rolling_avgs.get(away_abbrev)
+                home_data = rolling_avgs.get(home_abbrev)
+                away_data = rolling_avgs.get(away_abbrev)
 
-                if home_weighted_depth and away_weighted_depth:
+                if home_data and away_data:
+                    # Extract weighted_depth from nested structure
+                    home_weighted_depth = home_data['weighted_depth']
+                    away_weighted_depth = away_data['weighted_depth']
+
                     total = home_weighted_depth + away_weighted_depth
                     home_tdi_pct = round(100.0 * (home_weighted_depth / total), 1)
                     away_tdi_pct = round(100.0 - home_tdi_pct, 1)

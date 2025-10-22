@@ -46,24 +46,47 @@ def get_league_depth_data(season=2025):
 def save_current_rolling_averages(season=2025):
     """
     Calculate and save current 10-game rolling averages to S3.
-    Called by the 5am job after backfilling.
+    Stores both weighted depth AND the 4 underlying Gini coefficients.
     
     Returns:
-        dict: {team_abbrev: weighted_depth_rolling}
+        dict: {team_abbrev: {weighted_depth, shot_gini, cf_gini, xg_gini, toi_gini}}
     """
     import s3fs
     import json
     from datetime import datetime
 
-    # Get the data (already has rolling averages calculated)
+    # Get the rolling averages data
     df_rolling, _ = get_league_depth_data(season=season)
 
-    # Get most recent rolling average for each team
-    latest = df_rolling.groupby('team_abbrev')['weighted_depth_rolling'].last()
+    # Calculate Gini coefficients from depth values
+    # Remember: gini = 1 - depth
+    df_rolling['shot_gini'] = 1 - df_rolling['sog_depth']
+    df_rolling['cf_gini'] = 1 - df_rolling['cf_depth']
+    df_rolling['xg_gini'] = 1 - df_rolling['xg_depth']
+    df_rolling['toi_gini'] = 1 - df_rolling['toi_depth']
 
-    # Convert to dict
+    # Calculate 10-game rolling averages for each Gini
+    for col in ['shot_gini', 'cf_gini', 'xg_gini', 'toi_gini']:
+        df_rolling[f'{col}_rolling'] = (
+            df_rolling.groupby('team_abbrev')[col]
+            .transform(lambda x: x.rolling(window=10, min_periods=1).mean())
+        )
+
+    # Get most recent values for each team
+    latest = df_rolling.groupby('team_abbrev').last()
+
+    # Build the nested dictionary structure
     rolling_dict = {
-        "data": latest.to_dict(),
+        "data": {
+            team: {
+                "weighted_depth": float(row['weighted_depth_rolling']),
+                "shot_gini": float(row['shot_gini_rolling']),
+                "cf_gini": float(row['cf_gini_rolling']),
+                "xg_gini": float(row['xg_gini_rolling']),
+                "toi_gini": float(row['toi_gini_rolling'])
+            }
+            for team, row in latest.iterrows()
+        },
         "updated_at": datetime.utcnow().isoformat(),
         "season": season
     }

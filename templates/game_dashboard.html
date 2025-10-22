@@ -87,10 +87,6 @@
 
       <article class="game-card">
         <h2>Total Depth Index</h2>
-        <p class="tdi-explainer">
-        Higher TDI means a more balanced contribution across the lineup.
-        </p>
-
         <div 
         hx-get="/dashboard/games/{{ season }}/{{ game_id }}"
         hx-select=".shot-bar"
@@ -119,6 +115,12 @@
             data-depth="{{ '%.3f'|format(home_weighted_depth) }}"></div>
         {% endif %}
         </div>
+
+        <p class="tdi-explainer">
+        Higher TDI means a more balanced contribution across the lineup. At the start of the game, depth for each team is a blend of each team's 10-game rolling
+        average depth and new data from this game. By the end of the second period, depth scores reflect <em>only</em> each team's depth in this specific game.
+        </p>
+
 
         <p class="depth-link">
           <a href="/dashboard/games/{{ season }}/{{ game_id }}/depth">
