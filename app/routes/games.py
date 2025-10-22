@@ -72,13 +72,13 @@ async def game_dashboard(request: Request, season: int, game_id: int, fresh: boo
 
     # Bar visualization using weighted raw depths (not z-scored)
     if home_tdi is not None and away_tdi is not None:
-        # Use raw depths (not z-scored) weighted by factor coefficients
+        # Live or finished game - use calculated weighted depths
         home_weighted_depth = (
             FACTOR_SCORE_COEFFICIENTS['cf_depth_z'] * (1 - home_cf_gini) +
             FACTOR_SCORE_COEFFICIENTS['sog_depth_z'] * (1 - home_sog_gini) +
             FACTOR_SCORE_COEFFICIENTS['toi_depth_z'] * (1 - home_toi_gini) +
             FACTOR_SCORE_COEFFICIENTS['xgoal_depth_z'] * (1 - home_xg_gini)
-        )
+          )
 
         away_weighted_depth = (
             FACTOR_SCORE_COEFFICIENTS['cf_depth_z'] * (1 - away_cf_gini) +
@@ -91,8 +91,42 @@ async def game_dashboard(request: Request, season: int, game_id: int, fresh: boo
         home_tdi_pct = round(100.0 * (home_weighted_depth / total), 1)
         away_tdi_pct = round(100.0 - home_tdi_pct, 1)
     else:
-        home_tdi_pct = 50.0
-        away_tdi_pct = 50.0
+        # Not enough data yet - check if game hasn't started
+        boxscore = scoreboard(pbp)
+
+        if boxscore.get('gameState') == 'FUT':
+            # Game hasn't started - use rolling averages
+            from app.nhl.league_stats import get_current_rolling_averages
+            rolling_avgs = get_current_rolling_averages(season=2025)
+
+            if rolling_avgs:
+                data = sog_by_team(pbp)
+                home_abbrev = data['home_abbrev']
+                away_abbrev = data['away_abbrev']
+
+                home_weighted_depth = rolling_avgs.get(home_abbrev)
+                away_weighted_depth = rolling_avgs.get(away_abbrev)
+
+                if home_weighted_depth and away_weighted_depth:
+                    total = home_weighted_depth + away_weighted_depth
+                    home_tdi_pct = round(100.0 * (home_weighted_depth / total), 1)
+                    away_tdi_pct = round(100.0 - home_tdi_pct, 1)
+                else:
+                    home_weighted_depth = None
+                    away_weighted_depth = None
+                    home_tdi_pct = 50.0
+                    away_tdi_pct = 50.0
+            else:
+                home_weighted_depth = None
+                away_weighted_depth = None
+                home_tdi_pct = 50.0
+                away_tdi_pct = 50.0
+        else:
+            # Game in progress but not enough data yet
+            home_weighted_depth = None
+            away_weighted_depth = None
+            home_tdi_pct = 50.0
+            away_tdi_pct = 50.0
 
     # Parsers to actually work with the data
     data = sog_by_team(pbp)
@@ -124,8 +158,8 @@ async def game_dashboard(request: Request, season: int, game_id: int, fresh: boo
          "away_tdi": away_tdi,
          "home_tdi_pct": home_tdi_pct,
          "away_tdi_pct": away_tdi_pct,
-         "home_weighted_depth": home_weighted_depth if home_tdi is not None else None,
-         "away_weighted_depth": away_weighted_depth if home_tdi is not None else None,
+         "home_weighted_depth": home_weighted_depth,
+         "away_weighted_depth": away_weighted_depth,
          "away_color": TEAM_COLORS.get(data['away_abbrev'], '#999999'),
         "home_color": TEAM_COLORS.get(data['home_abbrev'], '#999999'),
         }

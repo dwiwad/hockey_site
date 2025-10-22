@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 # else:
 #     logger.info("No existing master file")
 
-start_date = date(2025, 10, 21)
+start_date = date(2025, 10, 5)
 end_date = date.today() - timedelta(days=1)  # Yesterday
 
 total_games = 0
@@ -56,7 +56,6 @@ while current_date <= end_date:
           pbp = fetch_game_pbp(game_id, season, ttl_seconds=3600)
           box = fetch_game_box(game_id, season, ttl_seconds=3600)
           xg = fetch_moneypuck_player_xg_csv(game_id, season, ttl_seconds=3600)
-          shifts = fetch_game_shifts(game_id, season, ttl_seconds=3600)
 
           # Calculate snapshot
           from app.nhl.depth_tracker import calculate_game_depth_snapshot
@@ -95,3 +94,11 @@ logger.info(f"✅ Written: {successful}")
 logger.info(f"⚠️ Skipped: {skipped}")
 logger.info(f"❌ Errors: {errors}")
 logger.info(f"📁 Master: s3://hockey-decoded/depth_scores/depth_scores.parquet")
+
+# Update rolling averages file
+try:
+    from app.nhl.league_stats import save_current_rolling_averages
+    save_current_rolling_averages(season=2025)
+    logger.info("✅ Rolling averages file updated: s3://hockey-decoded/depth_scores/rolling_averages.json")
+except Exception as e:
+    logger.error(f"❌ Error updating rolling averages: {e}")

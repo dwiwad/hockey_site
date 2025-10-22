@@ -97,7 +97,7 @@
         hx-swap="outerHTML"
         class="shot-bar depth-bar">
         
-        {% if home_tdi is none or away_tdi is none %}
+        {% if home_weighted_depth is none or away_weighted_depth is none %}
           <div class="away-segment"
               style="width:50%; background-color: {{ away_color }};"
               data-team="{{ sog.away_abbrev }}"

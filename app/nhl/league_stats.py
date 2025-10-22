@@ -43,6 +43,62 @@ def get_league_depth_data(season=2025):
 
     return df_rolling, last_modified
 
+def save_current_rolling_averages(season=2025):
+    """
+    Calculate and save current 10-game rolling averages to S3.
+    Called by the 5am job after backfilling.
+    
+    Returns:
+        dict: {team_abbrev: weighted_depth_rolling}
+    """
+    import s3fs
+    import json
+    from datetime import datetime
+
+    # Get the data (already has rolling averages calculated)
+    df_rolling, _ = get_league_depth_data(season=season)
+
+    # Get most recent rolling average for each team
+    latest = df_rolling.groupby('team_abbrev')['weighted_depth_rolling'].last()
+
+    # Convert to dict
+    rolling_dict = {
+        "data": latest.to_dict(),
+        "updated_at": datetime.utcnow().isoformat(),
+        "season": season
+    }
+
+    # Save to S3
+    s3 = s3fs.S3FileSystem()
+    file_path = 'hockey-decoded/depth_scores/rolling_averages.json'
+
+    with s3.open(file_path, 'w') as f:
+        json.dump(rolling_dict, f, indent=2)
+
+    return rolling_dict
+
+def get_current_rolling_averages(season=2025):
+    """
+    Read cached rolling averages from S3.
+    
+    Returns:
+        dict: {team_abbrev: weighted_depth_rolling} or None if file doesn't exist
+    """
+    import s3fs
+    import json
+
+    try:
+        s3 = s3fs.S3FileSystem()
+        file_path = 'hockey-decoded/depth_scores/rolling_averages.json'
+
+        with s3.open(file_path, 'r') as f:
+            rolling_dict = json.load(f)
+
+        return rolling_dict['data']
+    except Exception as e:
+        print(f"Error reading rolling averages: {e}")
+        return None
+
 def create_league_depth_boxplot(df_rolling):
       """
       Create Plotly bar chart of team depth rankings.
