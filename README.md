@@ -58,7 +58,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 		- [X] Create the game level table of 10 game depth rolling ave for priors
 		- [X] Wire up the live depth table for display - the sem model
 			- [X] I'm thinking a dataset for the game that mirrors my analyses dataset, but checks, computes changes, and appends every 15-30 seconds
-		- [ ] Add new info to the hovers. For shots, X shots from Y players, X CF from Y players, X xG from Y players, MM:SS total shift time across Y players
+		- [X] Add new info to the hovers. For shots, X shots from Y players, X CF from Y players, X xG from Y players
 		- [ ] Add total depth minute by minute beside the bars on the detail page, a second card. This I can do once the data are stored.
 	- [ ] Add weighted average decay to fix starting points
 	- [X] Fix to pull TOI from the boxscore endpoint, not the shift chart end point!
