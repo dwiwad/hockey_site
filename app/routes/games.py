@@ -46,7 +46,7 @@ async def game_dashboard(request: Request, season: int, game_id: int, fresh: boo
     has_toi_data = not toi_depth_payload.get('no_toi', True)
 
     if has_shot_data and has_cf_data and has_xg_data and has_toi_data:
-        # Extract Gini coefficients
+        # Extract live Gini coefficients from game
         home_sog_gini = shot_depth_payload['home']['ineq']
         away_sog_gini = shot_depth_payload['away']['ineq']
 
@@ -59,7 +59,74 @@ async def game_dashboard(request: Request, season: int, game_id: int, fresh: boo
         home_toi_gini = toi_depth_payload['toi_home']['ineq']
         away_toi_gini = toi_depth_payload['toi_away']['ineq']
 
-        # Calculate TDI
+        # BAYESIAN BLENDING: Check if we should blend with priors
+        boxscore = scoreboard(pbp)
+        clock_data = box.get("clock", {}) or {}
+
+        # Calculate time elapsed (in minutes)
+        if boxscore.get('gameState') not in ('FINAL', 'OFF', 'FUT', 'PRE'):
+            # Game is live - consider blending
+            period = boxscore.get('period', 1)
+            time_remaining = clock_data.get('timeRemaining', '20:00')
+
+            # Parse time remaining (format: "MM:SS")
+            try:
+                mins, secs = time_remaining.split(':')
+                time_remaining_mins = int(mins) + int(secs) / 60
+            except:
+                time_remaining_mins = 20.0
+
+            # Calculate elapsed time
+            if period == 1:
+                time_elapsed = 20 - time_remaining_mins
+            elif period == 2:
+                time_elapsed = 20 + (20 - time_remaining_mins)
+            elif period == 3:
+                time_elapsed = 40 + (20 - time_remaining_mins)
+            else:  # OT or later
+                time_elapsed = 60
+
+            # Get shot counts for each team
+            home_shots = shot_depth_payload['home']['total_shots']
+            away_shots = shot_depth_payload['away']['total_shots']
+
+            # Blending thresholds
+            SHOTS_THRESHOLD = 15.0
+            TIME_THRESHOLD = 40.0
+
+            # Calculate live weights for each team
+            shots_weight_home = min(1.0, home_shots / SHOTS_THRESHOLD)
+            shots_weight_away = min(1.0, away_shots / SHOTS_THRESHOLD)
+            time_weight = min(1.0, time_elapsed / TIME_THRESHOLD)
+
+            weight_live_home = max(shots_weight_home, time_weight)
+            weight_live_away = max(shots_weight_away, time_weight)
+
+            # Load prior Ginis from rolling averages
+            from app.nhl.league_stats import get_current_rolling_averages
+            rolling_avgs = get_current_rolling_averages(season=2025)
+
+            if rolling_avgs and weight_live_home < 1.0:  # Only blend if not full confidence yet
+                data = sog_by_team(pbp)
+                home_data = rolling_avgs.get(data['home_abbrev'])
+                away_data = rolling_avgs.get(data['away_abbrev'])
+
+                if home_data and away_data:
+                    # Blend home team Ginis
+                    weight_prior_home = 1.0 - weight_live_home
+                    home_sog_gini = (weight_prior_home * home_data['shot_gini']) + (weight_live_home * home_sog_gini)
+                    home_cf_gini = (weight_prior_home * home_data['cf_gini']) + (weight_live_home * home_cf_gini)
+                    home_xg_gini = (weight_prior_home * home_data['xg_gini']) + (weight_live_home * home_xg_gini)
+                    home_toi_gini = (weight_prior_home * home_data['toi_gini']) + (weight_live_home * home_toi_gini)
+
+                    # Blend away team Ginis
+                    weight_prior_away = 1.0 - weight_live_away
+                    away_sog_gini = (weight_prior_away * away_data['shot_gini']) + (weight_live_away * away_sog_gini)
+                    away_cf_gini = (weight_prior_away * away_data['cf_gini']) + (weight_live_away * away_cf_gini)
+                    away_xg_gini = (weight_prior_away * away_data['xg_gini']) + (weight_live_away * away_xg_gini)
+                    away_toi_gini = (weight_prior_away * away_data['toi_gini']) + (weight_live_away * away_toi_gini)
+
+        # Calculate TDI from (possibly blended) Ginis
         home_tdi, home_raw_tdi = calculate_tdi(home_cf_gini, home_sog_gini, home_toi_gini, home_xg_gini)
         away_tdi, away_raw_tdi = calculate_tdi(away_cf_gini, away_sog_gini, away_toi_gini, away_xg_gini)
 
@@ -72,13 +139,13 @@ async def game_dashboard(request: Request, season: int, game_id: int, fresh: boo
 
     # Bar visualization using weighted raw depths (not z-scored)
     if home_tdi is not None and away_tdi is not None:
-        # Live or finished game - use calculated weighted depths
+        # Live or finished game - use calculated weighted depths from (blended) Ginis
         home_weighted_depth = (
             FACTOR_SCORE_COEFFICIENTS['cf_depth_z'] * (1 - home_cf_gini) +
             FACTOR_SCORE_COEFFICIENTS['sog_depth_z'] * (1 - home_sog_gini) +
             FACTOR_SCORE_COEFFICIENTS['toi_depth_z'] * (1 - home_toi_gini) +
             FACTOR_SCORE_COEFFICIENTS['xgoal_depth_z'] * (1 - home_xg_gini)
-          )
+        )
 
         away_weighted_depth = (
             FACTOR_SCORE_COEFFICIENTS['cf_depth_z'] * (1 - away_cf_gini) +
