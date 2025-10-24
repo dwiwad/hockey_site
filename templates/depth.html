@@ -218,21 +218,44 @@
 
       <article class="game-card explainer-card">
         <h2>Understanding Depth Metrics</h2>
-
-        <h3>What You're Seeing</h3>
+        
+        <p> 
+          Each bar shows how evenly a team distributed shots, scoring chances, and ice time across their lineup. Higher depth means more 
+          players contributed, rather than relying on a few stars.
+          The core concept behind each component of the Total Depth Index (TDI) is a Gini coefficient. The Gini coefficient is a statistical measure 
+          of dispersion typically used to capture inequality in economic resources, but it can be used to capture dispersion in any instance where there 
+          is a finite resource (e.g., total shots taken or time on the ice) distributed across a fixed number of actors (i.e., skaters on the ice). 
+        </p>
         <p>
-          Each bar shows how evenly a team distributed shots, scoring chances, and ice time
-          across their lineup. Higher depth means more players contributed, rather than relying
-          on a few stars.
+          For example, between 2010 and 2025, the game with the most unevenly distributed shots was played by the New York Islanders in 2014 against 
+          the Washington Capitals. In this game, the New York Islanders rostered a full 18 skaters and took 11 shots. These 11 shots came from six players,
+          resulting in a shot-on-goal gini coefficient of 0.783. Conversely, the game with the most evenly distributed shots was played by the Columbus 
+          Blue Jackets in 2016 against the Colorado Avalanche. In this game, the Columbus Blue Jackets also rostered a full 18 skaters and took 37 shots-on-goal. 
+          These 37 shots came from 17 players, resulting in a shot-on-goal gini of 0.158. Thus, taking depth as the complement of these shot inequalities 
+          (i.e., 1 - shot-on-goal gini), the New York Islanders had a shot depth of 0.217, and the Columbus Blue Jackets had a shot depth of 0.842, respectively, 
+          reflecting very shallow and very deep shooting distributions. Notably, shot depth is not problematically correlated with volume metrics like total shot 
+          counts or total expected goals.
         </p>
 
         <h3>The Four Components</h3>
-        <ul>
-          <li><strong>Shot Depth:</strong> How evenly distributed shots on goal were</li>
-          <li><strong>CF Depth:</strong> How evenly distributed shot attempts were (Corsi For)</li>
-          <li><strong>xG Depth:</strong> How evenly distributed expected goals were</li>
-          <li><strong>TOI Depth:</strong> How evenly ice time was distributed</li>
-        </ul>
+      <section class="card-row">
+        <p class="small-note">
+          <strong>Shot Depth:</strong><br><br>
+          How evenly distributed shots on goal and goals are across the roster.
+        </p>
+        <p class="small-note">
+          <strong>CF Dept:</strong><br><br>
+          Corsi-For is comprised of all shots on goal, goals, as well as blocked and missed shots. Effectively, "shot attempts."
+        </p>
+        <p class="small-note">
+          <strong>xG Depth:</strong><br><br>
+          How evenly distributed expected goals were across the roster.
+        </p>
+        <p class="small-note">
+          <strong>TOI Depth:</strong><br><br>
+          How evenly ice time is distributed across the roster.
+        </p>
+      </section>
 
         <p class="note">
           <strong>Note:</strong> These metrics show depth <em>in this specific game</em>.

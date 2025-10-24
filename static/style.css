@@ -114,6 +114,14 @@
   font-size: 0.9rem;
 }
 
+.small-note {
+  width: 200px;
+  margin-top: 1rem;  /* Less space before note */
+  padding: 0.75rem;  /* Less padding inside */
+  background: #f0f4f8;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
  /* ==========================================================================
      BREADCRUMB SCOREBOARD - STACKED VERSION (for depth page)
      ========================================================================== */
