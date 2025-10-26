@@ -62,8 +62,8 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 		- [ ] Add total depth minute by minute beside the bars on the detail page, a second card. This I can do once the data are stored.
 	- [X] Add weighted average decay to fix starting points
 	- [X] Fix to pull TOI from the boxscore endpoint, not the shift chart end point!
-	- [ ] Add priors and weighted decay to the individual depth bars
-	- [ ] Add small cards to the depth explainer, four side by side like the note, one for each depth metric
+	- [X] Add priors and weighted decay to the individual depth bars
+	- [X] Add small cards to the depth explainer, four side by side like the note, one for each depth metric
 - [X] Data Storage - Migrate to S3; this is fine for now.
 	- [X] How do I store previous games so people can look at history?
 	- [X] S3 migration; reading and writing to s3 instead of locally
@@ -78,7 +78,6 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [ ] For the shape of the game would it be better to have a running line? like moneypuck. I'm finding myself wanting to see how depth balance has evolved over the game...
 	- [ ] Like 4 side by side moving line figures. One for each element of depth or each shape of the game element
 - [X] Change the shot share/depth bar plot to be away and home team primary colors
-- [ ] Detailed Dashboards card and page
 - [ ] Start looking into hosting on AWS
 - [X] Localize timezone
 - [ ] TDI
