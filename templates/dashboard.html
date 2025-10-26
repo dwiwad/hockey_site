@@ -53,7 +53,7 @@
                             <!-- Center stack -->
                             <div class="center-stack">
                                 <h2 class="matchup">{{ game.away }} <span style="font-size:16px;">AT</span> {{ game.home }}</h2>
-                                <h3 class="start">{{ game.start }}</h3>
+                                <h3 class="start" data-start-utc="{{ game.start_utc }}">{{ game.start }}</h3>
                                 <button class="game-button"><a href="/dashboard/games/{{ game.season }}/{{ game.game_id }}">Open dashboard</a></button>
                             </div>
 
@@ -109,6 +109,24 @@
         <!-- <h1>Static Dashboards</h1> -->
             <!-- I might want static or historical dashboards to be below but that sort of goes against the clean design philosophy. Link to elsewhere? --> 
     </main>
-</body>
 
+<script>
+  // Convert game times from UTC to user's local timezone
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[data-start-utc]').forEach(el => {
+      const utcTime = el.dataset.startUtc;
+      if (!utcTime) return;
+
+      const date = new Date(utcTime);
+      const localTime = date.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+
+      el.textContent = localTime;
+    });
+  });
+</script>
+</body>
 </html>

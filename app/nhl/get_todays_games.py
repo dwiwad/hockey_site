@@ -72,6 +72,7 @@ def get_games_for_date(target_date: date, force_refresh: bool = False) -> pd.Dat
             "game_id" : games["id"],
             "season"  : games["season"],
             "start"   : games["start_et_str"],
+            "start_utc": games["startTimeUTC"],
             "away"    : games["awayTeam.commonName.default"],
             "home"    : games["homeTeam.commonName.default"],
             "away_tri": games["awayTeam.abbrev"],
