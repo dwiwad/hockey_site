@@ -486,3 +486,112 @@ async def game_depth_breakdown(request: Request, season: int, game_id: int):
         "home_color": TEAM_COLORS.get(data['home_abbrev'], '#999999'),
          }
     )
+
+@games_router.get("/dashboard/games/{season}/{game_id}/depth/timeseries")
+async def game_depth_timeseries(request: Request, season: int, game_id: int):
+    """
+    Return time series data for live depth tracking.
+    Returns JSON with timestamps and depth values for Plotly visualization.
+    """
+    import pandas as pd
+    import s3fs
+
+    s3_path = f"s3://hockey-decoded/live_game_depth/season={season}/game_id={game_id}.parquet"
+
+    try:
+        # Read the live tracking file
+        df = pd.read_parquet(s3_path, engine='fastparquet')
+
+        if df.empty:
+            return {
+                "status": "no_data",
+                "home_abbrev": None,
+                "away_abbrev": None,
+                "timestamps": [],
+                "home_weighted_depth": [],
+                "away_weighted_depth": [],
+                "home_sog_depth": [],
+                "away_sog_depth": [],
+                "home_cf_depth": [],
+                "away_cf_depth": [],
+                "home_xg_depth": [],
+                "away_xg_depth": [],
+                "home_toi_depth": [],
+                "away_toi_depth": []
+            }
+
+        # Sort by timestamp
+        df = df.sort_values('timestamp')
+
+        # Calculate game minute from period and time_remaining
+        def calc_game_minute(row):
+            period = row['period']
+            time_remaining = row['time_remaining']
+
+            if not time_remaining or pd.isna(time_remaining):
+                return None
+
+            try:
+                mins, secs = str(time_remaining).split(':')
+                time_remaining_mins = int(mins) + int(secs) / 60
+            except:
+                time_remaining_mins = 20.0
+
+            # Calculate elapsed time in this period
+            elapsed_in_period = 20 - time_remaining_mins
+
+            # Add minutes from previous periods
+            if period == 1:
+                return elapsed_in_period
+            elif period == 2:
+                return 20 + elapsed_in_period
+            elif period == 3:
+                return 40 + elapsed_in_period
+            else:  # OT
+                return 60 + elapsed_in_period
+
+        df['game_minute'] = df.apply(calc_game_minute, axis=1)
+
+        # Get team abbreviations
+        home_abbrev = df['home_abbrev'].iloc[0]
+        away_abbrev = df['away_abbrev'].iloc[0]
+
+        # Convert timestamps to strings (ISO format for JavaScript)
+        timestamps = df['timestamp'].dt.strftime('%Y-%m-%dT%H:%M:%S').tolist()
+
+        # Prepare data for Plotly
+        data = {
+            "status": "success",
+            "home_abbrev": home_abbrev,
+            "away_abbrev": away_abbrev,
+            "game_minutes": df['game_minute'].tolist(),
+            "timestamps": timestamps,
+            "home_weighted_depth": df['home_weighted_depth'].tolist(),
+            "away_weighted_depth": df['away_weighted_depth'].tolist(),
+            "home_sog_depth": df['home_sog_depth'].tolist(),
+            "away_sog_depth": df['away_sog_depth'].tolist(),
+            "home_cf_depth": df['home_cf_depth'].tolist(),
+            "away_cf_depth": df['away_cf_depth'].tolist(),
+            "home_xg_depth": df['home_xg_depth'].tolist(),
+            "away_xg_depth": df['away_xg_depth'].tolist(),
+            "home_toi_depth": df['home_toi_depth'].tolist(),
+            "away_toi_depth": df['away_toi_depth'].tolist()
+        }
+
+        return data
+    
+    except FileNotFoundError:
+        return {
+            "status": "no_data",
+            "home_abbrev": None,
+            "away_abbrev": None,
+            "timestamps": [],
+            "home_weighted_depth": [],
+            "away_weighted_depth": []
+        }
+    except Exception as e:
+        logger.error(f"Error reading live depth timeseries: {e}")
+        return {
+            "status": "error",
+            "message": str(e)
+        }

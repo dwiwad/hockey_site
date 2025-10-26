@@ -153,24 +153,20 @@ def calculate_game_depth_snapshot(
                       # Blend home team Ginis
                       if weight_live_home < 1.0:
                           weight_prior_home = 1.0 - weight_live_home
-                          home_sog_gini = (weight_prior_home * home_data['shot_gini']) + (weight_live_home *
-  home_sog_gini)
+                          home_sog_gini = (weight_prior_home * home_data['shot_gini']) + (weight_live_home * home_sog_gini)
                           home_cf_gini = (weight_prior_home * home_data['cf_gini']) + (weight_live_home * home_cf_gini)
                           home_xg_gini = (weight_prior_home * home_data['xg_gini']) + (weight_live_home * home_xg_gini)
                           home_toi_gini = (weight_prior_home * home_data['toi_gini']) + (weight_live_home * home_toi_gini)
-                          logger.debug(f"Game {game_id} - Blended home {home_abbrev} Ginis (weight: 
-  {weight_live_home:.2f})")
+                          logger.debug(f"Game {game_id} - Blended home {home_abbrev} Ginis (weight: {weight_live_home:.2f})")
 
                       # Blend away team Ginis
                       if weight_live_away < 1.0:
                           weight_prior_away = 1.0 - weight_live_away
-                          away_sog_gini = (weight_prior_away * away_data['shot_gini']) + (weight_live_away *
-  away_sog_gini)
+                          away_sog_gini = (weight_prior_away * away_data['shot_gini']) + (weight_live_away * away_sog_gini)
                           away_cf_gini = (weight_prior_away * away_data['cf_gini']) + (weight_live_away * away_cf_gini)
                           away_xg_gini = (weight_prior_away * away_data['xg_gini']) + (weight_live_away * away_xg_gini)
                           away_toi_gini = (weight_prior_away * away_data['toi_gini']) + (weight_live_away * away_toi_gini)
-                          logger.debug(f"Game {game_id} - Blended away {away_abbrev} Ginis (weight: 
-  {weight_live_away:.2f})")
+                          logger.debug(f"Game {game_id} - Blended away {away_abbrev} Ginis (weight: {weight_live_away:.2f})")
 
       # Calculate TDI using SEM factor scores (now with blended Ginis)
       home_tdi, home_raw_tdi = calculate_tdi(

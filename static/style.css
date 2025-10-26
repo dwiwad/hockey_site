@@ -360,6 +360,7 @@ body {
     gap: 2rem; /* space between the cards */
     padding: 2rem;
     flex-wrap: wrap; /* allows them to stack on small screens */
+    align-items: stretch;
 }
 
 .card {

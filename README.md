@@ -47,7 +47,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 	- [ ] Distances flown by team by season - inequality?
     - [ ] Quantifying generational talent vs everyone else?
     - [ ] TBD
-- [ ] Shape of the Game Dashboard
+- [X] Shape of the Game Dashboard
 	- [X] Scoreboard
 		- [X] Bring in boxscore, clean up router and naming conventions
     - [ ] Live in game TDI 
@@ -59,7 +59,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 		- [X] Wire up the live depth table for display - the sem model
 			- [X] I'm thinking a dataset for the game that mirrors my analyses dataset, but checks, computes changes, and appends every 15-30 seconds
 		- [X] Add new info to the hovers. For shots, X shots from Y players, X CF from Y players, X xG from Y players
-		- [ ] Add total depth minute by minute beside the bars on the detail page, a second card. This I can do once the data are stored.
+		- [X] Add total depth minute by minute beside the bars on the detail page, a second card. This I can do once the data are stored.
 	- [X] Add weighted average decay to fix starting points
 	- [X] Fix to pull TOI from the boxscore endpoint, not the shift chart end point!
 	- [X] Add priors and weighted decay to the individual depth bars

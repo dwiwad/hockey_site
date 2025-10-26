@@ -72,149 +72,161 @@
 
       <h1>Detailed Depth Breakdown</h1>
 
-      <article class="game-card">
-        <h2>Depth</h2>
-        <h3>Shot Depth</h3>
-        {% set dp = shot_depth_payload if shot_depth_payload is defined else None %}
+      <div class="card-row">
+        <article class="game-card">
+          <h2>Detailed Depth</h2>
+          <h3>Shot Depth</h3>
+          {% set dp = shot_depth_payload if shot_depth_payload is defined else None %}
 
-        <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}/depth"
-              hx-trigger="every 60s"
-              hx-select=".shot-depth-bar"
-              hx-swap="outerHTML"
-              class="shot-bar depth-bar shot-depth-bar">
-          {% if dp is none or dp.no_shots %}
-            <div class="away-segment"
-                style="width:50%; background-color: {{ away_color }};"
-                data-team="{{ dp.away.team if dp else 'AWAY' }}"
-                data-depth="N/A"></div>
+          <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}/depth"
+                hx-trigger="every 60s"
+                hx-select=".shot-depth-bar"
+                hx-swap="outerHTML"
+                class="shot-bar depth-bar shot-depth-bar">
+            {% if dp is none or dp.no_shots %}
+              <div class="away-segment"
+                  style="width:50%; background-color: {{ away_color }};"
+                  data-team="{{ dp.away.team if dp else 'AWAY' }}"
+                  data-depth="N/A"></div>
 
-            <div class="home-segment"
-                style="width:50%; background-color: {{ home_color }};"
-                data-team="{{ dp.home.team if dp else 'HOME' }}"
-                data-depth="N/A"></div>
-          {% else %}
-            <div class="away-segment"
-                style="width: {{ dp.depth_share.away_pct }}%; background-color: {{ away_color }};"
-                data-team="{{ dp.away.team }}"
-                data-depth="{{ '%.3f'|format(dp.away.depth) }}"
-                data-total="{{ dp.away.total_shots }}"
-                data-players="{{ dp.shots.away.values()|reject('equalto', 0)|list|length }}"
-                data-type="shots"></div>
+              <div class="home-segment"
+                  style="width:50%; background-color: {{ home_color }};"
+                  data-team="{{ dp.home.team if dp else 'HOME' }}"
+                  data-depth="N/A"></div>
+            {% else %}
+              <div class="away-segment"
+                  style="width: {{ dp.depth_share.away_pct }}%; background-color: {{ away_color }};"
+                  data-team="{{ dp.away.team }}"
+                  data-depth="{{ '%.3f'|format(dp.away.depth) }}"
+                  data-total="{{ dp.away.total_shots }}"
+                  data-players="{{ dp.shots.away.values()|reject('equalto', 0)|list|length }}"
+                  data-type="shots"></div>
 
-            <div class="home-segment"
-                style="width: {{ dp.depth_share.home_pct }}%; background-color: {{ home_color }};"
-                data-team="{{ dp.home.team }}"
-                data-depth="{{ '%.3f'|format(dp.home.depth) }}"
-                data-total="{{ dp.home.total_shots }}"
-                data-players="{{ dp.shots.home.values()|reject('equalto', 0)|list|length }}"
-                data-type="shots"></div>
-          {% endif %}
+              <div class="home-segment"
+                  style="width: {{ dp.depth_share.home_pct }}%; background-color: {{ home_color }};"
+                  data-team="{{ dp.home.team }}"
+                  data-depth="{{ '%.3f'|format(dp.home.depth) }}"
+                  data-total="{{ dp.home.total_shots }}"
+                  data-players="{{ dp.shots.home.values()|reject('equalto', 0)|list|length }}"
+                  data-type="shots"></div>
+            {% endif %}
+          </div>
+
+          <h3>CF Depth</h3>
+          {% set cfdp = cf_depth_payload if cf_depth_payload is defined else None %}
+
+          <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}/depth"
+                hx-trigger="every 60s"
+                hx-select=".cf-depth-bar"
+                hx-swap="outerHTML"
+                class="shot-bar depth-bar cf-depth-bar">
+            {% if cfdp is none or cfdp.no_shots %}
+              <div class="away-segment"
+                  style="width:50%; background-color: {{ away_color }};"
+                  data-team="{{ cfdp.cf_away.team if cfdp else 'AWAY' }}"
+                  data-depth="N/A"></div>
+
+              <div class="home-segment"
+                  style="width:50%; background-color: {{ home_color }};"
+                  data-team="{{ cfdp.cf_home.team if cfdp else 'HOME' }}"
+                  data-depth="N/A"></div>
+            {% else %}
+              <div class="away-segment"
+                  style="width: {{ cfdp.cf_depth_share.away_pct }}%; background-color: {{ away_color }};"
+                  data-team="{{ cfdp.cf_away.team }}"
+                  data-depth="{{ '%.3f'|format(cfdp.cf_away.depth) }}"
+                  data-total="{{ cfdp.cf_away.total_shots }}"
+                  data-players="{{ cfdp.cf.cf_away.values()|reject('equalto', 0)|list|length }}"
+                  data-type="cf"></div>
+              <div class="home-segment"
+                  style="width: {{ cfdp.cf_depth_share.home_pct }}%; background-color: {{ home_color }};"
+                  data-team="{{ cfdp.cf_home.team }}"
+                  data-depth="{{ '%.3f'|format(cfdp.cf_home.depth) }}"
+                  data-total="{{ cfdp.cf_home.total_shots }}"
+                  data-players="{{ cfdp.cf.cf_home.values()|reject('equalto', 0)|list|length }}"
+                  data-type="cf"></div>
+            {% endif %}
+          </div>
+
+          <h3>xG Depth</h3>
+          {% set xgdp = xg_depth_payload if xg_depth_payload is defined else None %}
+
+          <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}/depth"
+                hx-trigger="every 60s"
+                hx-select=".xg-depth-bar"
+                hx-swap="outerHTML"
+                class="shot-bar depth-bar xg-depth-bar">
+            {% if xgdp is none or xgdp.no_xg %}
+              <div class="away-segment"
+                  style="width:50%; background-color: {{ away_color }};"
+                  data-team="{{ xgdp.xg_away.team if xgdp else 'AWAY' }}"
+                  data-depth="N/A"></div>
+
+              <div class="home-segment"
+                  style="width:50%; background-color: {{ home_color }};"
+                  data-team="{{ xgdp.xg_home.team if xgdp else 'HOME' }}"
+                  data-depth="N/A"></div>
+            {% else %}
+              <div class="away-segment"
+                  style="width: {{ xgdp.xg_depth_share.away_pct }}%; background-color: {{ away_color }};"
+                  data-team="{{ xgdp.xg_away.team }}"
+                  data-depth="{{ '%.3f'|format(xgdp.xg_away.depth) }}"
+                  data-total="{{ xgdp.xg_away.total_xg }}"
+                  data-players="{{ xgdp.xg.xg_away.values()|reject('equalto', 0)|list|length }}"
+                  data-type="xg"></div>
+
+              <div class="home-segment"
+                  style="width: {{ xgdp.xg_depth_share.home_pct }}%; background-color: {{ home_color }};"
+                  data-team="{{ xgdp.xg_home.team }}"
+                  data-depth="{{ '%.3f'|format(xgdp.xg_home.depth) }}"
+                  data-total="{{ xgdp.xg_home.total_xg }}"
+                  data-players="{{ xgdp.xg.xg_home.values()|reject('equalto', 0)|list|length }}"
+                  data-type="xg"></div>
+            {% endif %}
+          </div>
+
+          <h3>TOI Depth</h3>
+          {% set toidp = toi_depth_payload if toi_depth_payload is defined else None %}
+
+          <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}/depth"
+                hx-trigger="every 60s"
+                hx-select=".toi-depth-bar"
+                hx-swap="outerHTML"
+                class="shot-bar depth-bar toi-depth-bar">
+            {% if toidp is none or toidp.no_toi %}
+              <div class="away-segment"
+                  style="width:50%; background-color: {{ away_color }};"
+                  data-team="{{ toidp.toi_away.team if toidp else 'AWAY' }}"
+                  data-depth="N/A"></div>
+
+              <div class="home-segment"
+                  style="width:50%; background-color: {{ home_color }};"
+                  data-team="{{ toidp.toi_home.team if toidp else 'HOME' }}"
+                  data-depth="N/A"></div>
+            {% else %}
+              <div class="away-segment"
+                  style="width: {{ toidp.toi_depth_share.away_pct }}%; background-color: {{ away_color }};"
+                  data-team="{{ toidp.toi_away.team }}"
+                  data-depth="{{ '%.3f'|format(toidp.toi_away.depth) }}"></div>
+
+              <div class="home-segment"
+                  style="width: {{ toidp.toi_depth_share.home_pct }}%; background-color: {{ home_color }};"
+                  data-team="{{ toidp.toi_home.team }}"
+                  data-depth="{{ '%.3f'|format(toidp.toi_home.depth) }}"></div>
+            {% endif %}
+          </div>
+        </article>
+
+        <article class="game-card">
+            <h2>Depth Evolution</h2>
+
+            <div id="depth-timeseries-chart" style="width:100%; height:400px;"></div>
+
+            <div id="chart-status" style="text-align: center; padding: 20px; color: #666;">
+              Loading chart data...
+            </div>
+          </article>
         </div>
-
-        <h3>CF Depth</h3>
-        {% set cfdp = cf_depth_payload if cf_depth_payload is defined else None %}
-
-        <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}/depth"
-              hx-trigger="every 60s"
-              hx-select=".cf-depth-bar"
-              hx-swap="outerHTML"
-              class="shot-bar depth-bar cf-depth-bar">
-          {% if cfdp is none or cfdp.no_shots %}
-            <div class="away-segment"
-                style="width:50%; background-color: {{ away_color }};"
-                data-team="{{ cfdp.cf_away.team if cfdp else 'AWAY' }}"
-                data-depth="N/A"></div>
-
-            <div class="home-segment"
-                style="width:50%; background-color: {{ home_color }};"
-                data-team="{{ cfdp.cf_home.team if cfdp else 'HOME' }}"
-                data-depth="N/A"></div>
-          {% else %}
-            <div class="away-segment"
-                style="width: {{ cfdp.cf_depth_share.away_pct }}%; background-color: {{ away_color }};"
-                data-team="{{ cfdp.cf_away.team }}"
-                data-depth="{{ '%.3f'|format(cfdp.cf_away.depth) }}"
-                data-total="{{ cfdp.cf_away.total_shots }}"
-                data-players="{{ cfdp.cf.cf_away.values()|reject('equalto', 0)|list|length }}"
-                data-type="cf"></div>
-            <div class="home-segment"
-                style="width: {{ cfdp.cf_depth_share.home_pct }}%; background-color: {{ home_color }};"
-                data-team="{{ cfdp.cf_home.team }}"
-                data-depth="{{ '%.3f'|format(cfdp.cf_home.depth) }}"
-                data-total="{{ cfdp.cf_home.total_shots }}"
-                data-players="{{ cfdp.cf.cf_home.values()|reject('equalto', 0)|list|length }}"
-                data-type="cf"></div>
-          {% endif %}
-        </div>
-
-        <h3>xG Depth</h3>
-        {% set xgdp = xg_depth_payload if xg_depth_payload is defined else None %}
-
-        <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}/depth"
-              hx-trigger="every 60s"
-              hx-select=".xg-depth-bar"
-              hx-swap="outerHTML"
-              class="shot-bar depth-bar xg-depth-bar">
-          {% if xgdp is none or xgdp.no_xg %}
-            <div class="away-segment"
-                style="width:50%; background-color: {{ away_color }};"
-                data-team="{{ xgdp.xg_away.team if xgdp else 'AWAY' }}"
-                data-depth="N/A"></div>
-
-            <div class="home-segment"
-                style="width:50%; background-color: {{ home_color }};"
-                data-team="{{ xgdp.xg_home.team if xgdp else 'HOME' }}"
-                data-depth="N/A"></div>
-          {% else %}
-            <div class="away-segment"
-                style="width: {{ xgdp.xg_depth_share.away_pct }}%; background-color: {{ away_color }};"
-                data-team="{{ xgdp.xg_away.team }}"
-                data-depth="{{ '%.3f'|format(xgdp.xg_away.depth) }}"
-                data-total="{{ xgdp.xg_away.total_xg }}"
-                data-players="{{ xgdp.xg.xg_away.values()|reject('equalto', 0)|list|length }}"
-                data-type="xg"></div>
-
-            <div class="home-segment"
-                style="width: {{ xgdp.xg_depth_share.home_pct }}%; background-color: {{ home_color }};"
-                data-team="{{ xgdp.xg_home.team }}"
-                data-depth="{{ '%.3f'|format(xgdp.xg_home.depth) }}"
-                data-total="{{ xgdp.xg_home.total_xg }}"
-                data-players="{{ xgdp.xg.xg_home.values()|reject('equalto', 0)|list|length }}"
-                data-type="xg"></div>
-          {% endif %}
-        </div>
-
-        <h3>TOI Depth</h3>
-        {% set toidp = toi_depth_payload if toi_depth_payload is defined else None %}
-
-        <div hx-get="/dashboard/games/{{ season }}/{{ game_id }}/depth"
-              hx-trigger="every 60s"
-              hx-select=".toi-depth-bar"
-              hx-swap="outerHTML"
-              class="shot-bar depth-bar toi-depth-bar">
-          {% if toidp is none or toidp.no_toi %}
-            <div class="away-segment"
-                style="width:50%; background-color: {{ away_color }};"
-                data-team="{{ toidp.toi_away.team if toidp else 'AWAY' }}"
-                data-depth="N/A"></div>
-
-            <div class="home-segment"
-                style="width:50%; background-color: {{ home_color }};"
-                data-team="{{ toidp.toi_home.team if toidp else 'HOME' }}"
-                data-depth="N/A"></div>
-          {% else %}
-            <div class="away-segment"
-                style="width: {{ toidp.toi_depth_share.away_pct }}%; background-color: {{ away_color }};"
-                data-team="{{ toidp.toi_away.team }}"
-                data-depth="{{ '%.3f'|format(toidp.toi_away.depth) }}"></div>
-
-            <div class="home-segment"
-                style="width: {{ toidp.toi_depth_share.home_pct }}%; background-color: {{ home_color }};"
-                data-team="{{ toidp.toi_home.team }}"
-                data-depth="{{ '%.3f'|format(toidp.toi_home.depth) }}"></div>
-          {% endif %}
-        </div>
-      </article>
 
       <article class="game-card explainer-card">
         <h2>Understanding Depth Metrics</h2>
@@ -370,5 +382,196 @@
     }, {passive:true, capture:true});
   })();
   </script>
+
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
+    <script>
+      (function() {
+        const chartDiv = document.getElementById('depth-timeseries-chart');
+        const statusDiv = document.getElementById('chart-status');
+        let currentData = null;
+
+        async function fetchAndUpdateChart() {
+          try {
+            const response = await fetch(window.location.pathname + '/timeseries');
+            const data = await response.json();
+
+            if (data.status === 'no_data') {
+              statusDiv.textContent = 'No live tracking data yet. Data will appear once the game starts.';
+              chartDiv.style.display = 'none';
+              return;
+            }
+
+            if (data.status === 'error') {
+              statusDiv.textContent = 'Error loading chart data.';
+              chartDiv.style.display = 'none';
+              return;
+            }
+
+            // Hide status, show chart
+            statusDiv.style.display = 'none';
+            chartDiv.style.display = 'block';
+
+            // Use game minutes instead of timestamps
+            const gameMinutes = data.game_minutes;
+
+            // Create traces without markers
+             const traces = [
+              {
+                x: gameMinutes,
+                y: data.home_weighted_depth,
+                name: `${data.home_abbrev}`,
+                mode: 'lines',
+                line: { color: '{{ home_color }}', width: 3 },
+                hovertemplate: `${data.home_abbrev}: %{y:.3f}<extra></extra>`  // Use backticks, not single quotes
+              },
+              {
+                x: gameMinutes,
+                y: data.away_weighted_depth,
+                name: `${data.away_abbrev}`,
+                mode: 'lines',
+                line: { color: '{{ away_color }}', width: 3 },
+                hovertemplate: `${data.away_abbrev}: %{y:.3f}<extra></extra>`  // Use backticks, not single quotes
+              }
+            ];
+
+            // Calculate dynamic y-axis range with padding
+            const allDepths = [...data.home_weighted_depth, ...data.away_weighted_depth];
+            const minDepth = Math.min(...allDepths);
+            const maxDepth = Math.max(...allDepths);
+            const padding = (maxDepth - minDepth) * 0.1;
+
+            const layout = {
+                xaxis: {
+                  title: {
+                    text: 'Game Minute',
+                    font: { size: 20 }
+                  },
+                  showgrid: true,
+                  gridcolor: '#e0e0e0',
+                  range: [0, 65],
+                  dtick: 10,
+                  tickfont: { size: 18 },
+                  hoverformat: '.0f'
+                },
+                yaxis: {
+                  title: {
+                    text: 'Weighted Depth',
+                    font: { size: 20 }
+                  },
+                  showgrid: true,
+                  gridcolor: '#e0e0e0',
+                  range: [minDepth - padding, maxDepth + padding],
+                  rangemode: 'normal',
+                  tickfont: { size: 18 },
+                  ticks: 'outside',      
+                  ticklen: 1,            
+                  tickwidth: 1,
+                  tickcolor: 'white'     // Make ticks invisible against white background
+                },
+                showlegend: false,
+                margin: { l: 60, r: 40, t: 40, b: 60 },
+                paper_bgcolor: 'white',
+                plot_bgcolor: 'white',
+                font: {
+                  family: 'Charter, Bitstream Charter, Sitka Text, Cambria, serif',
+                  size: 18,  // Base font size
+                  color: '#041E42'
+                },
+                hovermode: 'x',
+                // Add vertical lines for period breaks
+                shapes: [
+                  {
+                    type: 'line',
+                    x0: 20, x1: 20,
+                    y0: 0, y1: 1,
+                    yref: 'paper',
+                    line: { color: 'gray', width: 2, dash: 'dash' },
+                    opacity: 0.5
+                  },
+                  {
+                    type: 'line',
+                    x0: 40, x1: 40,
+                    y0: 0, y1: 1,
+                    yref: 'paper',
+                    line: { color: 'gray', width: 2, dash: 'dash' },
+                    opacity: 0.5
+                  }
+                ],
+                // Add period labels
+                annotations: [
+                  {
+                    x: 10,
+                    y: 1.05,
+                    yref: 'paper',
+                    text: 'Period 1',
+                    showarrow: false,
+                    font: {
+                      family: 'Charter, Bitstream Charter, Sitka Text, Cambria, serif',
+                      size: 18,
+                      color: '#666'
+                    }
+                  },
+                  {
+                    x: 30,
+                    y: 1.05,
+                    yref: 'paper',
+                    text: 'Period 2',
+                    showarrow: false,
+                    font: {
+                      family: 'Charter, Bitstream Charter, Sitka Text, Cambria, serif',
+                      size: 18,
+                      color: '#666'
+                    }
+                  },
+                  {
+                    x: 50,
+                    y: 1.05,
+                    yref: 'paper',
+                    text: 'Period 3',
+                    showarrow: false,
+                    font: {
+                      family: 'Charter, Bitstream Charter, Sitka Text, Cambria, serif',
+                      size: 18,
+                      color: '#666'
+                    }
+                  }
+                ]
+              };
+
+              const config = {
+                responsive: true,
+                displayModeBar: false
+              };
+
+              if (currentData === null) {
+                // First render
+                Plotly.newPlot(chartDiv, traces, layout, config);
+                currentData = data;
+              } else {
+                // Update existing chart
+                Plotly.react(chartDiv, traces, layout, config);
+                currentData = data;
+              }
+
+            } catch (error) {
+              console.error('Error fetching chart data:', error);
+              statusDiv.textContent = 'Error loading chart data.';
+              chartDiv.style.display = 'none';
+            }
+          }
+
+        // Initial load
+        fetchAndUpdateChart();
+
+        // Poll every 60 seconds if game is live
+        const progressElement = document.querySelector('.game-time');
+        if (progressElement) {
+          const text = progressElement.textContent.trim();
+          if (!text.includes('Final') && !text.includes('Not Started')) {
+            setInterval(fetchAndUpdateChart, 60000);  // Update every minute
+          }
+        }
+      })();
+    </script>
 </body>
 </html>
