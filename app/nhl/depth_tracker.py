@@ -13,6 +13,56 @@ from app.nhl.parsers.depth import (
 from app.nhl.parsers.scoreboard import scoreboard
 from app.nhl.models.depth_sem_config import FACTOR_SCORE_COEFFICIENTS
 
+def smooth_xg_gini_if_outlier(
+        game_id: int, 
+        season: int, 
+        current_home_gini: float, 
+        current_away_gini: float, 
+        home_abbrev: str, 
+        away_abbrev: str) -> tuple[float, float]:
+        """
+        Smooth xG gini values if they appear to be outliers compared to recent snapshots.
+
+        Returns: (smoothed_home_gini, smoothed_away_gini)
+        """
+        import s3fs
+        import pandas as pd
+
+        try:
+            s3_path = f"s3://hockey-decoded/live_game_depth/season={season}/game_id={game_id}.parquet"
+            df = pd.read_parquet(s3_path, engine='fastparquet')
+
+            if len(df) < 3:
+                # Not enough history, return current values
+                return current_home_gini, current_away_gini
+
+            # Get last 5 snapshots (excluding current)
+            recent = df.tail(5)
+
+            # Calculate median xG gini for each team
+            home_median = recent['home_xg_depth'].apply(lambda x: 1 - x).median()
+            away_median = recent['away_xg_depth'].apply(lambda x: 1 - x).median()
+
+            # Define outlier threshold (if current differs by more than this, smooth it)
+            OUTLIER_THRESHOLD = 0.15
+
+            # Check home team
+            if abs(current_home_gini - home_median) > OUTLIER_THRESHOLD:
+                logger.info(f"Game {game_id} - Smoothing {home_abbrev} xG gini outlier: {current_home_gini:.3f} -> {home_median:.3f}")
+                current_home_gini = home_median
+
+          # Check away team
+            if abs(current_away_gini - away_median) > OUTLIER_THRESHOLD:
+                logger.info(f"Game {game_id} - Smoothing {away_abbrev} xG gini outlier: {current_away_gini:.3f} -> {away_median:.3f}")
+                current_away_gini = away_median
+
+        except Exception as e:
+          logger.debug(f"Game {game_id} - Could not apply xG smoothing: {e}")
+          # Return original values if smoothing fails
+          pass
+
+        return current_home_gini, current_away_gini
+
 logger = logging.getLogger(__name__)
 
 def calculate_game_depth_snapshot(
@@ -97,6 +147,12 @@ def calculate_game_depth_snapshot(
         # Get team abbreviations from depth payload (needed for blending)
         home_abbrev = shot_depth_payload.get('home', {}).get('team')
         away_abbrev = shot_depth_payload.get('away', {}).get('team')
+
+        # Smooth xG gini values to handle data anomalies
+        home_xg_gini, away_xg_gini = smooth_xg_gini_if_outlier(
+            game_id, season, home_xg_gini, away_xg_gini, home_abbrev, away_abbrev
+        )
+
 
         # BAYESIAN BLENDING: Blend Ginis with priors based on data accumulation
         boxscore = scoreboard(pbp)
