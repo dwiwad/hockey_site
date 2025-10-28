@@ -60,7 +60,7 @@ def save_current_rolling_averages(season=2025):
 
     # Calculate Gini coefficients from depth values
     # Remember: gini = 1 - depth
-    df_rolling['shot_gini'] = 1 - df_rolling['sog_depth']
+    df_rolling['shot_gini'] = 1 - df_rolling['shot_depth']
     df_rolling['cf_gini'] = 1 - df_rolling['cf_depth']
     df_rolling['xg_gini'] = 1 - df_rolling['xg_depth']
     df_rolling['toi_gini'] = 1 - df_rolling['toi_depth']
@@ -97,7 +97,7 @@ def save_current_rolling_averages(season=2025):
 
     with s3.open(file_path, 'w') as f:
         json.dump(rolling_dict, f, indent=2)
-
+        
     return rolling_dict
 
 def get_current_rolling_averages(season=2025):
