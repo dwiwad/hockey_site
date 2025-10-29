@@ -13,55 +13,66 @@ from app.nhl.parsers.depth import (
 from app.nhl.parsers.scoreboard import scoreboard
 from app.nhl.models.depth_sem_config import FACTOR_SCORE_COEFFICIENTS
 
-def smooth_xg_gini_if_outlier(
-        game_id: int, 
-        season: int, 
-        current_home_gini: float, 
-        current_away_gini: float, 
-        home_abbrev: str, 
-        away_abbrev: str) -> tuple[float, float]:
-        """
-        Smooth xG gini values if they appear to be outliers compared to recent snapshots.
+def smooth_depth_component_if_outlier(
+          game_id: int, 
+          season: int, 
+          current_home_gini: float, 
+          current_away_gini: float,
+          component_name: str,  # 'xg', 'sog', or 'cf'
+          home_abbrev: str, 
+          away_abbrev: str) -> tuple[float, float]:
+          """
+          Smooth Gini values if they appear to be outliers compared to recent snapshots.
+          Works for any depth component (xG, SOG, CF).
 
-        Returns: (smoothed_home_gini, smoothed_away_gini)
-        """
-        import s3fs
-        import pandas as pd
+          Returns: (smoothed_home_gini, smoothed_away_gini)
+          """
+          import s3fs
+          import pandas as pd
 
-        try:
-            s3_path = f"s3://hockey-decoded/live_game_depth/season={season}/game_id={game_id}.parquet"
-            df = pd.read_parquet(s3_path, engine='fastparquet')
+          try:
+              s3_path = f"s3://hockey-decoded/live_game_depth/season={season}/game_id={game_id}.parquet"
+              df = pd.read_parquet(s3_path, engine='fastparquet')
 
-            if len(df) < 3:
-                # Not enough history, return current values
-                return current_home_gini, current_away_gini
+              if len(df) < 3:
+                  # Not enough history, return current values
+                  return current_home_gini, current_away_gini
 
-            # Get last 5 snapshots (excluding current)
-            recent = df.tail(5)
+              # Get last 5 snapshots
+              recent = df.tail(5)
 
-            # Calculate median xG gini for each team
-            home_median = recent['home_xg_depth'].apply(lambda x: 1 - x).median()
-            away_median = recent['away_xg_depth'].apply(lambda x: 1 - x).median()
+              # Map component name to column name
+              depth_col_map = {
+                  'xg': 'home_xg_depth',
+                  'sog': 'home_sog_depth',
+                  'cf': 'home_cf_depth'
+              }
 
-            # Define outlier threshold (if current differs by more than this, smooth it)
-            OUTLIER_THRESHOLD = 0.15
+              home_col = depth_col_map.get(component_name, 'home_xg_depth')
+              away_col = home_col.replace('home_', 'away_')
 
-            # Check home team
-            if abs(current_home_gini - home_median) > OUTLIER_THRESHOLD:
-                logger.info(f"Game {game_id} - Smoothing {home_abbrev} xG gini outlier: {current_home_gini:.3f} -> {home_median:.3f}")
-                current_home_gini = home_median
+              # Calculate median gini from recent depth values
+              home_median = recent[home_col].apply(lambda x: 1 - x).median()
+              away_median = recent[away_col].apply(lambda x: 1 - x).median()
 
-          # Check away team
-            if abs(current_away_gini - away_median) > OUTLIER_THRESHOLD:
-                logger.info(f"Game {game_id} - Smoothing {away_abbrev} xG gini outlier: {current_away_gini:.3f} -> {away_median:.3f}")
-                current_away_gini = away_median
+              # Define outlier threshold
+              OUTLIER_THRESHOLD = 0.15
 
-        except Exception as e:
-          logger.debug(f"Game {game_id} - Could not apply xG smoothing: {e}")
-          # Return original values if smoothing fails
-          pass
+              # Check home team
+              if abs(current_home_gini - home_median) > OUTLIER_THRESHOLD:
+                  logger.info(f"Game {game_id} - Smoothing {home_abbrev} {component_name} gini outlier: {current_home_gini:.3f} -> {home_median:.3f}")
+                  current_home_gini = home_median
 
-        return current_home_gini, current_away_gini
+              # Check away team
+              if abs(current_away_gini - away_median) > OUTLIER_THRESHOLD:
+                  logger.info(f"Game {game_id} - Smoothing {away_abbrev} {component_name} gini outlier: {current_away_gini:.3f} -> {away_median:.3f}")
+                  current_away_gini = away_median
+
+          except Exception as e:
+              logger.debug(f"Game {game_id} - Could not apply {component_name} smoothing: {e}")
+              pass
+
+          return current_home_gini, current_away_gini
 
 logger = logging.getLogger(__name__)
 
@@ -148,17 +159,27 @@ def calculate_game_depth_snapshot(
         home_abbrev = shot_depth_payload.get('home', {}).get('team')
         away_abbrev = shot_depth_payload.get('away', {}).get('team')
 
-        # Smooth xG gini values to handle data anomalies
-        home_xg_gini, away_xg_gini = smooth_xg_gini_if_outlier(
-            game_id, season, home_xg_gini, away_xg_gini, home_abbrev, away_abbrev
+        # Smooth gini values to handle data anomalies
+        home_sog_gini, away_sog_gini = smooth_depth_component_if_outlier(
+            game_id, season, home_sog_gini, away_sog_gini, 'sog', home_abbrev, away_abbrev
         )
-
+        home_cf_gini, away_cf_gini = smooth_depth_component_if_outlier(
+            game_id, season, home_cf_gini, away_cf_gini, 'cf', home_abbrev, away_abbrev
+        )
+        home_xg_gini, away_xg_gini = smooth_depth_component_if_outlier(
+            game_id, season, home_xg_gini, away_xg_gini, 'xg', home_abbrev, away_abbrev
+        )
 
         # BAYESIAN BLENDING: Blend Ginis with priors based on data accumulation
         boxscore = scoreboard(pbp)
         game_state = boxscore.get('gameState', '')
 
-        # Initialize debug data (always initialize, even if game is final)
+        # Skip FINAL/OFF games (API returns bad data after game ends)
+        if game_state in ('FINAL', 'OFF'):
+            logger.info(f"Game {game_id} - game finished, skipping live snapshot")
+            return None
+
+        # Initialize debug data 
         debug_data = {
             'home_prior_weighted_depth': None,
             'away_prior_weighted_depth': None,
@@ -191,21 +212,54 @@ def calculate_game_depth_snapshot(
             else:  # OT or later
                 time_elapsed = 60
 
+            # Check for backwards time (intermission bug where period shows 2/00:00 then jumps to 2/16:25)
+            try:
+                import s3fs
+                import pandas as pd
+                s3_path = f"s3://hockey-decoded/live_game_depth/season={season}/game_id={game_id}.parquet"
+                prev_df = pd.read_parquet(s3_path, engine='fastparquet')
+                if len(prev_df) > 0:
+                    last_time = prev_df.iloc[-1].get('debug_time_elapsed')
+                    if pd.notna(last_time) and time_elapsed < last_time - 1.0:  # Allow 1 min tolerance
+                        logger.warning(f"Game {game_id} - Time went backwards: {last_time:.1f} → {time_elapsed:.1f}, skipping")
+                        return None
+            except Exception as e:
+                logger.debug(f"Game {game_id} - Could not check previous time: {e}")
+                pass  # No previous data or read error, continue
+
             # Get shot counts for each team
             home_shots = shot_depth_payload['home']['total_shots']
             away_shots = shot_depth_payload['away']['total_shots']
 
             # Blending thresholds
-            SHOTS_THRESHOLD = 15.0
+            SHOTS_THRESHOLD = 25.0
             TIME_THRESHOLD = 40.0
 
             # Calculate live weights for each team
-            shots_weight_home = min(1.0, home_shots / SHOTS_THRESHOLD)
-            shots_weight_away = min(1.0, away_shots / SHOTS_THRESHOLD)
+            shots_weight_home = min(1.0, (home_shots / SHOTS_THRESHOLD) ** 2)
+            shots_weight_away = min(1.0, (away_shots / SHOTS_THRESHOLD) ** 2)
             time_weight = min(1.0, time_elapsed / TIME_THRESHOLD)
 
             weight_live_home = max(shots_weight_home, time_weight)
             weight_live_away = max(shots_weight_away, time_weight)
+
+            # Component-specific minimums: don't use live data if sample size too small
+            MIN_SHOTS_FOR_SOG = 5
+            MIN_SHOTS_FOR_CF = 5  # Corsi events usually > shots
+
+            # Override weights to 0 for components with insufficient data
+            sog_weight_home = weight_live_home if home_shots >= MIN_SHOTS_FOR_SOG else 0.0
+            sog_weight_away = weight_live_away if away_shots >= MIN_SHOTS_FOR_SOG else 0.0
+
+            # For CF, estimate CF events as ~1.5x shots (rough approximation)
+            cf_weight_home = weight_live_home if home_shots >= MIN_SHOTS_FOR_CF else 0.0
+            cf_weight_away = weight_live_away if away_shots >= MIN_SHOTS_FOR_CF else 0.0
+
+            # xG and TOI: use normal weight (more stable early)
+            xg_weight_home = weight_live_home
+            xg_weight_away = weight_live_away
+            toi_weight_home = weight_live_home
+            toi_weight_away = weight_live_away
 
             # Store debug data for weights/shots/time
             debug_data['home_shots'] = home_shots
@@ -230,23 +284,43 @@ def calculate_game_depth_snapshot(
                         debug_data['away_prior_weighted_depth'] = away_data['weighted_depth']
                         debug_data['blending_occurred'] = True
 
-                        # Blend home team Ginis
-                        if weight_live_home < 1.0:
-                            weight_prior_home = 1.0 - weight_live_home
-                            home_sog_gini = (weight_prior_home * home_data['shot_gini']) + (weight_live_home * home_sog_gini)
-                            home_cf_gini = (weight_prior_home * home_data['cf_gini']) + (weight_live_home * home_cf_gini)
-                            home_xg_gini = (weight_prior_home * home_data['xg_gini']) + (weight_live_home * home_xg_gini)
-                            home_toi_gini = (weight_prior_home * home_data['toi_gini']) + (weight_live_home * home_toi_gini)
-                            logger.debug(f"Game {game_id} - Blended home {home_abbrev} Ginis (weight: {weight_live_home:.2f})")
+                        # Blend home team Ginis (component-specific weights)
+                        if sog_weight_home < 1.0:
+                            weight_prior = 1.0 - sog_weight_home
+                            home_sog_gini = (weight_prior * home_data['shot_gini']) + (sog_weight_home * home_sog_gini)
 
-                        # Blend away team Ginis
-                        if weight_live_away < 1.0:
-                            weight_prior_away = 1.0 - weight_live_away
-                            away_sog_gini = (weight_prior_away * away_data['shot_gini']) + (weight_live_away * away_sog_gini)
-                            away_cf_gini = (weight_prior_away * away_data['cf_gini']) + (weight_live_away * away_cf_gini)
-                            away_xg_gini = (weight_prior_away * away_data['xg_gini']) + (weight_live_away * away_xg_gini)
-                            away_toi_gini = (weight_prior_away * away_data['toi_gini']) + (weight_live_away * away_toi_gini)
-                            logger.debug(f"Game {game_id} - Blended away {away_abbrev} Ginis (weight: {weight_live_away:.2f})")
+                        if cf_weight_home < 1.0:
+                            weight_prior = 1.0 - cf_weight_home
+                            home_cf_gini = (weight_prior * home_data['cf_gini']) + (cf_weight_home * home_cf_gini)
+
+                        if xg_weight_home < 1.0:
+                            weight_prior = 1.0 - xg_weight_home
+                            home_xg_gini = (weight_prior * home_data['xg_gini']) + (xg_weight_home * home_xg_gini)
+
+                        if toi_weight_home < 1.0:
+                            weight_prior = 1.0 - toi_weight_home
+                            home_toi_gini = (weight_prior * home_data['toi_gini']) + (toi_weight_home * home_toi_gini)
+
+                        logger.debug(f"Game {game_id} - Blended {home_abbrev} (SOG wt={sog_weight_home:.2f}, CF wt={cf_weight_home:.2f})")
+
+                        # Blend away team Ginis (component-specific weights)
+                        if sog_weight_away < 1.0:
+                            weight_prior = 1.0 - sog_weight_away
+                            away_sog_gini = (weight_prior * away_data['shot_gini']) + (sog_weight_away * away_sog_gini)
+
+                        if cf_weight_away < 1.0:
+                            weight_prior = 1.0 - cf_weight_away
+                            away_cf_gini = (weight_prior * away_data['cf_gini']) + (cf_weight_away * away_cf_gini)
+
+                        if xg_weight_away < 1.0:
+                            weight_prior = 1.0 - xg_weight_away
+                            away_xg_gini = (weight_prior * away_data['xg_gini']) + (xg_weight_away * away_xg_gini)
+
+                        if toi_weight_away < 1.0:
+                            weight_prior = 1.0 - toi_weight_away
+                            away_toi_gini = (weight_prior * away_data['toi_gini']) + (toi_weight_away * away_toi_gini)
+
+                        logger.debug(f"Game {game_id} - Blended {away_abbrev} (SOG wt={sog_weight_away:.2f}, CF wt={cf_weight_away:.2f})")
 
         # Calculate TDI using SEM factor scores (now with blended Ginis)
         home_tdi, home_raw_tdi = calculate_tdi(
