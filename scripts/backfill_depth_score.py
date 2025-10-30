@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 # else:
 #     logger.info("No existing master file")
 
-start_date = date(2025, 10, 5)
+start_date = date(2025, 10, 29)
 end_date = date.today() - timedelta(days=1)  # Yesterday
 
 total_games = 0
@@ -59,7 +59,7 @@ while current_date <= end_date:
 
           # Calculate snapshot
           from app.nhl.depth_tracker import calculate_game_depth_snapshot
-          snapshot = calculate_game_depth_snapshot(game_id, season, pbp, box, xg)
+          snapshot = calculate_game_depth_snapshot(game_id, season, pbp, box, xg, allow_final=True)
 
           if snapshot is None:
               logger.info(f"    ⚠️ No snapshot (insufficient data)")

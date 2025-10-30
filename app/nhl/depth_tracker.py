@@ -81,7 +81,8 @@ def calculate_game_depth_snapshot(
         season: int,
         pbp: dict,
         box: dict,
-        xg  # pandas DataFrame
+        xg,  # pandas DataFrame
+        allow_final: bool = False  # New parameter
     ) -> dict | None:
         """
         Calculate all depth metrics for a game at this moment in time.
@@ -174,8 +175,8 @@ def calculate_game_depth_snapshot(
         boxscore = scoreboard(pbp)
         game_state = boxscore.get('gameState', '')
 
-        # Skip FINAL/OFF games (API returns bad data after game ends)
-        if game_state in ('FINAL', 'OFF'):
+        # Skip FINAL/OFF games ONLY during live tracking (not during backfill)
+        if not allow_final and game_state in ('FINAL', 'OFF'):
             logger.info(f"Game {game_id} - game finished, skipping live snapshot")
             return None
 
