@@ -214,7 +214,7 @@ def backfill_yesterday_games():
           # Calculate snapshot
           from app.nhl.depth_tracker import calculate_game_depth_snapshot
           
-          snapshot = calculate_game_depth_snapshot(game_id, season, pbp, box, xg)
+          snapshot = calculate_game_depth_snapshot(game_id, season, pbp, box, xg, allow_final=True)
           
           if snapshot is None:
               logger.info(f"  ⚠️ No snapshot (insufficient data)")
