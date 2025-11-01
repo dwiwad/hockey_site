@@ -523,34 +523,37 @@ async def game_depth_timeseries(request: Request, season: int, game_id: int):
         # Sort by timestamp
         df = df.sort_values('timestamp')
 
-        # Calculate game minute from period and time_remaining
-        def calc_game_minute(row):
-            period = row['period']
-            time_remaining = row['time_remaining']
+        # Check if game_minute already exists (from backfill)
+        if 'game_minute' not in df.columns or df['game_minute'].isna().all():
+            # Calculate game minute from period and time_remaining (for old live data)
+            def calc_game_minute(row):
+                period = row['period']
+                time_remaining = row['time_remaining']
 
-            if not time_remaining or pd.isna(time_remaining):
-                return None
+                if not time_remaining or pd.isna(time_remaining):
+                    return None
 
-            try:
-                mins, secs = str(time_remaining).split(':')
-                time_remaining_mins = int(mins) + int(secs) / 60
-            except:
-                time_remaining_mins = 20.0
+                try:
+                    mins, secs = str(time_remaining).split(':')
+                    time_remaining_mins = int(mins) + int(secs) / 60
+                except:
+                    time_remaining_mins = 20.0
 
-            # Calculate elapsed time in this period
-            elapsed_in_period = 20 - time_remaining_mins
+                # Calculate elapsed time in this period
+                elapsed_in_period = 20 - time_remaining_mins
 
-            # Add minutes from previous periods
-            if period == 1:
-                return elapsed_in_period
-            elif period == 2:
-                return 20 + elapsed_in_period
-            elif period == 3:
-                return 40 + elapsed_in_period
-            else:  # OT
-                return 60 + elapsed_in_period
+                # Add minutes from previous periods
+                if period == 1:
+                    return elapsed_in_period
+                elif period == 2:
+                    return 20 + elapsed_in_period
+                elif period == 3:
+                    return 40 + elapsed_in_period
+                else:  # OT
+                    return 60 + elapsed_in_period
 
-        df['game_minute'] = df.apply(calc_game_minute, axis=1)
+            df['game_minute'] = df.apply(calc_game_minute, axis=1)
+          # else: game_minute already exists from backfill - use it directly!
 
         # Get team abbreviations
         home_abbrev = df['home_abbrev'].iloc[0]

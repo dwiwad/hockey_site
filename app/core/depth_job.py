@@ -167,6 +167,15 @@ def track_live_game_depth():
                 if wrote_final:
                     finalized_count += 1
 
+                # Backfill with clean even-minute snapshots using shift data
+                logger.info(f"Game {game_id} - starting post-game backfill")
+                from app.nhl.depth_tracker import backfill_game_minute_snapshots
+                backfilled = backfill_game_minute_snapshots(game_id, season)
+                if backfilled:
+                    logger.info(f"Game {game_id} - backfill successful (replaced live data with historical)")
+                else:
+                    logger.warning(f"Game {game_id} - backfill failed (live data remains)")
+
         except Exception as e:
             logger.error(f"Error processing game {game_id}: {e}", exc_info=True)
             continue

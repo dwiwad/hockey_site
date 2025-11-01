@@ -60,6 +60,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 			- [X] I'm thinking a dataset for the game that mirrors my analyses dataset, but checks, computes changes, and appends every 15-30 seconds
 		- [X] Add new info to the hovers. For shots, X shots from Y players, X CF from Y players, X xG from Y players
 		- [X] Add total depth minute by minute beside the bars on the detail page, a second card. This I can do once the data are stored.
+		- [X] Completely re-do minute by minute depth so it is more stable and can be historically backfilled
 	- [X] Add weighted average decay to fix starting points
 	- [X] Fix to pull TOI from the boxscore endpoint, not the shift chart end point!
 	- [X] Add priors and weighted decay to the individual depth bars
