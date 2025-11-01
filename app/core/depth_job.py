@@ -153,6 +153,29 @@ def track_live_game_depth():
                 logger.info(f"Game {game_id} - no snapshot (pregame/intermission/insufficient data)")
                 continue
 
+            # Only store even minutes for clean data
+            current_minute = snapshot.get('game_minute', 0)
+            target_minute = (current_minute // 2) * 2  # Round down to nearest even minute
+
+            # Check if we've already stored this even minute
+            import pandas as pd
+            s3_path = f"s3://hockey-decoded/live_game_depth/season={season}/game_id={game_id}.parquet"
+
+            try:
+                existing_df = pd.read_parquet(s3_path, engine='fastparquet')
+                stored_minutes = existing_df['game_minute'].tolist()
+
+                if target_minute in stored_minutes:
+                    logger.debug(f"Game {game_id} - minute {target_minute} already stored, skipping")
+                    continue
+            except FileNotFoundError:
+                # No existing file - first snapshot
+                pass
+
+            # Update snapshot to use target even minute
+            snapshot['game_minute'] = target_minute
+            logger.info(f"Game {game_id} - storing snapshot for minute {target_minute} (current: {current_minute})")
+
             # Append to live tracking
             from app.nhl.service_depth import append_live_depth_snapshot, write_final_depth
             wrote_live = append_live_depth_snapshot(game_id, season, snapshot)
