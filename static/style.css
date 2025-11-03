@@ -319,9 +319,9 @@ body {
     padding: 0;
     font-family: "Charter", "Bitstream Charter", "Sitka Text", Cambria, serif;
     background-color: var(--bg-cream);
-    height: 100vh;
-    justify-content: center;
-    align-items: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* HEADER */
@@ -356,11 +356,11 @@ body {
 .card-row {
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center; /* Centers cards vertically */
     gap: 2rem; /* space between the cards */
     padding: 2rem;
     flex-wrap: wrap; /* allows them to stack on small screens */
-    align-items: stretch;
+    flex: 1; /* Makes it grow to fill space */
 }
 
 .card {
