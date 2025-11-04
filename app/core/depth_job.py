@@ -262,13 +262,22 @@ def backfill_yesterday_games():
               continue
           
           # Write to master
-          from app.nhl.service_depth import write_final_depth
-          
+          from app.nhl.service_depth import write_final_depth  
           wrote = write_final_depth(game_id, season, snapshot)
-          
+
           if wrote:
               successful += 1
               logger.info(f"  ✅ Written to master")
+
+              # Also backfill minute-by-minute depth with shift-based TOI
+              from app.nhl.depth_tracker import backfill_game_minute_snapshots
+              logger.info(f"  Backfilling minute-by-minute depth...")
+              backfilled = backfill_game_minute_snapshots(game_id, season)
+              
+              if backfilled:
+                  logger.info(f"  ✅ Minute-by-minute backfill complete")
+              else:
+                  logger.warning(f"  ⚠️  Minute-by-minute backfill failed")
           else:
               skipped += 1
       
