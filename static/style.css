@@ -122,6 +122,23 @@
   border-radius: 6px;
   font-size: 0.9rem;
 }
+
+/* Depth page - side-by-side cards */
+.depth-cards-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 2rem;
+    flex-wrap: wrap;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.depth-cards-container .game-card {
+    flex: 0 0 auto;
+}
+
  /* ==========================================================================
      BREADCRUMB SCOREBOARD - STACKED VERSION (for depth page)
      ========================================================================== */

@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 # else:
 #     logger.info("No existing master file")
 
-start_date = date(2025, 10, 30)
+start_date = date(2025, 11, 8)
 end_date = date.today() - timedelta(days=1)  # Yesterday
 
 total_games = 0
