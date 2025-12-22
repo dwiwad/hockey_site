@@ -436,7 +436,141 @@ def calculate_snapshot_at_minute_historical(
       home_toi_gini = toi_depth_payload['toi_home']['ineq']
       away_toi_gini = toi_depth_payload['toi_away']['ineq']
 
-      # Calculate TDI (no blending for historical snapshots)
+    # ============================================================
+    # BLENDING: Start with rolling average, gradually trust live data
+    # ============================================================
+
+      # Get shot counts (we already calculated this earlier)
+      home_shots = shot_depth_payload['home']['total_shots']
+      away_shots = shot_depth_payload['away']['total_shots']
+
+      # Define our thresholds
+      # At 25 shots: trust live data 100%
+      # At 40 minutes: trust live data 100%
+      SHOTS_THRESHOLD = 25.0
+      TIME_THRESHOLD = 40.0
+
+      # Calculate weights for home team
+      # Quadratic scaling: (shots/25)^2 means early shots count less
+      # Examples:
+      #   At 5 shots:  (5/25)^2 = 0.04  → 4% live, 96% prior
+      #   At 15 shots: (15/25)^2 = 0.36 → 36% live, 64% prior
+      #   At 25 shots: (25/25)^2 = 1.0  → 100% live
+      shots_weight_home = min(1.0, (home_shots / SHOTS_THRESHOLD) ** 2)
+      shots_weight_away = min(1.0, (away_shots / SHOTS_THRESHOLD) ** 2)
+
+      # Linear scaling on time (safety net in case shots are slow)
+      # Examples:
+      #   At 10 minutes: 10/40 = 0.25 → 25% live
+      #   At 20 minutes: 20/40 = 0.50 → 50% live
+      #   At 40 minutes: 40/40 = 1.0  → 100% live
+      time_weight = min(1.0, target_minute / TIME_THRESHOLD)
+
+      # Take the maximum of shots-based and time-based weights
+      # This means: "trust whichever measure gives us more confidence"
+      # Example: At minute 6 with 3 shots:
+      #   shots_weight = 0.0144 (1.4%)
+      #   time_weight  = 0.15   (15%)
+      #   weight_live  = 0.15   (use the higher one)
+      weight_live_home = max(shots_weight_home, time_weight)
+      weight_live_away = max(shots_weight_away, time_weight)
+
+      # Component-specific minimums
+      # Don't use live shot/CF data if sample size is too small
+      MIN_SHOTS_FOR_SOG = 5  # Need at least 5 shots for shot depth
+      MIN_SHOTS_FOR_CF = 5   # Need at least 5 shots for Corsi depth
+
+      # Override weights to 0 if not enough data for that component
+      # If home has 3 shots: sog_weight_home = 0.0 (use 100% prior)
+      # If home has 8 shots: sog_weight_home = weight_live_home (use blended)
+      sog_weight_home = weight_live_home if home_shots >= MIN_SHOTS_FOR_SOG else 0.0
+      sog_weight_away = weight_live_away if away_shots >= MIN_SHOTS_FOR_SOG else 0.0
+
+      cf_weight_home = weight_live_home if home_shots >= MIN_SHOTS_FOR_CF else 0.0
+      cf_weight_away = weight_live_away if away_shots >= MIN_SHOTS_FOR_CF else 0.0
+
+      # xG and TOI are more stable, so we use normal weights from the start
+      xg_weight_home = weight_live_home
+      xg_weight_away = weight_live_away
+      toi_weight_home = weight_live_home
+      toi_weight_away = weight_live_away
+
+      # Load rolling averages from league stats
+      # This reads from s3://hockey-decoded/depth_scores/rolling_averages.json
+      # Returns dict like: {"EDM": {"weighted_depth": 0.303, "shot_gini": 0.421, ...}, ...}
+      from app.nhl.league_stats import get_current_rolling_averages
+      rolling_avgs = get_current_rolling_averages(season=season)
+
+      # Track whether blending occurred (for debug output)
+      blending_occurred = False
+
+      # Only blend if we have rolling average data AND we're not at full confidence yet
+      if rolling_avgs and (weight_live_home < 1.0 or weight_live_away < 1.0):
+          home_data = rolling_avgs.get(home_abbrev)
+          away_data = rolling_avgs.get(away_abbrev)
+
+          if home_data and away_data:
+              # We have both teams' historical data, let's blend!
+              logger.info(f"Game {game_id} minute {target_minute} - Blending with rolling averages (home wt={weight_live_home:.2f}, away wt={weight_live_away:.2f})")
+              blending_occurred = True
+
+              # ============================================================
+              # BLEND HOME TEAM GINIS
+              # ============================================================
+              # Formula: blended_gini = (weight_prior × historical_gini) + (weight_live × current_live_gini)
+              # where weight_prior = 1 - weight_live
+              #
+              # Example at minute 6 (weight_live = 0.15):
+              #   weight_prior = 1 - 0.15 = 0.85
+              #   If historical shot_gini = 0.35 and live shot_gini = 0.60:
+              #   blended = (0.85 × 0.35) + (0.15 × 0.60) = 0.2975 + 0.09 = 0.3875
+              #   So we're using mostly historical (0.35) with a touch of live (0.60)
+
+              if sog_weight_home < 1.0:
+                  weight_prior = 1.0 - sog_weight_home
+                  home_sog_gini = (weight_prior * home_data['shot_gini']) + (sog_weight_home * home_sog_gini)
+
+              if cf_weight_home < 1.0:
+                  weight_prior = 1.0 - cf_weight_home
+                  home_cf_gini = (weight_prior * home_data['cf_gini']) + (cf_weight_home * home_cf_gini)
+
+              if xg_weight_home < 1.0:
+                  weight_prior = 1.0 - xg_weight_home
+                  home_xg_gini = (weight_prior * home_data['xg_gini']) + (xg_weight_home * home_xg_gini)
+
+              if toi_weight_home < 1.0:
+                  weight_prior = 1.0 - toi_weight_home
+                  home_toi_gini = (weight_prior * home_data['toi_gini']) + (toi_weight_home * home_toi_gini)
+
+              # ============================================================
+              # BLEND AWAY TEAM GINIS
+              # ============================================================
+
+              if sog_weight_away < 1.0:
+                  weight_prior = 1.0 - sog_weight_away
+                  away_sog_gini = (weight_prior * away_data['shot_gini']) + (sog_weight_away * away_sog_gini)
+
+              if cf_weight_away < 1.0:
+                  weight_prior = 1.0 - cf_weight_away
+                  away_cf_gini = (weight_prior * away_data['cf_gini']) + (cf_weight_away * away_cf_gini)
+
+              if xg_weight_away < 1.0:
+                  weight_prior = 1.0 - xg_weight_away
+                  away_xg_gini = (weight_prior * away_data['xg_gini']) + (xg_weight_away * away_xg_gini)
+
+              if toi_weight_away < 1.0:
+                  weight_prior = 1.0 - toi_weight_away
+                  away_toi_gini = (weight_prior * away_data['toi_gini']) + (toi_weight_away * away_toi_gini)
+
+              logger.debug(f"Game {game_id} minute {target_minute} - {home_abbrev} weights: SOG={sog_weight_home:.2f} CF={cf_weight_home:.2f}")
+              logger.debug(f"Game {game_id} minute {target_minute} - {away_abbrev} weights: SOG={sog_weight_away:.2f} CF={cf_weight_away:.2f}")
+
+      # Store the home/away data for debug output (will use later)
+      # If we didn't blend, these will be None
+      home_prior_data = rolling_avgs.get(home_abbrev) if rolling_avgs else None
+      away_prior_data = rolling_avgs.get(away_abbrev) if rolling_avgs else None
+
+      # Calculate TDI (with blending for historical snapshots)
       home_tdi, home_raw_tdi = calculate_tdi(
           home_cf_gini, home_sog_gini, home_toi_gini, home_xg_gini
       )
@@ -503,15 +637,15 @@ def calculate_snapshot_at_minute_historical(
           'home_toi_depth': 1 - home_toi_gini,
           'away_toi_depth': 1 - away_toi_gini,
 
-          # Debug fields (no blending in historical mode)
-          'debug_home_prior_depth': None,
-          'debug_away_prior_depth': None,
-          'debug_home_live_weight': 1.0,  # 100% live data
-          'debug_away_live_weight': 1.0,
-          'debug_home_shots': shot_depth_payload['home']['total_shots'],
-          'debug_away_shots': shot_depth_payload['away']['total_shots'],
+          # Debug fields (now with blending info)
+          'debug_home_prior_depth': home_prior_data.get('weighted_depth') if home_prior_data else None,
+          'debug_away_prior_depth': away_prior_data.get('weighted_depth') if away_prior_data else None,
+          'debug_home_live_weight': weight_live_home,
+          'debug_away_live_weight': weight_live_away,
+          'debug_home_shots': home_shots,
+          'debug_away_shots': away_shots,
           'debug_time_elapsed': float(target_minute),
-          'debug_blending_occurred': False,
+          'debug_blending_occurred': blending_occurred,
       }
 
       return snapshot
