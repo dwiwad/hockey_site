@@ -475,19 +475,24 @@ def calculate_snapshot_at_minute_historical(
       weight_live_home = max(shots_weight_home, time_weight)
       weight_live_away = max(shots_weight_away, time_weight)
 
-      # Component-specific minimums
-      # Don't use live shot/CF data if sample size is too small
-      MIN_SHOTS_FOR_SOG = 5  # Need at least 5 shots for shot depth
-      MIN_SHOTS_FOR_CF = 5   # Need at least 5 shots for Corsi depth
-
-      # Override weights to 0 if not enough data for that component
-      # If home has 3 shots: sog_weight_home = 0.0 (use 100% prior)
-      # If home has 8 shots: sog_weight_home = weight_live_home (use blended)
-      sog_weight_home = weight_live_home if home_shots >= MIN_SHOTS_FOR_SOG else 0.0
-      sog_weight_away = weight_live_away if away_shots >= MIN_SHOTS_FOR_SOG else 0.0
-
-      cf_weight_home = weight_live_home if home_shots >= MIN_SHOTS_FOR_CF else 0.0
-      cf_weight_away = weight_live_away if away_shots >= MIN_SHOTS_FOR_CF else 0.0
+      # Component-specific shot count scaling
+      # Instead of binary threshold, create gradual ramp-up
+      # At 0 shots: 0% live
+      # At 10 shots: 100% of the time-based weight
+      SHOTS_RAMP_UP_THRESHOLD = 10.0  # Full weight at 10 shots
+        
+      # Calculate shot-based scaling factor (0.0 to 1.0)
+      shot_scale_home = min(1.0, home_shots / SHOTS_RAMP_UP_THRESHOLD)
+      shot_scale_away = min(1.0, away_shots / SHOTS_RAMP_UP_THRESHOLD)
+        
+      # Apply scaling to the time-based weight
+      # This creates smooth transition: 0 shots = 0%, 10 shots = 100% of time weight
+      sog_weight_home = weight_live_home * shot_scale_home
+      sog_weight_away = weight_live_away * shot_scale_away
+        
+      # For CF, use same logic (CF events correlate with shots)
+      cf_weight_home = weight_live_home * shot_scale_home
+      cf_weight_away = weight_live_away * shot_scale_away
 
       # xG and TOI are more stable, so we use normal weights from the start
       xg_weight_home = weight_live_home
@@ -997,17 +1002,24 @@ def calculate_game_depth_snapshot(
             weight_live_home = max(shots_weight_home, time_weight)
             weight_live_away = max(shots_weight_away, time_weight)
 
-            # Component-specific minimums: don't use live data if sample size too small
-            MIN_SHOTS_FOR_SOG = 5
-            MIN_SHOTS_FOR_CF = 5  # Corsi events usually > shots
-
-            # Override weights to 0 for components with insufficient data
-            sog_weight_home = weight_live_home if home_shots >= MIN_SHOTS_FOR_SOG else 0.0
-            sog_weight_away = weight_live_away if away_shots >= MIN_SHOTS_FOR_SOG else 0.0
-
-            # For CF, estimate CF events as ~1.5x shots (rough approximation)
-            cf_weight_home = weight_live_home if home_shots >= MIN_SHOTS_FOR_CF else 0.0
-            cf_weight_away = weight_live_away if away_shots >= MIN_SHOTS_FOR_CF else 0.0
+            # Component-specific shot count scaling
+            # Instead of binary threshold, create gradual ramp-up
+            # At 0 shots: 0% live
+            # At 10 shots: 100% of the time-based weight
+            SHOTS_RAMP_UP_THRESHOLD = 10.0  # Full weight at 10 shots
+            
+            # Calculate shot-based scaling factor (0.0 to 1.0)
+            shot_scale_home = min(1.0, home_shots / SHOTS_RAMP_UP_THRESHOLD)
+            shot_scale_away = min(1.0, away_shots / SHOTS_RAMP_UP_THRESHOLD)
+            
+            # Apply scaling to the time-based weight
+            # This creates smooth transition: 0 shots = 0%, 10 shots = 100% of time weight
+            sog_weight_home = weight_live_home * shot_scale_home
+            sog_weight_away = weight_live_away * shot_scale_away
+            
+            # For CF, use same logic (CF events correlate with shots)
+            cf_weight_home = weight_live_home * shot_scale_home
+            cf_weight_away = weight_live_away * shot_scale_away
 
             # xG and TOI: use normal weight (more stable early)
             xg_weight_home = weight_live_home

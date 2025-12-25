@@ -8,7 +8,8 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 # Date range: Oct 5, 2024 to today
-start_date = date(2025, 10, 4)
+start_date = date(2025, 12, 22)
+#end_date = date(2025, 7, 30)
 end_date = date.today()
 
 logger.info(f"🏒 Backfilling 2024-2025 season from {start_date} to {end_date}")
