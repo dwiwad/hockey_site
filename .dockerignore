@@ -1,0 +1,61 @@
+# Virtual environment - Don't copy local venv
+.venv/
+venv/
+env/
+
+# Python cache files - Generated files, not needed
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Git files - Not needed in production
+.git/
+.gitignore
+.gitattributes
+
+# macOS files - Your Mac generates these
+.DS_Store
+
+# Local data - Don't copy local test data
+data/
+
+# Scripts - Backfill scripts not needed in production container
+scripts/
+
+# Notebooks - Analysis notebooks not needed in production
+notebooks/
+*.ipynb
+
+# Environment files - Contains secrets, don't copy
+.env
+.env.local
+
+# Documentation - Not needed in production
+*.md
+README.md
+
+# Images - Large files not needed
+static/images/homepage*.png
+
+# IDE files - Your editor's config files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test files - If you have tests
+tests/
+test_*.py
+*_test.py
+
+# Build artifacts
+*.egg-info/
+dist/
+build/
+
+# Docker files themselves - Don't need these inside the image
+Dockerfile
+docker-compose.yml
+.dockerignore
