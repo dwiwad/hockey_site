@@ -90,6 +90,7 @@ async def health_check(response: Response):
     try:
         import s3fs
         s3 = s3fs.S3FileSystem(anon=False)
+        s3.ls(S3_BUCKET)
         s3.exists(f"{S3_BUCKET}/depth_scores/depth_scores.parquet")
     except Exception as e:
         issues.append(f"S3 connectivity issue: {str(e)}")
