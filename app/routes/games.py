@@ -12,6 +12,7 @@ from app.nhl.parsers.scoreboard import scoreboard
 from app.nhl.parsers.depth import shot_depth_from_pbp, cf_depth_from_pbp, xgoal_depth_from_players, toi_depth_from_boxscore, calculate_tdi
 from app.nhl.models.depth_sem_config import FACTOR_SCORE_COEFFICIENTS
 from app.config.team_colors import TEAM_COLORS
+from app.core.config import get_current_season
 
 # Anchor templates to project root so it works no matter where you run uvicorn
 # PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -104,7 +105,7 @@ async def game_dashboard(request: Request, season: int, game_id: int, fresh: boo
 
             # Load prior Ginis from rolling averages
             from app.nhl.league_stats import get_current_rolling_averages
-            rolling_avgs = get_current_rolling_averages(season=2025)
+            rolling_avgs = get_current_rolling_averages(season=get_current_season())
 
             if rolling_avgs and weight_live_home < 1.0:  # Only blend if not full confidence yet
                 data = sog_by_team(pbp)
@@ -137,7 +138,7 @@ async def game_dashboard(request: Request, season: int, game_id: int, fresh: boo
         if boxscore.get('gameState') in ('FUT', 'PRE', 'LIVE', 'CRIT'):
             # Game hasn't started OR just started - use rolling averages
             from app.nhl.league_stats import get_current_rolling_averages
-            rolling_avgs = get_current_rolling_averages(season=2025)
+            rolling_avgs = get_current_rolling_averages(season=get_current_season())
 
             if rolling_avgs:
                 data = sog_by_team(pbp)
@@ -272,7 +273,7 @@ async def game_depth_breakdown(request: Request, season: int, game_id: int):
         if boxscore.get('gameState') in ('FUT', 'PRE'):
             # Load priors to display
             from app.nhl.league_stats import get_current_rolling_averages
-            rolling_avgs = get_current_rolling_averages(season=2025)
+            rolling_avgs = get_current_rolling_averages(season=get_current_season())
 
             if rolling_avgs:
                 data = sog_by_team(pbp)
@@ -368,7 +369,7 @@ async def game_depth_breakdown(request: Request, season: int, game_id: int):
 
         # Load priors
         from app.nhl.league_stats import get_current_rolling_averages
-        rolling_avgs = get_current_rolling_averages(season=2025)
+        rolling_avgs = get_current_rolling_averages(season=get_current_season())
 
         if rolling_avgs:
             data = sog_by_team(pbp)

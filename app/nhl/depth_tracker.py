@@ -1038,7 +1038,8 @@ def calculate_game_depth_snapshot(
             if weight_live_home < 1.0 or weight_live_away < 1.0:
                 # Load rolling averages
                 from app.nhl.league_stats import get_current_rolling_averages
-                rolling_avgs = get_current_rolling_averages(season=2025)
+                from app.core.config import get_current_season
+                rolling_avgs = get_current_rolling_averages(season=get_current_season())
 
                 if rolling_avgs:
                     home_data = rolling_avgs.get(home_abbrev)

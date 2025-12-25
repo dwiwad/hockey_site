@@ -290,7 +290,8 @@ def backfill_yesterday_games():
   # After backfill completes, update rolling averages file
   try:
       from app.nhl.league_stats import save_current_rolling_averages
-      save_current_rolling_averages(season=2025)
+      from app.core.config import get_current_season
+      save_current_rolling_averages(season=get_current_season())
       logger.info("✅ Rolling averages file updated")
   except Exception as e:
       logger.error(f"❌ Error updating rolling averages: {e}")

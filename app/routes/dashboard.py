@@ -5,6 +5,7 @@ from datetime import datetime, date, timedelta
 from zoneinfo import ZoneInfo
 from app.nhl.get_todays_games import get_games_for_date
 from app.nhl.league_stats import get_league_depth_data, create_league_depth_boxplot
+from app.core.config import get_current_season
 
 # Tell Jinja where to find the html
 templates = Jinja2Templates(directory = "templates")
@@ -36,7 +37,7 @@ async def dashboard(request: Request, date_str: str | None = Query(default=None,
 
     # Generate league depth chart
     try:
-        df_depth, last_modified = get_league_depth_data(season=2025)  # Unpack tuple
+        df_depth, last_modified = get_league_depth_data(season=get_current_season())  # Unpack tuple
         fig = create_league_depth_boxplot(df_depth)
         depth_chart_html = fig.to_html(include_plotlyjs='cdn', div_id='league-depth-chart', config={'displayModeBar': False})
 

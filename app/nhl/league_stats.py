@@ -1,8 +1,9 @@
 import pandas as pd
 import s3fs
 import plotly.graph_objects as go
+from app.core.config import get_current_season
 
-def get_league_depth_data(season=2025):
+def get_league_depth_data(season=get_current_season()):
     """
     Get rolling 10-game depth averages for all teams.
     
@@ -43,7 +44,7 @@ def get_league_depth_data(season=2025):
 
     return df_rolling, last_modified
 
-def save_current_rolling_averages(season=2025):
+def save_current_rolling_averages(season=get_current_season()):
     """
     Calculate and save current 10-game rolling averages to S3.
     Stores both weighted depth AND the 4 underlying Gini coefficients.
@@ -100,7 +101,7 @@ def save_current_rolling_averages(season=2025):
         
     return rolling_dict
 
-def get_current_rolling_averages(season=2025):
+def get_current_rolling_averages(season=get_current_season()):
     """
     Read cached rolling averages from S3.
     
