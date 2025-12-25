@@ -4,13 +4,14 @@ sys.path.insert(0, '/Users/dwiwad/dev/hockey_site')
 import logging
 from datetime import date, timedelta
 import s3fs
+from app.core.config import S3_BUCKET
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 # Delete existing master to start fresh
 # s3 = s3fs.S3FileSystem()
-# master_path = 'hockey-decoded/depth_scores/depth_scores.parquet'
+# master_path = '{S3_BUCKET}/depth_scores/depth_scores.parquet'
 
 # if s3.exists(master_path):
 #     s3.rm(master_path)
@@ -18,7 +19,7 @@ logger = logging.getLogger(__name__)
 # else:
 #     logger.info("No existing master file")
 
-start_date = date(2025, 12, 22)
+start_date = date(2025, 12, 23)
 end_date = date.today() - timedelta(days=1)  # Yesterday
 
 total_games = 0
@@ -93,13 +94,13 @@ logger.info(f"Total games: {total_games}")
 logger.info(f"✅ Written: {successful}")
 logger.info(f"⚠️ Skipped: {skipped}")
 logger.info(f"❌ Errors: {errors}")
-logger.info(f"📁 Master: s3://hockey-decoded/depth_scores/depth_scores.parquet")
+logger.info(f"📁 Master: s3://{S3_BUCKET}/depth_scores/depth_scores.parquet")
 
 # Update rolling averages file
 try:
     from app.nhl.league_stats import save_current_rolling_averages
     from app.core.config import get_current_season
     save_current_rolling_averages(season=get_current_season())
-    logger.info("✅ Rolling averages file updated: s3://hockey-decoded/depth_scores/rolling_averages.json")
+    logger.info(f"✅ Rolling averages file updated: s3://{S3_BUCKET}/depth_scores/rolling_averages.json")
 except Exception as e:
     logger.error(f"❌ Error updating rolling averages: {e}")

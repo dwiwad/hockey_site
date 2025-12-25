@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 import logging
+from app.core.config import S3_BUCKET
 
 from app.nhl.parsers.rosters import roster_by_team
 from app.nhl.parsers.depth import (
@@ -501,7 +502,7 @@ def calculate_snapshot_at_minute_historical(
       toi_weight_away = weight_live_away
 
       # Load rolling averages from league stats
-      # This reads from s3://hockey-decoded/depth_scores/rolling_averages.json
+      # This reads from s3://{S3_BUCKET}/depth_scores/rolling_averages.json
       # Returns dict like: {"EDM": {"weighted_depth": 0.303, "shot_gini": 0.421, ...}, ...}
       from app.nhl.league_stats import get_current_rolling_averages
       rolling_avgs = get_current_rolling_averages(season=season)
@@ -755,7 +756,7 @@ def backfill_game_minute_snapshots(
               )
 
           # Write to S3 (REPLACES live tracking file with clean historical data)
-          s3_path = f"s3://hockey-decoded/live_game_depth/season={season}/game_id={game_id}.parquet"
+          s3_path = f"s3://{S3_BUCKET}/live_game_depth/season={season}/game_id={game_id}.parquet"
 
           df.to_parquet(
               s3_path,
@@ -789,7 +790,7 @@ def smooth_depth_component_if_outlier(
           import pandas as pd
 
           try:
-              s3_path = f"s3://hockey-decoded/live_game_depth/season={season}/game_id={game_id}.parquet"
+              s3_path = f"s3://{S3_BUCKET}/live_game_depth/season={season}/game_id={game_id}.parquet"
               df = pd.read_parquet(s3_path, engine='fastparquet')
 
               if len(df) < 3:
@@ -975,7 +976,7 @@ def calculate_game_depth_snapshot(
             try:
                 import s3fs
                 import pandas as pd
-                s3_path = f"s3://hockey-decoded/live_game_depth/season={season}/game_id={game_id}.parquet"
+                s3_path = f"s3://{S3_BUCKET}/live_game_depth/season={season}/game_id={game_id}.parquet"
                 prev_df = pd.read_parquet(s3_path, engine='fastparquet')
                 if len(prev_df) > 0:
                     last_time = prev_df.iloc[-1].get('debug_time_elapsed')

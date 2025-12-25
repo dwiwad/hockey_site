@@ -5,17 +5,17 @@ from collections import defaultdict
 import numpy as np
 import pandas as pd
 import s3fs
+from app.core.config import S3_BUCKET
 
 # ----------------------------
 # Config
 # ----------------------------
-BUCKET = "hockey-decoded"
 PREFIX = "static-ds-analyses/total-depth-index/all-seasons"
 SHIFT_OBJECT = "all_shifts_20102025.ndjson"
 ROSTER_CSV = "~/dev/hockey_site/data/total-depth-index/all_seasons/all_rosters_20102025.csv"
 
 fs = s3fs.S3FileSystem(anon=False)
-shift_path = f"s3://{BUCKET}/{PREFIX}/{SHIFT_OBJECT}"
+shift_path = f"s3://{S3_BUCKET}/{PREFIX}/{SHIFT_OBJECT}"
 
 # ----------------------------
 # Helpers
@@ -135,7 +135,7 @@ for year in range(2010, 2025):
 
     # 6) Write to S3
     out_object = f"toi_gini_{year_str}.csv"
-    out_path = f"s3://{BUCKET}/{PREFIX}/{out_object}"
+    out_path = f"s3://{S3_BUCKET}/{PREFIX}/{out_object}"
     toi_gini.to_csv(out_path, index=False, storage_options={"anon": False})
     print(f"Wrote {len(toi_gini):,} rows to {out_path}")
 

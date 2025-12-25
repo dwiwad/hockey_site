@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime, timezone
 import pandas as pd
+from app.core.config import S3_BUCKET
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +14,7 @@ def append_live_depth_snapshot(
     """
     Append a depth snapshot to S3 live tracking file for this game.
       
-    Path: s3://hockey-decoded/live_game_depth/season={season}/game_id={game_id}.parquet
+    Path: s3://{S3_BUCKET}/live_game_depth/season={season}/game_id={game_id}.parquet
       
     Deduplicates by checking if last snapshot was within 60 seconds.
       
@@ -27,7 +28,7 @@ def append_live_depth_snapshot(
         False if skipped (deduplicated) or failed
     """
     # Construct S3 path
-    s3_path = f"s3://hockey-decoded/live_game_depth/season={season}/game_id={game_id}.parquet"
+    s3_path = f"s3://{S3_BUCKET}/live_game_depth/season={season}/game_id={game_id}.parquet"
     logger.debug(f"Writing snapshot to {s3_path}")
 
     # Convert game_date to string if it's a date object
@@ -86,7 +87,7 @@ def write_final_depth(
     """
     Write final depth metrics to master parquet file in LONG format (idempotent).
       
-    Path: s3://hockey-decoded/depth_scores/depth_scores.parquet
+    Path: s3://{S3_BUCKET}/depth_scores/depth_scores.parquet
       
     Creates TWO rows per game (one for each team) to enable easy rolling averages by team.
     Only writes if game_id doesn't already exist in the file.
@@ -101,7 +102,7 @@ def write_final_depth(
         False if already exists or failed
     """
     # Master file path (single file for all games)
-    s3_path = "s3://hockey-decoded/depth_scores/depth_scores.parquet"
+    s3_path = f"s3://{S3_BUCKET}/depth_scores/depth_scores.parquet"
     logger.debug(f"Writing final depth to {s3_path}")
 
     # Convert game_date to string if it's a date object

@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from pytz import timezone
 import re
 from apscheduler.triggers.cron import CronTrigger
+from app.core.config import S3_BUCKET
 
 logger = logging.getLogger(__name__)
 
@@ -159,7 +160,7 @@ def track_live_game_depth():
 
             # Check if we've already stored this even minute
             import pandas as pd
-            s3_path = f"s3://hockey-decoded/live_game_depth/season={season}/game_id={game_id}.parquet"
+            s3_path = f"s3://{S3_BUCKET}/live_game_depth/season={season}/game_id={game_id}.parquet"
 
             try:
                 existing_df = pd.read_parquet(s3_path, engine='fastparquet')

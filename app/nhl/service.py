@@ -17,11 +17,11 @@ import httpx
 import s3fs
 import io
 import pandas as pd
+from app.core.config import S3_BUCKET
 
 # Import the base url for the play-by-play endpoint
 BASE = "https://api-web.nhle.com/v1/gamecenter/{game_id}/play-by-play"
 # Set the directory for where the data will be stored in s3 and creds
-S3_BUCKET = "hockey-decoded"
 S3_PREFIX = "live-data-cache/game-center"   
 fs = s3fs.S3FileSystem(anon=False)  
 
@@ -31,7 +31,7 @@ fs = s3fs.S3FileSystem(anon=False)
 
 # Set the s3 paths for the json and the meta json for pbp
 def _s3_path(season: int, game_id: int) -> str:
-    # Data body: s3://hockey-decoded/live-data-cache/game-center/SEASON/GAMEID.json
+    # Data body: s3://{S3_BUCKET}/live-data-cache/game-center/SEASON/GAMEID.json
     return f"s3://{S3_BUCKET}/{S3_PREFIX}/{season}/{game_id}.json"
 
 def _s3_meta_path(season: int, game_id: int) -> str:
@@ -198,7 +198,7 @@ BOX_BASE = "https://api-web.nhle.com/v1/gamecenter/{game_id}/boxscore"
 
 # Set the s3 paths for the json and the meta json for boxscore
 def _s3_path_box(season: int, game_id: int) -> str:
-    # Data body: s3://hockey-decoded/live-data-cache/game-center/SEASON/GAMEID_box.json
+    # Data body: s3://{S3_BUCKET}/live-data-cache/game-center/SEASON/GAMEID_box.json
     return f"s3://{S3_BUCKET}/{S3_PREFIX}/{season}/{game_id}_box.json"
 
 def _s3_meta_path_box(season: int, game_id: int) -> str:
@@ -514,7 +514,7 @@ def fetch_moneypuck_game_csv(
 SHIFT_BASE = "https://api.nhle.com/stats/rest/en/shiftcharts?cayenneExp=gameId={game_id}"
 
 def _s3_path_shifts(season: int, game_id: int) -> str:
-    # s3://hockey-decoded/live-data-cache/game-center/SEASON/GAMEID_shifts.json
+    # s3://{S3_BUCKET}/live-data-cache/game-center/SEASON/GAMEID_shifts.json
     return f"s3://{S3_BUCKET}/{S3_PREFIX}/{season}/{game_id}_shifts.json"
 
 def _s3_meta_path_shifts(season: int, game_id: int) -> str:

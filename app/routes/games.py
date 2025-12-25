@@ -12,7 +12,7 @@ from app.nhl.parsers.scoreboard import scoreboard
 from app.nhl.parsers.depth import shot_depth_from_pbp, cf_depth_from_pbp, xgoal_depth_from_players, toi_depth_from_boxscore, calculate_tdi
 from app.nhl.models.depth_sem_config import FACTOR_SCORE_COEFFICIENTS
 from app.config.team_colors import TEAM_COLORS
-from app.core.config import get_current_season
+from app.core.config import get_current_season, S3_BUCKET
 
 # Anchor templates to project root so it works no matter where you run uvicorn
 # PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -497,7 +497,7 @@ async def game_depth_timeseries(request: Request, season: int, game_id: int):
     import pandas as pd
     import s3fs
 
-    s3_path = f"s3://hockey-decoded/live_game_depth/season={season}/game_id={game_id}.parquet"
+    s3_path = f"s3://{S3_BUCKET}/live_game_depth/season={season}/game_id={game_id}.parquet"
 
     try:
         # Read the live tracking file

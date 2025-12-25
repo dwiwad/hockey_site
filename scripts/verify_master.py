@@ -1,7 +1,9 @@
 import sys
 sys.path.insert(0, '/Users/dwiwad/dev/hockey_site')
 import pandas as pd
-s3_path = "s3://hockey-decoded/depth_scores/depth_scores.parquet"
+from app.core.config import S3_BUCKET
+
+s3_path = f"s3://{S3_BUCKET}/depth_scores/depth_scores.parquet"
 print(f"Reading {s3_path}...\n")
 df = pd.read_parquet(s3_path, engine='fastparquet')
 print(f"✅ Master file has {len(df)} team-games ({len(df)//2} actual games) and {len(df.columns)} columns\n")

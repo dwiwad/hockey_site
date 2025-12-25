@@ -14,16 +14,16 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 import s3fs
 import fastparquet
+from app.core.config import S3_BUCKET
 
 TZ_APP = ZoneInfo("America/Toronto")   # your app/user timezone
 TZ_ET  = ZoneInfo("America/Toronto")   # ET == Toronto for NHL use
 
-S3_BUCKET = "hockey-decoded"
 S3_PREFIX = "live-data-cache/daily-schedule"   
 fs = s3fs.S3FileSystem(anon=False)            # sets my AWS credentials
 
 def _s3_path(d: date) -> str:
-    # s3://hockey-decoded/live-data-cache/daily-schedule/DATE.parquet
+    # s3://{S3_BUCKET}/live-data-cache/daily-schedule/DATE.parquet
     return f"s3://{S3_BUCKET}/{S3_PREFIX}/{d.isoformat()}.parquet"
 
 def get_games_for_date(target_date: date, force_refresh: bool = False) -> pd.DataFrame:
@@ -31,7 +31,7 @@ def get_games_for_date(target_date: date, force_refresh: bool = False) -> pd.Dat
     Fetch NHL games for a specific calendar date (Toronto/ET),
     returning: game_id, season, start, away, home, away_tri, home_tri.
     Reads/writes a parquet file at:
-    s3://hockey-decoded/live-data-cache/daily-schedule/YYYY-MM-DD.parquet
+    s3://{S3_BUCKET}/live-data-cache/daily-schedule/YYYY-MM-DD.parquet
     """
     s3_path = _s3_path(target_date)
 

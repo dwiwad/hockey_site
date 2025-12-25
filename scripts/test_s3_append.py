@@ -4,6 +4,7 @@ sys.path.insert(0, '/Users/dwiwad/dev/hockey_site')
 import logging
 from datetime import datetime, timezone
 from app.nhl.service_depth import append_live_depth_snapshot
+from app.core.config import S3_BUCKET
 
 # Enable logging to see what's happening
 logging.basicConfig(
@@ -37,7 +38,7 @@ dummy_snapshot = {
 }
 
 print("Testing S3 append with dummy data...")
-print(f"S3 path will be: s3://hockey-decoded/live_game_depth/season=20252026/game_id=9999999.parquet")
+print(f"S3 path will be: s3://{S3_BUCKET}/live_game_depth/season=20252026/game_id=9999999.parquet")
 
 # First write - should create new file
 print("\n=== First write (should create file) ===")
@@ -59,4 +60,4 @@ result3 = append_live_depth_snapshot(9999999, 20252026, dummy_snapshot)
 print(f"Result: {result3}")
 
 print("\n✅ Test complete! Check S3 to verify file exists.")
-print("Path: s3://hockey-decoded/live_game_depth/season=20252026/game_id=9999999.parquet")
+print(f"Path: s3://{S3_BUCKET}/live_game_depth/season=20252026/game_id=9999999.parquet")

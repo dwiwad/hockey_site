@@ -2,6 +2,7 @@ import pandas as pd
 import s3fs
 import plotly.graph_objects as go
 from app.core.config import get_current_season
+from app.core.config import S3_BUCKET
 
 def get_league_depth_data(season=get_current_season()):
     """
@@ -15,7 +16,7 @@ def get_league_depth_data(season=get_current_season()):
     """
     # Step 1: Read the master parquet file from S3 and get its metadata
     s3 = s3fs.S3FileSystem(anon=False)
-    file_path = 'hockey-decoded/depth_scores/depth_scores.parquet'
+    file_path = f'{S3_BUCKET}/depth_scores/depth_scores.parquet'
 
     # Get file info (includes last modified time)
     file_info = s3.info(file_path)
@@ -95,7 +96,7 @@ def save_current_rolling_averages(season=get_current_season()):
 
     # Save to S3
     s3 = s3fs.S3FileSystem(anon=False)
-    file_path = 'hockey-decoded/depth_scores/rolling_averages.json'
+    file_path = f'{S3_BUCKET}/depth_scores/rolling_averages.json'
 
     with s3.open(file_path, 'w') as f:
         json.dump(rolling_dict, f, indent=2)
@@ -114,7 +115,7 @@ def get_current_rolling_averages(season=get_current_season()):
 
     try:
         s3 = s3fs.S3FileSystem(anon=False)
-        file_path = 'hockey-decoded/depth_scores/rolling_averages.json'
+        file_path = f'{S3_BUCKET}/depth_scores/rolling_averages.json'
 
         with s3.open(file_path, 'r') as f:
             rolling_dict = json.load(f)

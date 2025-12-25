@@ -76,10 +76,9 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [X] Write a shot depth function once rosters are in and replace shot share figure
 - [X] Check the math on the depth.py
 - [X] Add primary and secondary team colors to css or a python dict
-- [ ] For the shape of the game would it be better to have a running line? like moneypuck. I'm finding myself wanting to see how depth balance has evolved over the game...
-	- [ ] Like 4 side by side moving line figures. One for each element of depth or each shape of the game element
+- [X] For the shape of the game would it be better to have a running line? like moneypuck. I'm finding myself wanting to see how depth balance has evolved over the game...
 - [X] Change the shot share/depth bar plot to be away and home team primary colors
-- [ ] Start looking into hosting on AWS
+- [X] Start looking into hosting on AWS
 - [X] Localize timezone
 - [ ] TDI
 	- [ ] Start scoping the deep dive

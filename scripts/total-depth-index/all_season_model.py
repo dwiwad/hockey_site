@@ -5,13 +5,14 @@ from scipy.stats import zscore
 import graphviz
 import semopy as sp
 import s3fs
+from app.core.config import S3_BUCKET
 
-BUCKET = "hockey-decoded"
+
 PREFIX = "static-ds-analyses/total-depth-index/all-seasons"
 OBJECT = "final_game_data_20102025.csv"
 
 fs = s3fs.S3FileSystem(anon=False)
-path = f"s3://{BUCKET}/{PREFIX}/{OBJECT}"
+path = f"s3://{S3_BUCKET}/{PREFIX}/{OBJECT}"
 
 print(f"Loading {path}")
 game_data = pd.read_csv(path, storage_options={"anon": False}, low_memory=False)

@@ -9,6 +9,7 @@ from fastapi import Response, status as http_status
 
 from app.routes import core_router, deepdive_router, dashboard_router, games_router
 from app.core.depth_job import track_live_game_depth, schedule_depth_tracking_for_today
+from app.core.config import S3_BUCKET
 
 # Scheduler imports
 from app.core.scheduler import get_scheduler, daily_trigger, every_5s_trigger
@@ -89,7 +90,7 @@ async def health_check(response: Response):
     try:
         import s3fs
         s3 = s3fs.S3FileSystem(anon=False)
-        s3.exists('hockey-decoded/depth_scores/depth_scores.parquet')
+        s3.exists(f"{S3_BUCKET}/depth_scores/depth_scores.parquet")
     except Exception as e:
         issues.append(f"S3 connectivity issue: {str(e)}")
 

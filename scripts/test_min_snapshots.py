@@ -166,6 +166,7 @@ print("TEST 4: Full Game Backfill")
 print("="*60)
 
 from app.nhl.depth_tracker import backfill_game_minute_snapshots
+from app.core.config import S3_BUCKET
 
 print(f"\n4a. Backfilling game {game_id} with even-minute snapshots...")
 print("     This will create snapshots at minutes 2, 4, 6, 8... 60")
@@ -178,7 +179,7 @@ if success:
 
     # Read back the file to verify
     import pandas as pd
-    s3_path = f"s3://hockey-decoded/live_game_depth/season={season}/game_id={game_id}.parquet"
+    s3_path = f"s3://{S3_BUCKET}/live_game_depth/season={season}/game_id={game_id}.parquet"
 
     print("\n4b. Verifying backfilled data...")
     df = pd.read_parquet(s3_path, engine='fastparquet')

@@ -4,6 +4,7 @@ sys.path.insert(0, '.')
 from app.nhl.depth_tracker import backfill_game_minute_snapshots
 import pandas as pd
 import s3fs
+from app.core.config import S3_BUCKET
 
 # Test on game 2025020534 (the one with Oilers volatility)
 game_id = 2025020534
@@ -22,7 +23,7 @@ if success:
 
     # Read the backfilled data
     s3 = s3fs.S3FileSystem(anon=False)
-    s3_path = f's3://hockey-decoded/live_game_depth/season={season}/game_id={game_id}.parquet'
+    s3_path = f's3://{S3_BUCKET}/live_game_depth/season={season}/game_id={game_id}.parquet'
 
     from fastparquet import ParquetFile
     with s3.open(s3_path, 'rb') as f:

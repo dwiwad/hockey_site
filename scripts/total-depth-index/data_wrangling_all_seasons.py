@@ -14,6 +14,7 @@ from scipy.stats import zscore
 import json
 from pathlib import Path
 import s3fs
+from app.core.config import S3_BUCKET
 
 
 ##############################################################################
@@ -398,14 +399,13 @@ game_cf = (
 rosters = pd.merge(rosters, game_cf, on = ['game_id', 'playerId'], how = 'left').fillna(0)
 
 # Proper split: bucket + prefix + object
-BUCKET = "hockey-decoded"
 PREFIX = "static-ds-analyses/total-depth-index/all-seasons"
 OBJECT = "roster_with_sog_assist_corsi.csv"
 
 fs = s3fs.S3FileSystem(anon=False)
 
 # Build full S3 path
-out_path = f"s3://{BUCKET}/{PREFIX}/{OBJECT}"
+out_path = f"s3://{S3_BUCKET}/{PREFIX}/{OBJECT}"
 
 # Write DataFrame
 rosters.to_csv(out_path, index=False, storage_options={"anon": False})
@@ -417,7 +417,6 @@ print(f"Wrote {len(rosters)} rows to {out_path}")
 ##############################################################################
 
 # Pull all the expected goals for each season
-BUCKET = "hockey-decoded"
 PREFIX = "static-ds-analyses/total-depth-index/all-seasons"
 
 fs = s3fs.S3FileSystem(anon=False)
@@ -427,7 +426,7 @@ fs = s3fs.S3FileSystem(anon=False)
 # Moneypuck drops 20240, so we can just append those back on.
 xg = {}
 for year in range(2010, 2025):
-    path = f"s3://{BUCKET}/{PREFIX}/shots_{year}.csv"
+    path = f"s3://{S3_BUCKET}/{PREFIX}/shots_{year}.csv"
     print(f"Loading {path}")
     df = pd.read_csv(path, storage_options={"anon": False})
     # prepend the season year and left-pad the short id to 6 digits, e.g., 20001 -> 020001 -> 2024020001
@@ -458,14 +457,13 @@ game_xg = (
 rosters = pd.merge(rosters, game_xg, on = ['game_id', 'playerId'], how = 'left').fillna(0)
 
 # Proper split: bucket + prefix + object
-BUCKET = "hockey-decoded"
 PREFIX = "static-ds-analyses/total-depth-index/all-seasons"
 OBJECT = "roster_with_sog_assist_corsi_xg.csv"
 
 fs = s3fs.S3FileSystem(anon=False)
 
 # Build full S3 path
-out_path = f"s3://{BUCKET}/{PREFIX}/{OBJECT}"
+out_path = f"s3://{S3_BUCKET}/{PREFIX}/{OBJECT}"
 
 # Write DataFrame
 rosters.to_csv(out_path, index=False, storage_options={"anon": False})

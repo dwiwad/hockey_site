@@ -5,6 +5,7 @@ import logging
 from datetime import datetime, timezone
 from app.nhl.service_depth import write_final_depth
 import s3fs
+from app.core.config import S3_BUCKET
 
 # Enable logging
 logging.basicConfig(
@@ -16,7 +17,7 @@ logging.basicConfig(
 print("Cleaning up any existing test master file...")
 
 s3 = s3fs.S3FileSystem(anon=False)
-test_path = 'hockey-decoded/depth_scores/depth_scores_test.parquet'
+test_path = f'{S3_BUCKET}/depth_scores/depth_scores_test.parquet'
 
 if s3.exists(test_path):
     s3.rm(test_path)
@@ -50,7 +51,7 @@ dummy_snapshot = {
 }
 
 print("Testing master file write...")
-print(f"Master path: s3://hockey-decoded/depth_scores/depth_scores.parquet\n")
+print(f"Master path: s3://{S3_BUCKET}/depth_scores/depth_scores.parquet\n")
 
 # First write - should create file
 print("=== First write (should create master file) ===")
@@ -72,4 +73,4 @@ result3 = write_final_depth(8888889, 20252026, dummy_snapshot)
 
 print(f"Result: {result3}\n")
 print("✅ Test complete! Check S3 to verify master file.")
-print("Path: s3://hockey-decoded/depth_scores/depth_scores.parquet")
+print(f"Path: s3://{S3_BUCKET}/depth_scores/depth_scores.parquet")

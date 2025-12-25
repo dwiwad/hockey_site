@@ -1,14 +1,14 @@
 import pandas as pd
 import numpy as np
 import s3fs
+from app.core.config import S3_BUCKET
 
 # Read the roster_with_sog_assist_corsi_xg.csv from S3
-BUCKET = "hockey-decoded"
 PREFIX = "static-ds-analyses/total-depth-index/all-seasons"
 OBJECT = "roster_with_sog_assist_corsi_xg.csv"
 
 fs = s3fs.S3FileSystem(anon=False)
-path = f"s3://{BUCKET}/{PREFIX}/{OBJECT}"
+path = f"s3://{S3_BUCKET}/{PREFIX}/{OBJECT}"
 
 print(f"Loading {path}")
 rosters = pd.read_csv(path, storage_options={"anon": False}, low_memory=False)
@@ -158,14 +158,13 @@ game_data = (
 
 
 # Get the TOI gini
-BUCKET = "hockey-decoded"
 PREFIX = "static-ds-analyses/total-depth-index/all-seasons"
 
 fs = s3fs.S3FileSystem(anon=False)
 
 dfs = []
 for year in range(2010, 2025):
-    path = f"s3://{BUCKET}/{PREFIX}/toi_gini_{year}.csv"
+    path = f"s3://{S3_BUCKET}/{PREFIX}/toi_gini_{year}.csv"
     print(f"Loading {path}")
     dfs.append(pd.read_csv(path, storage_options={"anon": False}))
 
@@ -187,12 +186,11 @@ new_order = ['game_id', 'teamAbbrev', 'outcome', 'total_sogs', 'xgoal', 'sog_gin
 # Reassign the DataFrame with the new column order
 game_data = game_data[new_order]
 
-BUCKET = "hockey-decoded"
 PREFIX = "static-ds-analyses/total-depth-index/all-seasons"
 OBJECT = "final_game_data_20102025.csv"
 
 fs = s3fs.S3FileSystem(anon=False)
-out_path = f"s3://{BUCKET}/{PREFIX}/{OBJECT}"
+out_path = f"s3://{S3_BUCKET}/{PREFIX}/{OBJECT}"
 
 game_data.to_csv(out_path, index=False, storage_options={"anon": False})
 print(f"Wrote {len(game_data)} rows to {out_path}")

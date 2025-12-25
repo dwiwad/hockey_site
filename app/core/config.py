@@ -1,4 +1,8 @@
 from datetime import date
+import os
+
+# S3 Configuration
+S3_BUCKET = os.getenv("S3_BUCKET", "hockey-decoded")
 
 # Function to determine what season it currently is
 def get_current_season():
