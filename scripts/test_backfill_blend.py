@@ -21,7 +21,7 @@ if success:
     print("Reading results...")
 
     # Read the backfilled data
-    s3 = s3fs.S3FileSystem()
+    s3 = s3fs.S3FileSystem(anon=False)
     s3_path = f's3://hockey-decoded/live_game_depth/season={season}/game_id={game_id}.parquet'
 
     from fastparquet import ParquetFile

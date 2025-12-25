@@ -15,7 +15,7 @@ logging.basicConfig(
 # Clean up any existing test master file
 print("Cleaning up any existing test master file...")
 
-s3 = s3fs.S3FileSystem()
+s3 = s3fs.S3FileSystem(anon=False)
 test_path = 'hockey-decoded/depth_scores/depth_scores_test.parquet'
 
 if s3.exists(test_path):

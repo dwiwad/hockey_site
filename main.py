@@ -88,7 +88,7 @@ async def health_check(response: Response):
     # Uncomment if you want to test S3 connectivity
     try:
         import s3fs
-        s3 = s3fs.S3FileSystem()
+        s3 = s3fs.S3FileSystem(anon=False)
         s3.exists('hockey-decoded/depth_scores/depth_scores.parquet')
     except Exception as e:
         issues.append(f"S3 connectivity issue: {str(e)}")

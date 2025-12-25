@@ -14,14 +14,15 @@ def get_league_depth_data(season=get_current_season()):
         DataFrame with columns: team_abbrev, game_number, weighted_depth_rolling
     """
     # Step 1: Read the master parquet file from S3 and get its metadata
-    s3 = s3fs.S3FileSystem()
+    s3 = s3fs.S3FileSystem(anon=False)
     file_path = 'hockey-decoded/depth_scores/depth_scores.parquet'
 
     # Get file info (includes last modified time)
     file_info = s3.info(file_path)
     last_modified = file_info['LastModified']  # datetime object
 
-    df = pd.read_parquet(f's3://{file_path}')
+    s3 = s3fs.S3FileSystem(anon=False)
+    df = pd.read_parquet(f's3://{file_path}', filesystem=s3)
 
     # Step 2: Filter to just this season's regular season games
     season_prefix = f"{season}02"
@@ -93,7 +94,7 @@ def save_current_rolling_averages(season=get_current_season()):
     }
 
     # Save to S3
-    s3 = s3fs.S3FileSystem()
+    s3 = s3fs.S3FileSystem(anon=False)
     file_path = 'hockey-decoded/depth_scores/rolling_averages.json'
 
     with s3.open(file_path, 'w') as f:
@@ -112,7 +113,7 @@ def get_current_rolling_averages(season=get_current_season()):
     import json
 
     try:
-        s3 = s3fs.S3FileSystem()
+        s3 = s3fs.S3FileSystem(anon=False)
         file_path = 'hockey-decoded/depth_scores/rolling_averages.json'
 
         with s3.open(file_path, 'r') as f:
