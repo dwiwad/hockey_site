@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  web:
+    # Container name
+    container_name: hockey-decoded
+
+    # Build configuration
+    build: .
+    image: hockey-decoded:latest
+
+    # Port mapping (host:container)
+    ports:
+      - "8000:8000"
+
+    # Load environment variables from .env file
+    env_file:
+      - .env
+
+    # Restart policy
+    restart: unless-stopped
