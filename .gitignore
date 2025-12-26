@@ -45,7 +45,7 @@ output/
 
 # Secrets and config
 .env
-.env.*
+#.env.*
 config.yaml
 
 # Data files for now
