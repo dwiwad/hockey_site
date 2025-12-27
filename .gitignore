@@ -50,3 +50,6 @@ config.yaml
 
 # Data files for now
 data/
+
+# My Reminder on how to deploy
+Deploy.md

@@ -18,6 +18,8 @@ This project is a personal hockey data website built using primarily Python, R, 
 
 ## Status
 
+12/26/2025 - THE SITE IS LIVE!! I spent all day today learning how to set up an ECS Fargate instance and get the site on AWS. Right now it is not linked to hockeydecoded.com because I want to iron out a few things before it is really findable. But, for those who are here, you can find the site [here](http://54.210.122.92:8000/).
+
 10/14/25; New goal - let's try to have the site live, and the TDI paper under review, by the end of the year!
 
 10/03/2025; Everything is actually pretty far along now. It's really close to what I would consider publishable. I have done a ton of work stylistically and also to have a few blog posts and dashboards stood up. I am currently working on the Total Depth Index. I think once I have a full draft of a whitepaper, and then figure out how to stand up a live in game version of the TDI, it will be ready to launch. At the end of October every team (I think) will have 10 regular season games, which is enough to start calculating a rolling 10 game depth index for dashboard priors. xG will be challenging. But I feel like this has come a LONG way since I stood up an empty website in June.
@@ -35,6 +37,14 @@ I'm beginning to think about database management. Right now there is no database
 
 ## To-Do
 
+### Dec. 26, 2025 - Before linking to the domain
+- [ ] get https rolling
+- [ ] Write the TDI blog post
+- [ ] Finish the whitepaper
+- [ ] Post the whitepaper on arxiv
+- [ ] Submit the whitepaper to American Statistician
+- [ ] go-to typo
+
 Tech Debt
 	- [ ] Clean up style.css; Maybe migrate to separate files.
 	- [ ] Generalize depth functions
@@ -50,7 +60,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [X] Shape of the Game Dashboard
 	- [X] Scoreboard
 		- [X] Bring in boxscore, clean up router and naming conventions
-    - [ ] Live in game TDI 
+    - [X] Live in game TDI 
 		- [X] Wire up shot depth
 		- [X] Wire up CF depth
 		- [X] Wire up TOI depth
@@ -82,7 +92,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [X] Localize timezone
 - [ ] TDI
 	- [ ] Start scoping the deep dive
-	- [ ] Stand up an empty post for it
+	- [X] Stand up an empty post for it
 - [ ] Season shape once I have more metrics than depth
 	- [ ] Add Card under detailed Dashboards header
 	- [ ] Add new Page for "Shape of the Season"
