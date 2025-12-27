@@ -1,0 +1,30 @@
+# Hockey Decoded AWS Resources
+# Created: 2025-12-26
+
+AWS Account ID: 113087453968
+Region: us-east-1
+
+# ECR
+ECR Repository URI: 113087453968.dkr.ecr.us-east-1.amazonaws.com/hockey-decoded
+
+# IAM Roles
+Execution Role ARN: arn:aws:iam::113087453968:role/hockey-decoded-execution-role
+Task Role ARN: arn:aws:iam::113087453968:role/hockey-decoded-task-role
+
+# ECS
+Cluster Name: hockey-decoded-cluster
+
+# Networking
+VPC ID: vpc-055d7a58b005ad24c
+Subnet 1: subnet-0755daee89d8ca6c2
+Subnet 2: subnet-093fe78211bcb238a
+Subnet 3: subnet-01c5a5ff6c2f85264
+Subnet 4: subnet-07e02ec0f085bc65c
+Subnet 5: subnet-0e8febc5787d426db
+Subnet 6: subnet-03628e340cf1f1d86
+
+Security Group ID: sg-0de52795cb6aac593
+
+# S3
+Bucket Name: hockey-decoded
+Bucket Region: us-east-2

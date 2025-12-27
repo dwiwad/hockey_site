@@ -25,4 +25,7 @@ boto3==1.40.18
 pyarrow==21.0.0
 s3fs==2025.9.0
 fastparquet
-markdown==3.8
+Markdown==3.8.2
+python-frontmatter==1.1.0
+requests==2.32.4
+plotly==6.3.1

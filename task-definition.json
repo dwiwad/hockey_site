@@ -1,0 +1,56 @@
+  {
+    "family": "hockey-decoded-task",
+    "networkMode": "awsvpc",
+    "requiresCompatibilities": ["FARGATE"],
+    "cpu": "256",
+    "memory": "512",
+    "executionRoleArn": "arn:aws:iam::113087453968:role/hockey-decoded-execution-role",
+    "taskRoleArn": "arn:aws:iam::113087453968:role/hockey-decoded-task-role",
+    "containerDefinitions": [
+      {
+        "name": "hockey-decoded-container",
+        "image": "113087453968.dkr.ecr.us-east-1.amazonaws.com/hockey-decoded:latest",
+        "portMappings": [
+          {
+            "containerPort": 8000,
+            "protocol": "tcp"
+          }
+        ],
+        "environment": [
+          {
+            "name": "AWS_REGION",
+            "value": "us-east-2"
+          },
+          {
+            "name": "S3_BUCKET",
+            "value": "hockey-decoded"
+          },
+          {
+            "name": "LOG_LEVEL",
+            "value": "INFO"
+          },
+          {
+            "name": "ENVIRONMENT",
+            "value": "production"
+          }
+        ],
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "/ecs/hockey-decoded",
+            "awslogs-region": "us-east-1",
+            "awslogs-stream-prefix": "ecs",
+            "awslogs-create-group": "true"
+          }
+        },
+        "healthCheck": {
+          "command": ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"],
+          "interval": 30,
+          "timeout": 5,
+          "retries": 3,
+          "startPeriod": 60
+        }
+      }
+    ]
+  }
+
