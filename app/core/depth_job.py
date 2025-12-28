@@ -52,7 +52,10 @@ def schedule_depth_tracking_for_today(scheduler):
 
     # STEP 2: Set up tracking for today
     # Get today's schedule
-    today = datetime.now().date()
+    from pytz import timezone
+    et = timezone('America/Toronto')
+    today = datetime.now(et).date()
+
     from app.nhl.get_todays_games import get_games_for_date
     schedule_df = get_games_for_date(today)
 

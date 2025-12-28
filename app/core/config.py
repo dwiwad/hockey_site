@@ -17,7 +17,10 @@ def get_current_season():
     """
 
     # Get todays date
-    today = date.today()
+    from datetime import datetime
+    from pytz import timezone
+    et = timezone('America/Toronto')
+    today = datetime.now(et).date()
     year = today.year
     month = today.month
     

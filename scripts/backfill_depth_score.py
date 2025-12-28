@@ -20,7 +20,10 @@ logger = logging.getLogger(__name__)
 #     logger.info("No existing master file")
 
 start_date = date(2025, 12, 23)
-end_date = date.today() - timedelta(days=1)  # Yesterday
+from datetime import datetime
+from pytz import timezone
+et = timezone('America/Toronto')
+end_date = datetime.now(et).date() - timedelta(days=1)
 
 total_games = 0
 successful = 0

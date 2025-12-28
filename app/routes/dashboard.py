@@ -11,7 +11,7 @@ from app.core.config import get_current_season
 templates = Jinja2Templates(directory = "templates")
 dashboard_router = APIRouter()
 
-TZ = ZoneInfo("America/Vancouver")
+TZ = ZoneInfo("America/Toronto")
 
 def parse_or_today(date_str: str | None) -> date:
     if not date_str:
