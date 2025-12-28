@@ -44,6 +44,7 @@ I'm beginning to think about database management. Right now there is no database
 - [ ] Post the whitepaper on arxiv
 - [ ] Submit the whitepaper to American Statistician
 - [ ] go-to typo
+- [ ] Make the buttons buttons
 
 Tech Debt
 	- [ ] Clean up style.css; Maybe migrate to separate files.

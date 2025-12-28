@@ -100,7 +100,9 @@ def get_active_games() -> list[tuple[int, int]]:
     logger = logging.getLogger(__name__)
 
     # Get today's schedule using the actual function name
-    today = datetime.now().date()  # Returns date object, not string
+    from pytz import timezone
+    et = timezone('America/Toronto')
+    today = datetime.now(et).date()
     df = get_games_for_date(today)
 
     if df is None or len(df) == 0:

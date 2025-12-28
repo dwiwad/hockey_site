@@ -216,7 +216,9 @@ def backfill_yesterday_games():
   logger.info("=== Backfilling yesterday's games ===")
   
   # Get yesterday's date
-  yesterday = datetime.now().date() - timedelta(days=1)
+  from pytz import timezone
+  et = timezone('America/Toronto')
+  yesterday = datetime.now(et).date() - timedelta(days=1)
   
   # Get games for yesterday
   from app.nhl.get_todays_games import get_games_for_date
