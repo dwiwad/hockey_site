@@ -178,14 +178,14 @@ def create_league_depth_boxplot(df_rolling):
       fig.update_layout(
           # Title
           title=dict(
-              text="Team Depth Rankings (2024-25 Season)",
+              text=f"Team Depth over the last 10 games ({get_current_season()}-{str(get_current_season() + 1)[-2:]} Season)",
               font=dict(
                   family="Charter, Bitstream Charter, Sitka Text, Cambria, serif",
                   size=24,
                   color="#041E42"
               ),
-              x=0.25,
-              xanchor='center'
+              x=0.05,
+              xanchor='left'
           ),
 
           # Axes
