@@ -301,3 +301,10 @@ def backfill_yesterday_games():
       logger.info("✅ Rolling averages file updated")
   except Exception as e:
       logger.error(f"❌ Error updating rolling averages: {e}")
+
+  try:
+      from app.nhl.league_stats import save_team_quadrant_data
+      save_team_quadrant_data(season=get_current_season())
+      logger.info("✅ Team quadrant data updated")
+  except Exception as e:
+      logger.error(f"❌ Error updating team quadrant data: {e}")

@@ -4,7 +4,12 @@ from fastapi.templating import Jinja2Templates
 from datetime import datetime, date, timedelta
 from zoneinfo import ZoneInfo
 from app.nhl.get_todays_games import get_games_for_date
-from app.nhl.league_stats import get_league_depth_data, create_league_depth_boxplot
+from app.nhl.league_stats import (
+      get_league_depth_data,
+      create_league_depth_boxplot,
+      get_team_quadrant_data,
+      create_team_quadrant_scatter
+  )
 from app.core.config import get_current_season
 
 # Tell Jinja where to find the html
@@ -51,6 +56,21 @@ async def dashboard(request: Request, date_str: str | None = Query(default=None,
         depth_chart_html = f"<p>Chart unavailable: {e}</p>"
         update_time = None
 
+    # Generate team quadrant chart (depth vs goaltending)
+    try:
+        team_quadrant_data = get_team_quadrant_data(season=get_current_season())
+        if team_quadrant_data:
+            quadrant_fig = create_team_quadrant_scatter(team_quadrant_data)
+            quadrant_chart_html = quadrant_fig.to_html(
+                include_plotlyjs='cdn',
+                div_id='team-quadrant-chart',
+                config={'displayModeBar': False}
+            )
+        else:
+            quadrant_chart_html = "<p>Team quadrant chart unavailable</p>"
+    except Exception as e:
+        quadrant_chart_html = f"<p>Chart unavailable: {e}</p>"
+
     return templates.TemplateResponse(
         "dashboard.html",
         {
@@ -62,6 +82,7 @@ async def dashboard(request: Request, date_str: str | None = Query(default=None,
             "is_today": is_today,
             "games_today": games_today,
             "depth_chart_html": depth_chart_html,
+            "quadrant_chart_html": quadrant_chart_html,
             "update_time": update_time,
         },
     )

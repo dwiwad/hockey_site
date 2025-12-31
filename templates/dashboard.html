@@ -85,6 +85,25 @@
         <!-- League Depth Chart Section -->
         <section style="max-width:1200px; margin:40px auto 80px auto; padding:0 24px;">
             <h1>Shape of the Season<sup style="font-size: 0.3em; line-height: 0;"><a href="/about/tdi" style="text-decoration: none; color: #3B4B64;">ⓘ</a></sup></h1>
+            
+            <!-- Chart Card -->
+            <div style="
+                background-color: white;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                padding: 2rem;
+                margin-top: 1.5rem;
+                margin-bottom: 2rem;
+            ">
+
+                {{ quadrant_chart_html | safe }}
+
+                {% if update_time %}
+                  <p class="depth-link" style="text-align: right; margin-top: 1rem;">
+                      <em>Updated {{ update_time }}</em>
+                  </p>
+                {% endif %}
+            </div>
 
             <!-- Chart Card -->
             <div style="
@@ -95,6 +114,7 @@
                 margin-top: 1.5rem;
                 margin-bottom: 2rem;
             ">
+
                 {{ depth_chart_html|safe }}
 
                 {% if update_time %}

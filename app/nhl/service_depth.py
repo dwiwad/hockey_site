@@ -142,6 +142,10 @@ def write_final_depth(
         'cf_depth': snapshot['home_cf_depth'],
         'xg_depth': snapshot['home_xg_depth'],
         'toi_depth': snapshot['home_toi_depth'],
+        'total_xg': snapshot['home_total_xg'],
+        'goals': snapshot['home_goals'],
+        'opponent_total_xg': snapshot['away_total_xg'],
+        'opponent_goals': snapshot['away_goals'],
     }
     away_record = {
         'game_id': snapshot['game_id'],
@@ -158,6 +162,10 @@ def write_final_depth(
         'cf_depth': snapshot['away_cf_depth'],
         'xg_depth': snapshot['away_xg_depth'],
         'toi_depth': snapshot['away_toi_depth'],
+        'total_xg': snapshot['away_total_xg'],
+        'goals': snapshot['away_goals'],
+        'opponent_total_xg': snapshot['home_total_xg'],
+        'opponent_goals': snapshot['home_goals'],
     }
 
     # Create DataFrame with both rows

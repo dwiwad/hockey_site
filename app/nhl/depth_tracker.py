@@ -1168,6 +1168,12 @@ def calculate_game_depth_snapshot(
             'debug_away_shots': debug_data['away_shots'],
             'debug_time_elapsed': debug_data['time_elapsed'],
             'debug_blending_occurred': debug_data['blending_occurred'],
+
+            # Goaltending metrics (for team quadrant analysis)
+            'home_total_xg': xg_depth_payload['xg_home']['total_xg'],
+            'away_total_xg': xg_depth_payload['xg_away']['total_xg'],
+            'home_goals': int(boxscore.get('home_score', 0)),
+            'away_goals': int(boxscore.get('away_score', 0)),
         }
 
         return snapshot

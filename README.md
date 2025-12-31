@@ -45,6 +45,7 @@ I'm beginning to think about database management. Right now there is no database
 - [ ] Submit the whitepaper to American Statistician
 - [ ] go-to typo
 - [ ] Make the buttons buttons
+- [ ] Cards vertical on mobile, especially on the main page
 
 Tech Debt
 	- [ ] Clean up style.css; Maybe migrate to separate files.
@@ -54,6 +55,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [ ] Five deep dive posts:
     - [X] Demographics over time
     - [ ] Total Depth Index (TDI)
+	- [ ] Low Depth wins are the result of over and underperforming goaltending
     - [ ] Career tenure over time
 	- [ ] Distances flown by team by season - inequality?
     - [ ] Quantifying generational talent vs everyone else?
@@ -95,6 +97,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 	- [ ] Start scoping the deep dive
 	- [X] Stand up an empty post for it
 - [ ] Season shape once I have more metrics than depth
+	- [ ] Add a plot for Team identity, Depth x GSAx
 	- [ ] Add Card under detailed Dashboards header
 	- [ ] Add new Page for "Shape of the Season"
 	- [ ] Add depth plotly to that page

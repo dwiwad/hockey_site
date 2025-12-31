@@ -19,7 +19,8 @@ logger = logging.getLogger(__name__)
 # else:
 #     logger.info("No existing master file")
 
-start_date = date(2025, 12, 23)
+start_date = date(2025, 10, 4)
+#end_date = date(2025, 12, 14)
 from datetime import datetime
 from pytz import timezone
 et = timezone('America/Toronto')
@@ -107,3 +108,14 @@ try:
     logger.info(f"✅ Rolling averages file updated: s3://{S3_BUCKET}/depth_scores/rolling_averages.json")
 except Exception as e:
     logger.error(f"❌ Error updating rolling averages: {e}")
+
+from app.nhl.league_stats import save_team_quadrant_data
+try:
+    save_team_quadrant_data(season=get_current_season())
+    logger.info(f"✅ Team quadrant data saved: s3://{S3_BUCKET}/depth_scores/team_quadrant.json")
+except Exception as e:
+    logger.error(f"❌ Error saving team quadrant data: {e}")
+
+from app.nhl.league_stats import save_team_quadrant_data
+from app.core.config import get_current_season
+save_team_quadrant_data(season=get_current_season())
