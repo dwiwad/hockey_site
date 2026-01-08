@@ -757,6 +757,7 @@ body {
   width: 750px;
   min-height: 75px;       /* let it expand if content needs */
   padding: 1rem 2rem 1.5rem 2rem;  /* less padding on top, keep sides */
+  margin: 0 auto;
   background-color: white;
   color: var(--blue-dark);
   border-radius: 8px;
@@ -876,6 +877,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 275px;        /* ADD THIS - constrains the width */
+  overflow: hidden;
 }
 
 /* logos */
@@ -889,7 +892,6 @@ body {
 /* optional: shrink logos on small screens */
 @media (max-width: 1000px) {
   .team-logo { width: 100px; height: 100px; }
-  .game-card { width: 100%; max-width: 750px; }
 }
 
 /* Shot share bar */
@@ -1000,8 +1002,15 @@ body {
     /* Index page cards - stack vertically and take full width */
     .card-row {
       flex-direction: column;
+      align-items: center;
       padding: 1rem;
       gap: 1.5rem;
+    }
+
+    .card-wrapper {
+      width: 100%;  /* Full width wrapper */
+      display: flex;
+      justify-content: center;  /* Center the card inside */
     }
 
     .card {
@@ -1174,5 +1183,35 @@ body {
 
     .markdown-body img {
       margin: 1rem 0;
+    }
+
+    /* Dashboard game cards - fix centering and text wrapping */
+    .game-card-row {
+      padding: 1rem;
+      align-items: center;
+    }
+
+    .game-card-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .game-card {
+      width: 90%;
+      max-width: 90%;
+      margin: 0 auto;
+    }
+
+    /* Force text wrapping */
+    .matchup {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      max-width: 100%;
+    }
+
+    .center-stack {
+      max-width: 100%;
+      overflow: hidden;
     }
   }
