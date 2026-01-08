@@ -1,8 +1,9 @@
 ---
-title: "Measuring team depth in the NHL with latent variable modeling"
+title: "Depth and Goaltending Placeholder"
 short_title: "Total Depth Index | Hockey Decoded"
 date: "2025-12-30"
 image: ""
+tag: Analysis
 summary: XXX.
 description: ""
 keywords: ""

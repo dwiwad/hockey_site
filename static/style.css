@@ -611,15 +611,20 @@ body {
   }
 
   .blog-card-link {
-      color: var(--blue);
+      background-color: var(--orange);
+      color: white;
       text-decoration: none;
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
       align-self: flex-start;
+      transition: background-color 0.2s;
+      display: inline-block;
   }
 
   .blog-card-link:hover {
-      color: var(--orange);
+      background-color: #d65a1f;  /* Darker orange on hover */
   }
 
 .blog-content h1 {
