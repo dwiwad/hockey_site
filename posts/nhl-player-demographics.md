@@ -2,7 +2,8 @@
 title: "How have player demographics changed over the history of the league?"
 short_title: "Player Demographics | Hockey Decoded"
 date: "2025-09-06"
-image: ""
+image: "/static/images/deep-dives/nhl-player-demographics/nhl_player_nationalities_trend.png"
+tag: "Historical"
 summary: A deep exploration of player height, weight, and nationality from 1917-2025.
 description: "Statistical analysis of NHL player demographics from 1917-2025. Explore trends in height, weight, age, and nationality across 30,000+ player-seasons using data from the NHL API."
 keywords: "NHL statistics, hockey analytics, player demographics, NHL history, hockey data analysis, sports analytics"

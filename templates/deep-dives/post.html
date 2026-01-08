@@ -25,10 +25,6 @@
   <h1 class="post-title">{{ title }}</h1>
   <p class="date">{{ date }}</p>
 
-  {% if image %}
-    <img src="{{ image }}" alt="{{ title }}">
-  {% endif %}
-
   <article class="deep-dive markdown-body">
     <div>{{ content | safe }}</div>
   </article>

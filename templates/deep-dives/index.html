@@ -43,15 +43,23 @@
         {% for post in posts %}
         <div class="blog-card">
             {% if post.image %}
-            <img src="{{ post.image }}" alt="{{ post.title }}">
+            <img class="blog-card-image" src="{{ post.image }}" alt="{{ post.title }}">
             {% endif %}
-            <h1>{{ post.title }}</h1>
-            {% if post.summary %}
-                <p class="post-summary">{{ post.summary }}</p>
-            {% endif %}
-            <button class="blog-button">
-                <a href="/deep-dives/{{ post.slug }}">See Post</a>
-            </button>
+
+            <div class="blog-card-content">
+                <div class="blog-card-meta">
+                    <span class="blog-tag">{{ post.tag }}</span>
+                    <span class="blog-date">{{ post.date_str }}</span>
+                </div>
+
+                <h2 class="blog-card-title">{{ post.title }}</h2>
+
+                {% if post.summary %}
+                <p class="blog-card-summary">{{ post.summary }}</p>
+                {% endif %}
+
+                <a href="/deep-dives/{{ post.slug }}" class="blog-card-link">Read more →</a>
+            </div>
         </div>
         {% endfor %}
     </main>
