@@ -46,18 +46,18 @@ I'm beginning to think about database management. Right now there is no database
       - [ ] Request SSL certificate in ACM
       - [ ] Add HTTPS listener to ALB
       - [ ] Configure HTTP → HTTPS redirect
-    - [ ] Clean up temporary backfill code
-      - [ ] Remove `drop_duplicates` line from `service_depth.py`
-      - [ ] Uncomment idempotency check in `service_depth.py`
-    - [ ] Add quadrant data update to 5 AM scheduled job (`depth_job.py`)
+    - [X] Clean up temporary backfill code
+      - [X] Remove `drop_duplicates` line from `service_depth.py`
+      - [X] Uncomment idempotency check in `service_depth.py`
+    - [X] Add quadrant data update to 5 AM scheduled job (`depth_job.py`)
 
-  - [ ] **Mobile Optimization** (Critical UX)
-    - [ ] Make game cards stack vertically on mobile
-    - [ ] Optimize main dashboard cards for mobile
-    - [ ] Fix deep dive cards for mobile layout
-    - [ ] Test Plotly charts on mobile (responsive sizing)
-    - [ ] Ensure navigation menu works on small screens
-    - [ ] Test form inputs (date picker, dropdowns) on mobile
+  - [X] **Mobile Optimization** (Critical UX)
+    - [X] Make game cards stack vertically on mobile
+    - [X] Optimize main dashboard cards for mobile
+    - [X] Fix deep dive cards for mobile layout
+    - [X] Test Plotly charts on mobile (responsive sizing)
+    - [X] Ensure navigation menu works on small screens
+    - [X] Test form inputs (date picker, dropdowns) on mobile
 
   - [ ] **Content - Launch Blockers**
     - [ ] Write TDI blog post

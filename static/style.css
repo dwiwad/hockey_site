@@ -978,4 +978,47 @@ body {
       width: 40px;
       height: 40px;
     }
+
+    /* Deep dive post mobile optimization */
+    .post-title {
+      font-size: 2rem !important;
+      width: 90%;
+      margin: 1.5rem auto 0.5rem auto;
+    }
+
+    .date {
+      font-size: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .markdown-body {
+      max-width: 90% !important;  /* Was 60%, too narrow on mobile */
+      padding: 0 1rem;
+      font-size: 1rem;
+    }
+
+    .markdown-body h1 {
+      font-size: 1.75rem !important;
+      margin-top: 1.5rem;
+    }
+
+    .markdown-body h2 {
+      font-size: 1.5rem !important;
+      margin-top: 1.25rem;
+    }
+
+    .markdown-body h3 {
+      font-size: 1.25rem !important;
+      margin-top: 1rem;
+    }
+
+    .markdown-body p {
+      font-size: 1rem !important;  /* Was 1.5rem, way too big */
+      line-height: 1.5;
+      margin-bottom: 1rem;
+    }
+
+    .markdown-body img {
+      margin: 1rem 0;
+    }
   }
