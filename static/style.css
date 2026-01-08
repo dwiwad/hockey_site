@@ -542,6 +542,12 @@ body {
       margin: 0 auto;
   }
 
+  .blog-card-wrapper {
+      text-decoration: none !important;
+      display: block;
+      color: inherit;
+  }
+
   .blog-card {
       background-color: white;
       border-radius: 12px;
@@ -550,9 +556,16 @@ body {
       transition: transform 0.2s, box-shadow 0.2s;
       display: flex;
       flex-direction: column;
+      height: 100%;
   }
 
   .blog-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .blog-card-wrapper:hover .blog-card {
+      text-decoration: none;
       transform: translateY(-4px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
@@ -613,7 +626,7 @@ body {
   .blog-card-link {
       background-color: var(--orange);
       color: white;
-      text-decoration: none;
+      text-decoration: none !important;
       font-weight: 600;
       font-size: 0.85rem;
       padding: 0.5rem 1rem;
@@ -624,7 +637,8 @@ body {
   }
 
   .blog-card-link:hover {
-      background-color: #d65a1f;  /* Darker orange on hover */
+      background-color: #d65a1f;
+      text-decoration: none !important;  /* Add this too */
   }
 
 .blog-content h1 {

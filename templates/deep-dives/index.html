@@ -41,26 +41,28 @@
     
     <main class="blog-card-row">        
         {% for post in posts %}
-        <div class="blog-card">
-            {% if post.image %}
-            <img class="blog-card-image" src="{{ post.image }}" alt="{{ post.title }}">
-            {% endif %}
-
-            <div class="blog-card-content">
-                <div class="blog-card-meta">
-                    <span class="blog-tag">{{ post.tag }}</span>
-                    <span class="blog-date">{{ post.date_str }}</span>
-                </div>
-
-                <h2 class="blog-card-title">{{ post.title }}</h2>
-
-                {% if post.summary %}
-                <p class="blog-card-summary">{{ post.summary }}</p>
+        <a href="/deep-dives/{{ post.slug }}" class="blog-card-wrapper">
+            <div class="blog-card">
+                {% if post.image %}
+                <img class="blog-card-image" src="{{ post.image }}" alt="{{ post.title }}">
                 {% endif %}
 
-                <a href="/deep-dives/{{ post.slug }}" class="blog-card-link">Read more →</a>
+                <div class="blog-card-content">
+                    <div class="blog-card-meta">
+                        <span class="blog-tag">{{ post.tag }}</span>
+                        <span class="blog-date">{{ post.date_str }}</span>
+                    </div>
+
+                    <h2 class="blog-card-title">{{ post.title }}</h2>
+
+                    {% if post.summary %}
+                    <p class="blog-card-summary">{{ post.summary }}</p>
+                    {% endif %}
+
+                    <span class="blog-card-link">Read more →</span>
+                </div>
             </div>
-        </div>
+        </a>
         {% endfor %}
     </main>
 
