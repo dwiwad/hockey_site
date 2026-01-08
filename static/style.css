@@ -74,6 +74,7 @@
 .explainer-card {
   background: var(--bg-cream);
   width: 1250px !important;
+  margin: 0 auto;
   padding: 1rem 2rem;  /* Less vertical padding */
 }
 
@@ -137,6 +138,7 @@
 
 .depth-cards-container .game-card {
     flex: 0 0 auto;
+    margin: 0 auto;
 }
 
  /* ==========================================================================
@@ -145,8 +147,7 @@
 
 .breadcrumb-scoreboard-stacked {
       max-width: 900px;
-      margin-top: 2rem;
-      margin-bottom: 0rem;
+      margin: 2rem auto 0 auto;
       padding: 1.5rem 2rem;
       background: var(--white);
       border: 1px solid var(--blue-light);
@@ -735,6 +736,8 @@ body {
     gap: 2rem; /* space between the cards */
     padding: 2rem;
     flex-wrap: wrap; /* allows them to stack on small screens */
+    max-width: 1400px;     /* ADD THIS */
+    margin: 0 auto;
 }
 
 
@@ -972,6 +975,29 @@ body {
   /* Mobile phones (up to 768px) */
   @media (max-width: 768px) {
 
+    /* Force proper box model and remove all default spacing */
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;   /* Prevent horizontal scroll */
+      width: 100%;
+    }
+
+    .site-nav-header {
+      padding: 1rem 0;   /* Remove left/right padding */
+      position: relative;
+      width: 100%;
+    }
+
+    .nav-container {
+      max-width: 100%;
+      padding: 0 1rem;   /* Keep some padding for hamburger */
+    }
+
     /* Blog cards mobile */
     .blog-card-row {
         grid-template-columns: 1fr;
@@ -1014,8 +1040,8 @@ body {
     }
 
     .card {
-      width: 75%;
-      max-width: 75%;  /* Allow full width */
+      width: 95%;
+      max-width: 95%;  /* Allow full width */
       height: auto;     /* Let content determine height */
       padding: 1.5rem;
       text-align: center;  /* Center text horizontally */
@@ -1035,7 +1061,7 @@ body {
     }
 
     .card-button {
-      width: 75%;  /* Make button full width on mobile */
+      width: 95%;  /* Make button full width on mobile */
       text-align: center;
       align-self: center;
     }
@@ -1116,7 +1142,7 @@ body {
 
     /* About page specific styles */
     .about-card {
-      width: 75%;  /* Leave some margin on edges */
+      width: 95%;  /* Leave some margin on edges */
       margin: 0 auto;
     }
 
@@ -1125,7 +1151,7 @@ body {
     }
 
     .about-image {
-      max-width: 80%;
+      max-width: 95%;
     }
 
     .sub-main h1 {
@@ -1145,7 +1171,7 @@ body {
     /* Deep dive post mobile optimization */
     .post-title {
       font-size: 2rem !important;
-      width: 90%;
+      width: 95%;
       margin: 1.5rem auto 0.5rem auto;
     }
 
@@ -1155,7 +1181,7 @@ body {
     }
 
     .markdown-body {
-      max-width: 90% !important;  /* Was 60%, too narrow on mobile */
+      max-width: 95% !important;  /* Was 60%, too narrow on mobile */
       padding: 0 1rem;
       font-size: 1rem;
     }
@@ -1198,8 +1224,8 @@ body {
     }
 
     .game-card {
-      width: 90%;
-      max-width: 90%;
+      width: 95%;
+      max-width: 95%;
       margin: 0 auto;
     }
 
@@ -1214,4 +1240,47 @@ body {
       max-width: 100%;
       overflow: hidden;
     }
+
+  /* Depth page mobile adjustments */
+  .breadcrumb-scoreboard-stacked {
+    width: 95%;
+    max-width: 95%;
+    margin: 1rem auto;   /* ADD THIS - centers it */
+  }
+
+  .explainer-card {
+    width: 95% !important;
+    max-width: 95% !important;
+    margin: 1rem auto;
+  }
+
+  .depth-cards-container {
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    width: 100%;   /* ADD THIS */
+  }
+
+  .depth-cards-container .game-card {
+    width: 95%;
+    max-width: 95%;
+    margin: 0 auto;   /* ADD THIS - centers each card */
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .sub-main {
+    padding-left: 0;
+    padding-right: 0;
+    margin: 0 auto;
+  }
+
+  .game-card-row {
+    padding: 1rem 0;   /* Remove left/right padding, keep top/bottom */
+    margin: 0 auto;
+  }
+
   }

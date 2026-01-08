@@ -3,6 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <!-- Google Analytics -->
     <script async 
     src="https://www.googletagmanager.com/gtag/js?id=G-NJ7PYMV7SS"></script>
@@ -21,6 +23,14 @@
   <header class="site-nav-header">
     <div class="nav-container">
       <div class="site-title"><a href="/">Hockey Decoded</a></div>
+
+      <!-- Hamburger menu button (only visible on mobile) -->
+      <button class="hamburger" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
         <nav class="site-nav">
           <a href="/">Home</a>
           <a href="/deep-dives">Deep Dives</a>
@@ -510,7 +520,7 @@
                     x: 10,
                     y: 1.05,
                     yref: 'paper',
-                    text: 'Period 1',
+                    text: window.innerWidth <= 768 ? 'P1' : 'Period 1',
                     showarrow: false,
                     font: {
                       family: 'Charter, Bitstream Charter, Sitka Text, Cambria, serif',
@@ -522,7 +532,7 @@
                     x: 30,
                     y: 1.05,
                     yref: 'paper',
-                    text: 'Period 2',
+                    text: window.innerWidth <= 768 ? 'P2' : 'Period 1',
                     showarrow: false,
                     font: {
                       family: 'Charter, Bitstream Charter, Sitka Text, Cambria, serif',
@@ -534,7 +544,7 @@
                     x: 50,
                     y: 1.05,
                     yref: 'paper',
-                    text: 'Period 3',
+                    text: window.innerWidth <= 768 ? 'P3' : 'Period 1',
                     showarrow: false,
                     font: {
                       family: 'Charter, Bitstream Charter, Sitka Text, Cambria, serif',
@@ -580,5 +590,21 @@
         }
       })();
     </script>
+
+    <script>
+    // Mobile menu toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const hamburger = document.querySelector('.hamburger');
+      const nav = document.querySelector('.site-nav');
+
+      if (hamburger) {
+        hamburger.addEventListener('click', function() {
+          hamburger.classList.toggle('active');
+          nav.classList.toggle('active');
+        });
+      }
+    });
+    </script>
+
 </body>
 </html>
