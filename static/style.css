@@ -815,6 +815,16 @@ body {
      07) MEDIA QUERIES - Mobile Optimization
      ========================================================================== */
 
+/* Hide hamburger on desktop */
+.hamburger {
+  display: none;
+}
+
+/* Hide small inline logos on desktop */
+.team-logo-small {
+  display: none;
+}
+
   /* Mobile phones (up to 768px) */
   @media (max-width: 768px) {
     /* Shrink the banner */
@@ -865,5 +875,107 @@ body {
       width: 75%;  /* Make button full width on mobile */
       text-align: center;
       align-self: center;
+    }
+
+    /* Hamburger menu button */
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 30px;
+      height: 24px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      z-index: 10;
+    }
+
+    .hamburger span {
+      width: 30px;
+      height: 3px;
+      background: white;
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    /* Hamburger animation when open */
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -6px);
+    }
+
+    /* Hide nav links by default on mobile */
+    .site-nav {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--blue);
+      flex-direction: column;
+      padding: 1rem 0;
+      display: none;
+    }
+
+    /* Show nav when active */
+    .site-nav.active {
+      display: flex;
+    }
+
+    .site-nav a {
+      margin: 0;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 1.2rem;
+    }
+
+    .site-nav a:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* Fix header to span full width */
+    .site-nav-header {
+      padding: 1rem;
+      position: relative;
+    }
+
+    .nav-container {
+      max-width: 100%;
+      padding: 0;
+    }
+
+    /* About page specific styles */
+    .about-card {
+      width: 75%;  /* Leave some margin on edges */
+      margin: 0 auto;
+    }
+
+    .about-image-container {
+      margin: 1rem 0;
+    }
+
+    .about-image {
+      max-width: 80%;
+    }
+
+    .sub-main h1 {
+      font-size: 2rem;
+      margin-top: 1.5rem;
+    }
+
+    .social-icons {
+      gap: 0.75rem;
+    }
+
+    .social-icons img {
+      width: 40px;
+      height: 40px;
     }
   }

@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Google Analytics -->
     <script async 
@@ -26,15 +27,23 @@
 
 <body>
     <header class="site-nav-header">
-        <div class="nav-container">
-            <div class="site-title"><a href="/">Hockey Decoded</a></div>
-            <nav class="site-nav">
-                <a href="/">Home</a>
-                <a href="/deep-dives">Deep Dives</a>
-                <a href="/dashboard">Dashboards</a>
-                <a href="/about">About</a>
-            </nav>
-          </div>    
+      <div class="nav-container">
+          <div class="site-title"><a href="/">Hockey Decoded</a></div>
+
+          <!-- Hamburger menu button (only visible on mobile) -->
+          <button class="hamburger" aria-label="Toggle menu">
+              <span></span>
+              <span></span>
+              <span></span>
+          </button>
+
+          <nav class="site-nav">
+              <a href="/">Home</a>
+              <a href="/deep-dives">Deep Dives</a>
+              <a href="/dashboard">Dashboards</a>
+              <a href="/about">About</a>
+          </nav>
+      </div>
     </header>
     
     <main class="sub-main">
@@ -152,6 +161,22 @@
             </div>
         </div>
     </main>
+
+    <script>
+    // Mobile menu toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const hamburger = document.querySelector('.hamburger');
+      const nav = document.querySelector('.site-nav');
+
+      if (hamburger) {
+        hamburger.addEventListener('click', function() {
+          hamburger.classList.toggle('active');
+          nav.classList.toggle('active');
+        });
+      }
+    });
+    </script>
+
 </body>
 
 </html>
