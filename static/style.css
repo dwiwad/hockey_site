@@ -402,7 +402,7 @@ body {
 
 .card-button {
   background-color: var(--orange);
-  color: white;
+  color: white !important;
   padding: 10px 32px;
   border: none;
   border-radius: 8px; 
@@ -413,6 +413,7 @@ body {
   margin-top: 0.5rem;
   align-self: flex-start; /* Ensures it aligns left if .card is flex-column */
   transition: all 0.2s ease-in-out;
+  text-decoration: none !important;
   align-self: flex-start;
 }
 
@@ -421,6 +422,70 @@ body {
     text-decoration: none;
     font-family: Charter;
 }
+
+.card-button:hover,
+  .card-button:focus,
+  .card-button:active,
+  .card-button:visited {
+    color: white !important;
+    text-decoration: none !important;
+    background-color: var(--orange);  /* Keep same orange, no change */
+    outline: none;
+  }
+
+/* Clickable card wrappers */
+.card-wrapper,
+  .game-card-wrapper {
+      text-decoration: none !important;
+      display: block;
+      color: inherit;
+  }
+
+.card-wrapper *,
+  .game-card-wrapper * {
+      text-decoration: none !important;
+  }
+
+/* Hover effect - lift the card */
+.card-wrapper:hover .card {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+
+.game-card-wrapper:hover .game-card {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+
+  /* Add transition to cards */
+.card {
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+  }
+
+.game-card {
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+  }
+
+  /* Keep button styling, but as non-interactive */
+.card-button,
+  .game-button {
+      background-color: var(--orange);
+      color: white;
+      padding: 10px 32px;
+      border-radius: 8px;
+      font-size: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      display: inline-block;
+      font-family: Charter;
+  }
+
+/* Only disable pointer events inside clickable wrappers */
+.card-wrapper .card-button,
+  .game-card-wrapper .game-button {
+      pointer-events: none;
+  }
 
 /* ==========================================================================
    ABOUT PAGE STYLES
@@ -728,7 +793,7 @@ body {
 
 .game-button {
   background-color: var(--orange);
-  color: white;
+  color: white !important;
   padding: 10px 72px;
   border: none;
   border-radius: 8px; 
@@ -739,6 +804,7 @@ body {
   margin-top: 0.5rem;
   align-self: center; /* Ensures it aligns left if .card is flex-column */
   transition: all 0.2s ease-in-out;
+  text-decoration: none !important;
   align-self: center;
 }
 
@@ -747,6 +813,17 @@ body {
     text-decoration: none;
     font-family: Charter;
 }
+
+.game-button:hover,
+  .game-button:focus,
+  .game-button:active,
+  .game-button:visited {
+    color: white !important;
+    text-decoration: none !important;
+    background-color: var(--orange);  /* Keep same orange, no change */
+    outline: none;
+  }
+
 
 .cal-button {
     background-color: var(--orange);
@@ -760,6 +837,11 @@ body {
     font-size: 1rem;
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
+
+.cal-button:hover {
+    background-color: var(--orange);
+    color: white;
+  }
 
 .cal-input {
   font-family: Charter;              

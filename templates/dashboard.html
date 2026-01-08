@@ -43,26 +43,28 @@
         <section class="game-card-row">
             {% if games_today %}
                 {% for game in games_today %}
-                    <article class="game-card">
-                        <div class="game-card-body">
-                            <!-- Left logo -->
-                            <img class="team-logo"
-                                src="/static/images/logos/{{ game.away_tri|upper }}_light.svg"
-                                alt="{{ game.away }} logo">
+                    <a href="/dashboard/games/{{ game.season }}/{{ game.game_id }}" class="game-card-wrapper">
+                        <article class="game-card">
+                            <div class="game-card-body">
+                                <!-- Left logo -->
+                                <img class="team-logo"
+                                    src="/static/images/logos/{{ game.away_tri|upper }}_light.svg"
+                                    alt="{{ game.away }} logo">
 
-                            <!-- Center stack -->
-                            <div class="center-stack">
-                                <h2 class="matchup">{{ game.away }} <span style="font-size:16px;">AT</span> {{ game.home }}</h2>
-                                <h3 class="start" data-start-utc="{{ game.start_utc }}">{{ game.start }}</h3>
-                                <button class="game-button"><a href="/dashboard/games/{{ game.season }}/{{ game.game_id }}">Open dashboard</a></button>
+                                <!-- Center stack -->
+                                <div class="center-stack">
+                                    <h2 class="matchup">{{ game.away }} <span style="font-size:16px;">AT</span> {{ game.home }}</h2>
+                                    <h3 class="start" data-start-utc="{{ game.start_utc }}">{{ game.start }}</h3>
+                                    <span class="game-button">Open dashboard</span>
+                                </div>
+
+                                <!-- Right logo -->
+                                <img class="team-logo"
+                                    src="/static/images/logos/{{ game.home_tri|upper }}_light.svg"
+                                    alt="{{ game.home }} logo">
                             </div>
-
-                            <!-- Right logo -->
-                            <img class="team-logo"
-                                src="/static/images/logos/{{ game.home_tri|upper }}_light.svg"
-                                alt="{{ game.home }} logo">
-                        </div>
-                    </article>
+                        </article>
+                    </a>
                 {% endfor %}
             {% else %}
                 <h2>No games scheduled for today.</h2>
@@ -71,14 +73,14 @@
 
         <div style="padding:0 24px 80px;">
             <div style="max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;">
-                <button class="game-button"><a href="/dashboard?date={{ prev_day }}">Yesterday's Games</a></button>
+                <a href="/dashboard?date={{ prev_day }}" class="game-button">Yesterday's Games</a>
 
                 <form action="/dashboard" method="get" style="display:flex;align-items:center;gap:10px;">
                     <input type="date" id="myDate" name="date" class="cal-input">
                     <button class="cal-button" type="submit">Go</button>
                 </form>
                 
-                <button class="game-button"><a href="/dashboard?date={{ next_day }}">Tomorrow's Games</a></button>
+                <a href="/dashboard?date={{ next_day }}" class="game-button">Tomorrow's Games</a>
             </div>
         </div>
 

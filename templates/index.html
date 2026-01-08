@@ -33,25 +33,31 @@
         <p>Your go-to site for in-depth hockey analytics.</p>
     </header>
     
-    <main class="card-row">    
-        <div class="card">
-            <h1>Deep Dives</h1>
-            <p>Read my deep dive analyses on historical NHL data.</p>
-            <button class="card-button"><a href="/deep-dives">View Posts</a></button>
-        </div>
-    
-        <div class="card">
-            <h1>Dashboards</h1>
-            <p>Explore live "shape of the game" and other detailed dashboards.</p>
-            <button class="card-button"><a href="/dashboard">View Dashboards</a></button>
-        </div>
-        
-        <div class="card">
-            <h1>About</h1>
-            <p>Learn more about the goals and features of this site.</p>
-            <button class="card-button"><a href="/about">Learn More</a></button>
-        </div>
-    </main>
+    <main class="card-row">
+      <a href="/deep-dives" class="card-wrapper">
+          <div class="card">
+              <h1>Deep Dives</h1>
+              <p>Read my deep dive analyses on historical NHL data.</p>
+              <span class="card-button">View Posts</span>
+          </div>
+      </a>
+
+      <a href="/dashboard" class="card-wrapper">
+          <div class="card">
+              <h1>Dashboards</h1>
+              <p>Explore live "shape of the game" and other detailed dashboards.</p>
+              <span class="card-button">View Dashboards</span>
+          </div>
+      </a>
+
+      <a href="/about" class="card-wrapper">
+          <div class="card">
+              <h1>About</h1>
+              <p>Learn more about the goals and features of this site.</p>
+              <span class="card-button">Learn More</span>
+          </div>
+      </a>
+  </main>
     
     <footer class="site-footer">
         <p>Created, Built, and the Intellectual Property of <a 
