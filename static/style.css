@@ -811,4 +811,59 @@ body {
   font-size: 6.5rem;
 }
 
+/* ==========================================================================
+     07) MEDIA QUERIES - Mobile Optimization
+     ========================================================================== */
 
+  /* Mobile phones (up to 768px) */
+  @media (max-width: 768px) {
+    /* Shrink the banner */
+    .site-header {
+      padding-top: 1rem;
+    }
+
+    .site-header h1 {
+      font-size: 2rem;  /* Much smaller on mobile */
+      margin: 0.25rem 0;  /* Reduce spacing between the two h1s */
+    }
+
+    .site-header p {
+      margin-top: 0.5rem;  /* Less space above tagline */
+      font-size: 1rem;  /* Smaller tagline */
+      padding-bottom: 1rem;  /* Less padding at bottom */
+    }
+
+    /* Index page cards - stack vertically and take full width */
+    .card-row {
+      flex-direction: column;
+      padding: 1rem;
+      gap: 1.5rem;
+    }
+
+    .card {
+      width: 75%;
+      max-width: 75%;  /* Allow full width */
+      height: auto;     /* Let content determine height */
+      padding: 1.5rem;
+      text-align: center;  /* Center text horizontally */
+      align-items: center;  /* Center button horizontally */
+      justify-content: center;  /* Center content vertically */
+    }
+
+    .card h1 {
+      font-size: 1.5rem;  /* Slightly smaller on mobile */
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card p {
+    margin-top: auto;
+    margin-bottom: auto;
+    }
+
+    .card-button {
+      width: 75%;  /* Make button full width on mobile */
+      text-align: center;
+      align-self: center;
+    }
+  }
