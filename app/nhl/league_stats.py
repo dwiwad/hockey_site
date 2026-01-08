@@ -182,6 +182,7 @@ def create_league_depth_boxplot(df_rolling):
           # Title
           title=dict(
               text=f"Team Depth over the last 10 games ({get_current_season()}-{str(get_current_season() + 1)[-2:]} Season)",
+              subtitle=dict(text="Ten-game rolling average of TDI; See here for methodology."),
               font=dict(
                   family="Charter, Bitstream Charter, Sitka Text, Cambria, serif",
                   size=24,
@@ -452,8 +453,8 @@ def create_team_quadrant_scatter(team_data):
           return fig
 
       # Calculate axis limits for quadrant labels
-      x_range = df['depth_adv_mean'].abs().max() * 1.2
-      y_range = df['goalie_adv_mean'].abs().max() * 1.2
+      x_range = df['depth_adv_mean'].abs().max() * 1.4
+      y_range = df['goalie_adv_mean'].abs().max() * 1.4
 
       # Create scatter plot
       fig = go.Figure()
@@ -499,8 +500,8 @@ def create_team_quadrant_scatter(team_data):
       ))
 
       # Add reference lines
-      fig.add_hline(y=0, line_dash="dash", line_width=1, line_color="grey", opacity=0.5)
-      fig.add_vline(x=0, line_dash="dash", line_width=1, line_color="grey", opacity=0.5)
+      fig.add_hline(y=0, line_dash="dash", line_width=1, line_color="black")
+      fig.add_vline(x=0, line_dash="dash", line_width=1, line_color="black")
 
       # Add quadrant annotations
       fig.add_annotation(
@@ -543,6 +544,7 @@ def create_team_quadrant_scatter(team_data):
       fig.update_layout(
           title=dict(
               text=f"Team Identity: Depth vs Goaltending ({get_current_season()}-{str(get_current_season() + 1)[-2:]} Season)",
+              subtitle=dict(text="Depth and Goalie performance relative to opponents; See here for methodology."),
               font=dict(
                   family="Charter, Bitstream Charter, Sitka Text, Cambria, serif",
                   size=24,
@@ -552,7 +554,7 @@ def create_team_quadrant_scatter(team_data):
               xanchor='left'
           ),
           xaxis=dict(
-              title="Average Depth Advantage (team − opponent)",
+              title="Average Depth Advantage<br>(team − opponent)",
               title_font=dict(size=18),
               showgrid=True,
               gridcolor='#e0e0e0',
@@ -565,7 +567,7 @@ def create_team_quadrant_scatter(team_data):
               )
           ),
           yaxis=dict(
-              title="Average Goalie Advantage (team GSAx − opponent GSAx)",
+              title="Average Goalie Advantage<br>(team GSAx − opponent GSAx)",
               title_font=dict(size=18),
               showgrid=True,
               gridcolor='#e0e0e0',

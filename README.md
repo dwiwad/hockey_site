@@ -38,18 +38,140 @@ I'm beginning to think about database management. Right now there is no database
 ## To-Do
 
 ### Dec. 26, 2025 - Before linking to the domain
-- [ ] get https rolling
-- [ ] Write the TDI blog post
-- [ ] Finish the whitepaper
-- [ ] Post the whitepaper on arxiv
-- [ ] Submit the whitepaper to American Statistician
-- [ ] go-to typo
-- [ ] Make the buttons buttons
-- [ ] Cards vertical on mobile, especially on the main page
+## To-Do
+
+  ### Critical - Before Domain Launch
+  - [ ] **Security & Performance**
+    - [ ] Set up HTTPS with AWS Certificate Manager
+      - [ ] Request SSL certificate in ACM
+      - [ ] Add HTTPS listener to ALB
+      - [ ] Configure HTTP → HTTPS redirect
+    - [ ] Clean up temporary backfill code
+      - [ ] Remove `drop_duplicates` line from `service_depth.py`
+      - [ ] Uncomment idempotency check in `service_depth.py`
+    - [ ] Add quadrant data update to 5 AM scheduled job (`depth_job.py`)
+
+  - [ ] **Mobile Optimization** (Critical UX)
+    - [ ] Make game cards stack vertically on mobile
+    - [ ] Optimize main dashboard cards for mobile
+    - [ ] Fix deep dive cards for mobile layout
+    - [ ] Test Plotly charts on mobile (responsive sizing)
+    - [ ] Ensure navigation menu works on small screens
+    - [ ] Test form inputs (date picker, dropdowns) on mobile
+
+  - [ ] **Content - Launch Blockers**
+    - [ ] Write TDI blog post
+    - [ ] Finish TDI whitepaper
+    - [ ] Post whitepaper on arXiv
+    - [ ] Submit whitepaper to The American Statistician
+    - [ ] Write "Goaltending and Depth" blog post
+      - [ ] Analyze relationship between low-depth wins and goaltending
+      - [ ] Create supporting visualizations
+      - [ ] Draft narrative
+
+  ### High Priority - Enhance User Experience
+  - [ ] **Game Dashboard Improvements**
+    - [ ] Add game rosters to dashboard
+      - [ ] Display both team rosters
+      - [ ] Include basic player stats (GP, goals, assists, etc.)
+      - [ ] Style roster tables
+    - [ ] Add player-level depth contributions
+      - [ ] Calculate individual player contribution to each depth metric
+      - [ ] Create visualization (bar chart or table)
+      - [ ] Add to detailed depth breakdown page
+    - [ ] Improve depth evolution chart
+      - [ ] Add loading states
+      - [ ] Handle edge cases (no data, errors)
+
+  - [ ] **Season Analysis Enhancements**
+    - [ ] Add season dropdown to quadrant chart (Depth vs Goaltending)
+      - [ ] Modify `save_team_quadrant_data()` to be season-specific
+      - [ ] Add dropdown UI to dashboard template
+      - [ ] Update route to handle season parameter
+    - [ ] Add season dropdown to league depth boxplot
+      - [ ] Same pattern as quadrant chart
+    - [ ] Backfill 2023-24 season data
+      - [ ] Run backfill script for full 2023-24 season
+      - [ ] Generate quadrant data for 2023-24
+      - [ ] Generate rolling averages for 2023-24
+
+  - [ ] **UI/UX Polish**
+    - [ ] Fix deep dive cards layout
+      - [ ] Make cards 3-wide on laptop
+      - [ ] Reduce spacing between cards
+      - [ ] Ensure responsive on tablet
+    - [ ] Add header images to blog posts
+      - [ ] Design/source images for existing posts
+      - [ ] Add image support to markdown template
+      - [ ] Update CSS for post headers
+    - [ ] Make buttons actual `<button>` elements (not `<a>` styled as buttons)
+    - [ ] Fix "go-to" typo (wherever that is)
+
+  ### Medium Priority - Nice to Haves
+  - [ ] **SEO & Analytics**
+    - [ ] Add Open Graph meta tags for social sharing
+    - [ ] Add structured data (JSON-LD) for blog posts
+    - [ ] Create sitemap.xml
+    - [ ] Add robots.txt
+    - [ ] Set up Google Search Console
+    - [ ] Add more descriptive meta descriptions per page
+
+  - [ ] **Performance Optimizations**
+    - [ ] Add CDN for static assets (logos, images)
+    - [ ] Implement browser caching headers
+    - [ ] Compress images (logos currently unoptimized?)
+    - [ ] Consider lazy loading for Plotly charts
+    - [ ] Profile slow page loads in production
+
+  - [ ] **Additional Features**
+    - [ ] Add "Share" buttons to blog posts (Twitter, LinkedIn, Reddit)
+    - [ ] Add "Last updated" timestamp to dashboards
+    - [ ] Consider adding team filter to league-wide charts
+    - [ ] Add search functionality for blog posts
+    - [ ] Add RSS feed for blog posts
+    - [ ] Consider adding comments (Disqus, Giscus, etc.)
+
+  - [ ] **Historical Data & Archives**
+    - [ ] Get old team logos for historical games
+    - [ ] Add "Game Archive" page to browse past games
+    - [ ] Consider adding season summaries
+
+  ### Low Priority - Future Considerations
+  - [ ] **Data & Infrastructure**
+    - [ ] Investigate DuckDB for analytics queries
+    - [ ] Consider setting up automated testing
+    - [ ] Add error monitoring (Sentry, Rollbar)
+    - [ ] Set up automated backups for S3 data
+    - [ ] Document API data dependencies
+    - [ ] Consider rate limiting for API endpoints
+
+  - [ ] **Tech Debt**
+    - [ ] Clean up `style.css` - migrate to separate files
+    - [ ] Generalize depth functions (reduce duplication)
+    - [ ] Add type hints throughout Python code
+    - [ ] Write unit tests for core calculations
+    - [ ] Document environment variables and config
+
+  - [ ] **Content Pipeline**
+    - [ ] Create template for new blog posts
+    - [ ] Add markdown frontmatter validation
+    - [ ] Consider adding draft/published workflow
+    - [ ] Plan out next 3-5 blog post topics:
+      - [ ] Career tenure over time
+      - [ ] Distances flown by team - inequality analysis
+      - [ ] Quantifying generational talent
+      - [ ] [Your choice]
+
+  - [ ] **Advanced Features (Dream List)**
+    - [ ] Player comparison tool
+    - [ ] Team stats lookup/dashboard
+    - [ ] Interactive depth calculator (user can input hypothetical distributions)
+    - [ ] Email newsletter signups
+    - [ ] Add more granular game events to timeline (goals, penalties)
+    - [ ] Consider adding shot maps with depth overlay
 
 Tech Debt
-	- [ ] Clean up style.css; Maybe migrate to separate files.
-	- [ ] Generalize depth functions
+- [ ] Clean up style.css; Maybe migrate to separate files.
 
 Website launch. Right now (July 1, 2025) I'm thinking I will launch and make live when I have:
 - [ ] Five deep dive posts:
@@ -104,6 +226,8 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 		- [X] Update plotly hover state
 		- [X] Set plotly to auto scale 
 - [ ] Get all the old team logos
+- [ ] Add Game rosters, maybe with some stats, underneath the shape of the game.
+- Cards should be 3 wide and closer together. I like an image in the card too; look at chessmonitor
 
 ## Working History - DONE
 
