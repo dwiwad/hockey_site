@@ -1,5 +1,5 @@
 ---
-title: "How have player demographics changed over the history of the league?"
+title: "How have player demographics changed over NHL's history?"
 short_title: "Player Demographics | Hockey Decoded"
 date: "2025-09-06"
 image: "/static/images/deep-dives/nhl-player-demographics/nhl_player_nationalities_trend.png"

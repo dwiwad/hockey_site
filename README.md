@@ -60,14 +60,14 @@ I'm beginning to think about database management. Right now there is no database
     - [X] Test form inputs (date picker, dropdowns) on mobile
 
   - [ ] **Content - Launch Blockers**
-    - [ ] Write TDI blog post
+    - [X] Write TDI blog post
     - [ ] Finish TDI whitepaper
     - [ ] Post whitepaper on arXiv
     - [ ] Submit whitepaper to The American Statistician
-    - [ ] Write "Goaltending and Depth" blog post
-      - [ ] Analyze relationship between low-depth wins and goaltending
-      - [ ] Create supporting visualizations
-      - [ ] Draft narrative
+    - [X] Write "Goaltending and Depth" blog post
+      - [X] Analyze relationship between low-depth wins and goaltending
+      - [X] Create supporting visualizations
+      - [X] Draft narrative
 
   ### High Priority - Enhance User Experience
   - [ ] **Game Dashboard Improvements**
@@ -94,6 +94,7 @@ I'm beginning to think about database management. Right now there is no database
       - [ ] Run backfill script for full 2023-24 season
       - [ ] Generate quadrant data for 2023-24
       - [ ] Generate rolling averages for 2023-24
+	- [ ] Add team-season walk element selector to quadrant chart
 
   - [ ] **UI/UX Polish**
     - [ ] Fix deep dive cards layout

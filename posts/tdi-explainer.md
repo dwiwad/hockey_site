@@ -6,7 +6,7 @@ image: "/static/images/deep-dives/total-depth-index/figure_4_rolling_depth_predi
 tag: "Metric Development"
 summary: An introduction to a new metric of team depth using data from 2010-2025.
 description: ""
-keywords: ""
+keywords: "NHL statistics, hockey analytics, latent variable modeling, psychometrics, hockey data analysis, sports analytics, depth"
 data_source: "NHL API and Moneypuck"
 ---
 

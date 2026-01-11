@@ -263,8 +263,9 @@ moneypuck = pd.DataFrame({
       'logloss_mp': [0.660, 0.648, 0.656, 0.661, 0.658]
   })
 
-  # ---- Create figure with 2 stacked subplots ----
-fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 9), sharex=True)
+# ---- Create figure with 2 stacked subplots ----
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 11), sharex=True)
+
 
   # ==========================================
   # TOP PANEL: ACCURACY
@@ -344,7 +345,7 @@ ax2.set_xticklabels(cv_results['season'], rotation=45, ha='right')
 left_x = ax1.get_position().x0
 
   # Reserve space for titles
-plt.subplots_adjust(top=0.92, bottom=0.12, hspace=0.15)
+plt.subplots_adjust(top=0.88, bottom=0.10, hspace=0.35)
 
   # Main title
 fig.suptitle(
@@ -368,7 +369,7 @@ fig.text(
   # Shared legend at bottom
 handles, labels = ax1.get_legend_handles_labels()
 fig.legend(handles, labels, loc='center', ncol=3,
-             frameon=False, fontsize=14, bbox_to_anchor=(0.5, 0.48))
+             frameon=False, fontsize=14, bbox_to_anchor=(0.5, 0.49))
 
   # Data source note
 fig.text(
