@@ -35,6 +35,7 @@ async def deep_dive_post(request: Request, slug: str):
     return templates.TemplateResponse("deep-dives/post.html", {
         "request": request,
         "title": post_data["title"],
+        "short_title": post_data.get("short_title"),
         "date": post_data["date_str"],
         "image": post_data["image"],
         "summary": post_data["summary"],

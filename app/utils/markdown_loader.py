@@ -42,6 +42,7 @@ def _load_post_from_path(path: Path, slug: str):
     return {
         "slug": slug,
         "title": post.get("title", "Untitled"),
+        "short_title": post.get("short_title"),
         "date": post_dt,                               # datetime for sorting
         "date_str": post_dt.strftime("%B %d, %Y"),     # safe string for templates
         "image": post.get("image", ""),
