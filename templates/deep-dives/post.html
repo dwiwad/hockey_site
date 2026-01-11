@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block title %}{{ short_title or title }}{% endblock %}
+
+{% block extra_head %}
+
 {% block extra_head %}
   <!-- SEO Meta Tags -->
   <meta name="description" content="{{ description or summary }}">
