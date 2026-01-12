@@ -12,7 +12,7 @@ data_source: "NHL API and Moneypuck"
 
 Trying to understand why one team wins and another loses is a perennial focus of sports analytics and punditry. When trying to explain matchup outcomes, commentators and fans alike often move past what we can directly observe and into the world of "intangibles." Concepts like “momentum,” “chemistry,” or "depth” that go beyond simple statistics like shot counts, goals, or points. Researchers have even shown that these constructs can influence outcomes, yet they remain notoriously difficult to define and measure.
 
-In this post, I’m going to provide a birds-eye view into how we can leverage the psychometric approach of latent variable modeling to measure these intangibles. Here, I build what I call the **Total Depth Index (TDI).** I'll look at trends across 15 seasons of NHL hockey, encompassing over 19,000 games and millions of individual plays, to see if depth is a real, measurable quality of an NHL franchise. If you are so inclined, the full academic whitepaper will be linked here shortly. You can just email me for it in the meantime.
+In this post, I’m going to provide a birds-eye view into how we can leverage the psychometric approach of latent variable modeling to measure these intangibles. Here, I build what I call the **Total Depth Index (TDI).** I'll look at trends across 15 seasons of NHL hockey, encompassing over 19,000 games and millions of individual plays, to see if depth is a real, measurable quality of an NHL franchise. If you are so inclined, the full academic pre-print can be found <a href="/static/papers/Wiwad_TDI_20260111.pdf" target="_blank" rel="noopener noreferrer">here</a>.
 
 ## Conceptualizing Depth in the NHL
 

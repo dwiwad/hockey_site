@@ -18,7 +18,9 @@ This project is a personal hockey data website built using primarily Python, R, 
 
 ## Status
 
-12/26/2025 - THE SITE IS LIVE!! I spent all day today learning how to set up an ECS Fargate instance and get the site on AWS. Right now it is not linked to hockeydecoded.com because I want to iron out a few things before it is really findable. But, for those who are here, you can find the site [here](http://54.210.122.92:8000/).
+01/10/2026 - The site is now truly live! At its intended domain, [here](https://hockeydecoded.com).
+
+12/26/2025 - THE SITE IS LIVE!! I spent all day today learning how to set up an ECS Fargate instance and get the site on AWS. Right now it is not linked to hockeydecoded.com because I want to iron out a few things before it is really findable. But, for those who are here, you can find the site [here](https://hockeydecoded.com).
 
 10/14/25; New goal - let's try to have the site live, and the TDI paper under review, by the end of the year!
 
@@ -41,11 +43,11 @@ I'm beginning to think about database management. Right now there is no database
 ## To-Do
 
   ### Critical - Before Domain Launch
-  - [ ] **Security & Performance**
-    - [ ] Set up HTTPS with AWS Certificate Manager
-      - [ ] Request SSL certificate in ACM
-      - [ ] Add HTTPS listener to ALB
-      - [ ] Configure HTTP → HTTPS redirect
+  - [X] **Security & Performance**
+    - [X] Set up HTTPS with AWS Certificate Manager
+      - [X] Request SSL certificate in ACM
+      - [X] Add HTTPS listener to ALB
+      - [X] Configure HTTP → HTTPS redirect
     - [X] Clean up temporary backfill code
       - [X] Remove `drop_duplicates` line from `service_depth.py`
       - [X] Uncomment idempotency check in `service_depth.py`
@@ -61,7 +63,7 @@ I'm beginning to think about database management. Right now there is no database
 
   - [ ] **Content - Launch Blockers**
     - [X] Write TDI blog post
-    - [ ] Finish TDI whitepaper
+    - [X] Finish TDI whitepaper
     - [ ] Post whitepaper on arXiv
     - [ ] Submit whitepaper to The American Statistician
     - [X] Write "Goaltending and Depth" blog post
