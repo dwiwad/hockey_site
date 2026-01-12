@@ -179,11 +179,12 @@ Tech Debt
 Website launch. Right now (July 1, 2025) I'm thinking I will launch and make live when I have:
 - [ ] Five deep dive posts:
     - [X] Demographics over time
-    - [ ] Total Depth Index (TDI)
-	- [ ] Low Depth wins are the result of over and underperforming goaltending
+    - [X] Total Depth Index (TDI)
+	- [X] Low Depth wins are the result of over and underperforming goaltending
     - [ ] Career tenure over time
 	- [ ] Distances flown by team by season - inequality?
     - [ ] Quantifying generational talent vs everyone else?
+	- [ ] Ice time distribution; do superstars really log "monster minutes?"
     - [ ] TBD
 - [X] Shape of the Game Dashboard
 	- [X] Scoreboard
