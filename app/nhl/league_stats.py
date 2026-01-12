@@ -182,7 +182,7 @@ def create_league_depth_boxplot(df_rolling):
           # Title
           title=dict(
               text=f"Team Depth over the last 10 games ({get_current_season()}-{str(get_current_season() + 1)[-2:]} Season)",
-              subtitle=dict(text="Ten-game rolling average of TDI; See <a href='/deep-dives/tdi-explainer' target='_blank' rel='noopener noreferrer' style='color: #E76F2B;'>here</a> for methodology."),
+              subtitle=dict(text="Ten-game rolling average of TDI centered on league median; See <a href='/deep-dives/tdi-explainer' target='_blank' rel='noopener noreferrer' style='color: #E76F2B;'>here</a> for methodology."),
               font=dict(
                   family="Charter, Bitstream Charter, Sitka Text, Cambria, serif",
                   size=24,
