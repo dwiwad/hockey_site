@@ -1,5 +1,5 @@
 ---
-title: "Measuring team depth in the NHL with latent variable modeling"
+title: "Measuring Team Depth in the NHL with Latent Variable Modeling"
 short_title: "Total Depth Index | Hockey Decoded"
 date: "2025-12-22"
 image: "/static/images/deep-dives/total-depth-index/figure_4_rolling_depth_prediction.png"
