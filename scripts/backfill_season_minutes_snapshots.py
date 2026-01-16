@@ -8,12 +8,12 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 # Date range: Oct 5, 2024 to today
-start_date = date(2025, 12, 22)
-#end_date = date(2025, 7, 30)
-from datetime import datetime
-from pytz import timezone
-et = timezone('America/Toronto')
-end_date = datetime.now(et).date()
+start_date = date(2017, 10, 1)
+end_date = date(2018, 6, 30)
+#from datetime import datetime
+#from pytz import timezone
+#et = timezone('America/Toronto')
+#end_date = datetime.now(et).date()
 
 logger.info(f"🏒 Backfilling 2024-2025 season from {start_date} to {end_date}")
 
