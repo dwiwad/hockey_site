@@ -473,20 +473,22 @@
                 yaxis: {
                   title: {
                     text: 'Weighted Depth',
-                    font: { size: 20 }
+                    font: { size: 20 },
+                    standoff: 40
                   },
                   showgrid: true,
                   gridcolor: '#e0e0e0',
                   range: [minDepth - padding, maxDepth + padding],
                   rangemode: 'normal',
                   tickfont: { size: 18 },
+                  tickformat: '.3f',
                   ticks: 'outside',      
                   ticklen: 1,            
                   tickwidth: 1,
                   tickcolor: 'white'     // Make ticks invisible against white background
                 },
                 showlegend: false,
-                margin: { l: 60, r: 40, t: 40, b: 60 },
+                margin: { l: 85, r: 40, t: 40, b: 60 },
                 paper_bgcolor: 'white',
                 plot_bgcolor: 'white',
                 font: {
