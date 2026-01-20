@@ -493,7 +493,7 @@ def create_team_quadrant_scatter(team_data):
               'Depth Adv: %{x:.3f}<br>' +
               'Goalie Adv: %{y:.3f}<br>' +
               'Record: ' + df['wins'].astype(str) + '-' + (df['n_games'] - df['wins']).astype(str) +
-              '<br>Win %: ' + (df['win_pct'] * 100).round(1).astype(str) + '%' + '<br>'
+              '<br>Win Rate: ' + (df['win_pct'] * 100).round(1).astype(str) + '%' + '<br>'
               'Standings: ' + df['league_rank'].astype(int).astype(str) +
               '<extra></extra>'
           )

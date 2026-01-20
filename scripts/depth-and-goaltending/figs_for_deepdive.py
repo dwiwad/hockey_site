@@ -1043,7 +1043,7 @@ ax.fill_between(x_pos,
 
 # Reference line
 ax.axhline(0, color=col_oil_orange, linestyle='--', linewidth=1.5, alpha=0.6)
-ax.axvline(0, color=col_oil_orange, linestyle='--', linewidth=1.5, alpha=0.6)
+ax.axvline(12, color=col_oil_orange, linestyle='--', linewidth=1.5, alpha=0.6)
 
 # Styling
 sns.despine()
@@ -1113,6 +1113,59 @@ for threshold in [1.5, 2, 3]:
       print(f"Games above {threshold}: {above:,} ({above/len(matchup_data)*100:.1f}%)")
 print("="*60)
 
+# After creating the binned_stats in Figure 5 section
+print("\n" + "="*80)
+print("BINNED TRADEOFF DATA")
+print("="*80)
+
+# Show the binned statistics
+print("\nBin-level statistics (depth bin → mean GSAx required):")
+print(binned_stats[['depth_bin', 'mean', 'se', 'count']].to_string(index=False))
+
+# Linear regression to quantify the slope
+from scipy.stats import linregress
+
+# Get numeric bin centers for regression
+bin_centers = binned_stats['depth_bin'].apply(lambda x: x.mid)
+slope, intercept, r_value, p_value, std_err = linregress(bin_centers, binned_stats['mean'])
+
+print("\n" + "="*80)
+print("LINEAR REGRESSION STATISTICS")
+print("="*80)
+print(f"Slope: {slope:.4f}")
+print(f"  (Interpretation: For every 1-point depth advantage, GSAx required changes by {slope:.3f} goals)")
+print(f"Intercept: {intercept:.4f}")
+print(f"R-squared: {r_value**2:.4f}")
+print(f"P-value: {p_value:.6f}")
+print(f"Standard error of slope: {std_err:.4f}")
+
+# Check for non-linearity by comparing first/last third slopes
+n_bins = len(binned_stats)
+third = n_bins // 3
+
+# First third
+early_centers = bin_centers[:third]
+early_means = binned_stats['mean'][:third]
+slope_early, _, r_early, _, _ = linregress(early_centers, early_means)
+
+# Last third
+late_centers = bin_centers[-third:]
+late_means = binned_stats['mean'][-third:]
+slope_late, _, r_late, _, _ = linregress(late_centers, late_means)
+
+print("\n" + "="*80)
+print("CHECKING FOR NON-LINEARITY")
+print("="*80)
+print(f"Slope in first third of range: {slope_early:.4f} (R² = {r_early**2:.4f})")
+print(f"Slope in last third of range: {slope_late:.4f} (R² = {r_late**2:.4f})")
+print(f"Difference: {abs(slope_early - slope_late):.4f}")
+if abs(slope_early - slope_late) < 0.05:
+      print("  → Slopes are similar. No evidence of non-linearity.")
+else:
+      print("  → Slopes differ. Some evidence of non-linearity or thresholds.")
+
+print("="*80)
+  
 # ==============================================================================
 # SUMMARY STATISTICS
 # ==============================================================================
