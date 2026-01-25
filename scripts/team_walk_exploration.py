@@ -109,8 +109,9 @@ for i, team in enumerate(teams):
         mode='lines+markers',
         marker=dict(size=8, 
                     color=team_walk['game_num'],
-                    colorscale=[[0, '#3B4B64'], [1, team_color]], 
-                    showscale=(i==0)),
+                    colorscale=[[0, '#FFFFFF'], [1, team_color]], 
+                    showscale=(i==0),
+                    line=dict(width=1, color='gray')),
         line=dict(width=1, color='gray'),
         text=team_walk['game_num'],
         hovertemplate='Game %{text}<br>Depth: %{x:.3f}<br>Goalie: %{y:.3f}<extra></extra>',
@@ -156,7 +157,7 @@ fig.update_layout(
         xanchor='left'
     ),
     xaxis=dict(
-        title="Cumulative Depth Advantage",
+        title="Average Depth Advantage<br><sup>(Team - Opponent)</sup>",
         title_font=dict(size=16),
         range=[-3, 3],
         showgrid=True,
@@ -169,9 +170,9 @@ fig.update_layout(
         )
     ),
     yaxis=dict(
-        title="Cumulative Goalie Advantage",
+        title="Average Goalie Advantage<br><sup>(Team GSAx - Opponent GSAx)</sup>",
         title_font=dict(size=16),
-        range=[-2, 2],
+        range=[-2.5, 2.5],
         showgrid=True,
         gridcolor='#e0e0e0',
         zeroline=False,
@@ -202,3 +203,53 @@ fig.update_layout(
 )
 
 fig.write_html("/Users/dwiwad/desktop/team_walk.html")
+
+
+import shutil
+import matplotlib
+
+shutil.rmtree(matplotlib.get_cachedir())
+
+import matplotlib.pyplot as plt
+
+# Pick a team to showcase
+team = "EDM"
+team_walk = df_walks[df_walks['team_abbrev'] == team]
+team_color = TEAM_COLORS.get(team, '#E76F2B')
+
+with plt.xkcd():
+      fig, ax = plt.subplots(figsize=(10, 8))
+
+      # Plot the walk
+      ax.plot(team_walk['depth_adv_cum'], team_walk['goalie_adv_cum'],
+              color=team_color, linewidth=2, marker='o', markersize=6)
+
+      # Mark start and end
+      ax.scatter(team_walk['depth_adv_cum'].iloc[0], team_walk['goalie_adv_cum'].iloc[0],
+                 color='white', edgecolor=team_color, s=150, zorder=5, linewidth=2, label='Start')
+      ax.scatter(team_walk['depth_adv_cum'].iloc[-1], team_walk['goalie_adv_cum'].iloc[-1],
+                 color='#2ECC71', edgecolor='white', s=200, zorder=5, linewidth=2, label='Now')
+
+      # Quadrant lines
+      ax.axhline(y=0, linestyle='--', color='black', alpha=0.5)
+      ax.axvline(x=0, linestyle='--', color='black', alpha=0.5)
+
+      # Labels
+      ax.set_xlabel("Depth Advantage (Team - Opponent)", fontsize=14)
+      ax.set_ylabel("Goalie Advantage (GSAx)", fontsize=14)
+      ax.set_title(f"{team}'s Wild Ride This Season", fontsize=18)
+
+      # Quadrant annotations
+      ax.text(0.8, 0.8, "THE\nGOOD\nPLACE", ha='center', fontsize=12, alpha=0.5)
+      ax.text(-0.8, -0.8, "THE\nBAD\nPLACE", ha='center', fontsize=12, alpha=0.5)
+      ax.text(-0.8, 0.8, "GOALIE\nCARRYING", ha='center', fontsize=12, alpha=0.5)
+      ax.text(0.8, -0.8, "DEPTH\nCARRYING", ha='center', fontsize=12, alpha=0.5)
+
+      ax.set_xlim(-1.5, 1.5)
+      ax.set_ylim(-1.5, 1.5)
+      ax.legend(loc='upper left')
+
+      plt.tight_layout()
+      plt.savefig("/Users/dwiwad/desktop/team_walk_xkcd.png", dpi=150, facecolor='white')
+      plt.show()
+

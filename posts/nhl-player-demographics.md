@@ -22,7 +22,7 @@ some characteristics changing drastically, and some remaining surprisingly stead
 post I'm going to conduct a deep dive into player demographic data for every single
 NHL roster from the 1917-1918 season to the 2024-2025 season.
 
-We'll look at the trends in nationality, age, height, weight across a comprehensive
+We'll look at the trends in nationality, age, height, and weight across a comprehensive
 dataset of every single NHL player on every single NHL roster since 1917. That is,
 8,595 unique players rostered 55,567 times total across 107 season rosters. 
 
@@ -31,7 +31,7 @@ dataset of every single NHL player on every single NHL roster since 1917. That i
 It makes sense that Canada once dominated the player base of the NHL. After all,
 the NHL sprung into existence in 1917 after the dissolution of the "National Hockey
 Association of Canada" (NHA) which was centered entirely in Ontario and Quebec.<sup>(<a href="https://www.nhl.com/history/a-brief-history-of-the-league" target="_blank" rel="noopener noreferrer">2</a>)</sup> As 
-the NHA became the NHL, All five original teams were based in Ontario and Quebec. 
+the NHA became the NHL, all five original teams were based in Ontario and Quebec. 
 It was only in the 1920s to 1940s that the league expanded into the United States, 
 forming what are now known as the "Original Six:" The Boston Bruins, Chicago Blackhawks, Detroit Red Wings,
 Montreal Canadiens, New York Rangers, and Toronto Maple Leafs.
@@ -52,12 +52,12 @@ The 1970s, though, is when the NHL experienced its largest expansion, going
 from 12 teams (2 Canadian, 10 American) in the 1969-1970 season to 21 teams (6 Canadian, 15 American)
 in the 1979-1980 season with the addition of 4 Canadian teams and 5 American. This
 steady increase in American teams is one very likely explanation for this mix-shift
-in Nationality. The league went from 100% Canadian teams in 1917 to 22% in 2024.
+in nationality. The league went from 100% Canadian teams in 1917 to 22% in 2024.
 The NHL has just continually expanded without really adding Canadian franchises.
 
 I would also be remiss if I didn't touch on the more international expansion. The
 numbers are relatively low for non-North American countries, but still notable with
-25% of the league coming from Scandanavia, the Former USSR, and Central Europe more
+25% of the league coming from Scandinavia, the Former USSR, and Central Europe more
 broadly.
 
 ## Age: Fluctuations Tied to the Structure of the League
@@ -69,7 +69,7 @@ frame you look at.
 First, there seems to be a sort of odd sinusoidal trend where, regardless of position,
 players hovered around 28 years old in 1917, got progressively younger until about
 1950, got older until the mid 1960s, got younger again until the late 1980s, and then
-finally have gotten older again and now sort of plateaud. It's worth noting that these 
+finally have gotten older again and now sort of plateaued. It's worth noting that these 
 changes aren't seismic, really ranging only from about 24 to 28 years of age. 
 
 ![NHL Player Nationality Trends](/static/images/deep-dives/nhl-player-demographics/nhl_age_by_position.png)
@@ -84,19 +84,19 @@ then back down to seven. In this era, the size of the league fluctuated but over
 Following this, 1942 to 1967 the team stayed at 6 teams, the "original six" era. As you
 can see, in this era the league slowly aged. No expansion, no injection of new players,
 less roster turnover. The league simply aged in place. Then, from 1967 to 1991 the NHL
-experienced it's largest expansion era, growing 250% from 6 to 21 teams. In this era,
+experienced its largest expansion era, growing 250% from 6 to 21 teams. In this era,
 the league again got younger and younger. From 1991 to 2017 the league again expanded,
 but only 30%. Less need for new young players, more static rosters, the league ages again.
 Finally, from 2017 until now the league has only added one team, and age has stagnated.
 
-One other interesting recent trend is that is that goalies have remained static around 28 years
+One other interesting recent trend is that goalies have remained static around 28 years
 old while forwards and defencemen have declined from 28 to about 26 years old. I suspect
 this modern-era age change simply reflects the speed and demands of modern athletics.
 Goalies can afford to be a hair older, while skaters must deal with the increasing 
 demands of the sport and cannot afford to be older. This is a trend we have seen
 in numerous sports. Cycling grand tour winners used to be mature in their career,
 around 27-28 years old and are now falling more in their mid to early 20s. Athletes are
-starting earlier, developing faster, winner sooner, and then retiring around previous
+starting earlier, developing faster, winning sooner, and then retiring around previous
 peak ages.
 
 ## Height: A Steady Increase and Biological Stagnation
@@ -112,9 +112,9 @@ slightly. Naturally, the athletes are a bit taller than the general population o
 
 ![NHL Player Nationality Trends](/static/images/deep-dives/nhl-player-demographics/nhl_height_by_position.png)
 
-I think what is the most interesting here, though, is the change in positional heights. For almost
+I think what is most interesting here, though, is the change in positional heights. For almost
 the entire history of the NHL, goalies were the smallest position by height (and weight, but more
-on that below). However, come the late 1980s and early 1990s this began to shift and goalies' saw
+on that below). However, come the late 1980s and early 1990s this began to shift and goalies saw
 a dramatic rise in their overall height, eventually becoming the tallest players around 2010.
 
 While there are many plausible reasons for this, one that I think rises to the top is implementation
@@ -147,13 +147,13 @@ Young guys are coming in faster, older guys have to shed some kilos to match the
 shrinks. There has also been some suggestion, like in other areas of the player demographics, that a shifting of
 the rules of the game have had an effect.<sup>(<a href="https://rezztek.com/blogs/news/evolution-of-hockey-bodies?srsltid=AfmBOopLfh-8o2FBwWkhoUhOCWmAdozKYtwiLfXBq2wEeRqOE2ukrd_l" rel="noopener noreferrer">7</a>)</sup> 
 
-Specifically, there was a large swath of rule changes in the 2005-2006 season, right at the peak of the NHLs size, that
+Specifically, there was a large swath of rule changes in the 2005-2006 season, right at the peak of the NHL's size, that
 were designed to encourage faster, more aggressive offensive play.<sup>(<a href="https://records.nhl.com/history/historical-rule-changes" rel="noopener noreferrer">8</a>)</sup> 
 For example, the league eliminated the two-line pass rule making it such that players could pass from
 their defensive zone across the red line, allowing for longer stretch passes, quick transitions, and breakaways.
 Additionally, the league reinstated the "tag-up" rule for offsides, allowing an offensive player to
 simply pop one skate out of the zone and re-enter. This, as opposed to having to fully exit the zone,
-come to a stop, and re-enter, allows the game to maintain a faster more aggressive pace.
+come to a stop, and re-enter, allows the game to maintain a faster and more aggressive pace.
 
 ## Conclusion and New Questions
 
@@ -164,10 +164,10 @@ simple NHL rule changes that reward different styles of play.
 
 I think this simple analysis of historical trends opens up a lot of interesting analytic windows.
 Here, I have simply chronicled these changes in a way that many have before. Moving forward, I think
-it would be important to understand the affects of these demographics. The NHL changed the rules to
+it would be important to understand the effects of these demographics. The NHL changed the rules to
 reward faster more aggressive play; do lighter, younger teams fare better? Goalie pads and playstyles
 have changed; do heavier, taller goalies _actually_ perform better? I noted that demographic shifts
-happen to coincide with leage expansions; do rosters actually turnover more (i.e., more retiring players,
+happen to coincide with league expansions; do rosters actually turnover more (i.e., more retiring players,
 more new incoming players) in eras of expansion?
 
 There are a ton of open questions that I will continue to explore in these deep dives.

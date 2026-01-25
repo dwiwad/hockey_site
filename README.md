@@ -42,48 +42,19 @@ I'm beginning to think about database management. Right now there is no database
 ### Dec. 26, 2025 - Before linking to the domain
 ## To-Do
 
-  ### Critical - Before Domain Launch
-  - [X] **Security & Performance**
-    - [X] Set up HTTPS with AWS Certificate Manager
-      - [X] Request SSL certificate in ACM
-      - [X] Add HTTPS listener to ALB
-      - [X] Configure HTTP → HTTPS redirect
-    - [X] Clean up temporary backfill code
-      - [X] Remove `drop_duplicates` line from `service_depth.py`
-      - [X] Uncomment idempotency check in `service_depth.py`
-    - [X] Add quadrant data update to 5 AM scheduled job (`depth_job.py`)
-
-  - [X] **Mobile Optimization** (Critical UX)
-    - [X] Make game cards stack vertically on mobile
-    - [X] Optimize main dashboard cards for mobile
-    - [X] Fix deep dive cards for mobile layout
-    - [X] Test Plotly charts on mobile (responsive sizing)
-    - [X] Ensure navigation menu works on small screens
-    - [X] Test form inputs (date picker, dropdowns) on mobile
-
-  - [ ] **Content - Launch Blockers**
-    - [X] Write TDI blog post
-    - [X] Finish TDI whitepaper
-    - [ ] Post whitepaper on arXiv
-    - [ ] Submit whitepaper to The American Statistician
-    - [X] Write "Goaltending and Depth" blog post
-      - [X] Analyze relationship between low-depth wins and goaltending
-      - [X] Create supporting visualizations
-      - [X] Draft narrative
-
-  ### High Priority - Enhance User Experience
+### High Priority - Enhance User Experience
   - [ ] **Game Dashboard Improvements**
     - [ ] Add game rosters to dashboard
       - [ ] Display both team rosters
-      - [ ] Include basic player stats (GP, goals, assists, etc.)
+        - [ ] With depth contributions as a descending bar chart, cycle through. xG, SOG, CF, TOI by player
+      - [ ] Include basic player stats (GP, goals, assists, etc.)?
       - [ ] Style roster tables
     - [ ] Add player-level depth contributions
       - [ ] Calculate individual player contribution to each depth metric
       - [ ] Create visualization (bar chart or table)
       - [ ] Add to detailed depth breakdown page
-    - [ ] Improve depth evolution chart
-      - [ ] Add loading states
-      - [ ] Handle edge cases (no data, errors)
+    - [ ] Move Depth Evolution charts?
+      - [ ] Perhaps they would be better on just a single dash page, decommision the secondary page for now?
 
   - [ ] **Season Analysis Enhancements**
     - [ ] Add season dropdown to quadrant chart (Depth vs Goaltending)
@@ -103,14 +74,14 @@ I'm beginning to think about database management. Right now there is no database
       - [ ] Make cards 3-wide on laptop
       - [ ] Reduce spacing between cards
       - [ ] Ensure responsive on tablet
-    - [ ] Add header images to blog posts
-      - [ ] Design/source images for existing posts
+    - [X] Add header images to blog posts
+      - [X] Design/source images for existing posts
       - [ ] Add image support to markdown template
       - [ ] Update CSS for post headers
-    - [ ] Make buttons actual `<button>` elements (not `<a>` styled as buttons)
-    - [ ] Fix "go-to" typo (wherever that is)
+    - [X] Make buttons actual `<button>` elements (not `<a>` styled as buttons)
+    - [X] Fix "go-to" typo (wherever that is)
 
-  ### Medium Priority - Nice to Haves
+### Medium Priority - Nice to Haves
   - [ ] **SEO & Analytics**
     - [ ] Add Open Graph meta tags for social sharing
     - [ ] Add structured data (JSON-LD) for blog posts
@@ -139,7 +110,7 @@ I'm beginning to think about database management. Right now there is no database
     - [ ] Add "Game Archive" page to browse past games
     - [ ] Consider adding season summaries
 
-  ### Low Priority - Future Considerations
+### Low Priority - Future Considerations
   - [ ] **Data & Infrastructure**
     - [ ] Investigate DuckDB for analytics queries
     - [ ] Consider setting up automated testing
@@ -211,7 +182,7 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 		- [X] service.py
 
 ### Oct. 6, 2025 - More tasks I'm thinking of
-- [ ] Look into DuckDB
+- [X] Look into DuckDB
 - [X] Write a shot depth function once rosters are in and replace shot share figure
 - [X] Check the math on the depth.py
 - [X] Add primary and secondary team colors to css or a python dict
@@ -219,11 +190,11 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 - [X] Change the shot share/depth bar plot to be away and home team primary colors
 - [X] Start looking into hosting on AWS
 - [X] Localize timezone
-- [ ] TDI
-	- [ ] Start scoping the deep dive
+- [X] TDI
+	- [X] Start scoping the deep dive
 	- [X] Stand up an empty post for it
 - [ ] Season shape once I have more metrics than depth
-	- [ ] Add a plot for Team identity, Depth x GSAx
+	- [X] Add a plot for Team identity, Depth x GSAx
 	- [ ] Add Card under detailed Dashboards header
 	- [ ] Add new Page for "Shape of the Season"
 	- [ ] Add depth plotly to that page
@@ -231,9 +202,40 @@ Website launch. Right now (July 1, 2025) I'm thinking I will launch and make liv
 		- [X] Set plotly to auto scale 
 - [ ] Get all the old team logos
 - [ ] Add Game rosters, maybe with some stats, underneath the shape of the game.
-- Cards should be 3 wide and closer together. I like an image in the card too; look at chessmonitor
+  - [ ] I'm thinking team on each side, roster top to bottom, flip through depth contributions (sogs, xg, ice time, etc rank ordered bar plot)
+- [X] Cards should be 3 wide and closer together. I like an image in the card too; look at chessmonitor
 
 ## Working History - DONE
+
+### Critical - Before Domain Launch
+  - [X] **Security & Performance**
+    - [X] Set up HTTPS with AWS Certificate Manager
+      - [X] Request SSL certificate in ACM
+      - [X] Add HTTPS listener to ALB
+      - [X] Configure HTTP → HTTPS redirect
+    - [X] Clean up temporary backfill code
+      - [X] Remove `drop_duplicates` line from `service_depth.py`
+      - [X] Uncomment idempotency check in `service_depth.py`
+    - [X] Add quadrant data update to 5 AM scheduled job (`depth_job.py`)
+
+  - [X] **Mobile Optimization** (Critical UX)
+    - [X] Make game cards stack vertically on mobile
+    - [X] Optimize main dashboard cards for mobile
+    - [X] Fix deep dive cards for mobile layout
+    - [X] Test Plotly charts on mobile (responsive sizing)
+    - [X] Ensure navigation menu works on small screens
+    - [X] Test form inputs (date picker, dropdowns) on mobile
+
+  - [ ] **Content - Launch Blockers**
+    - [X] Write TDI blog post
+    - [X] Finish TDI whitepaper
+    - [X] Post whitepaper on arXiv
+      - [X] I couldn't get approval. I just posted it on my website.
+    - [X] Submit whitepaper to The American Statistician
+    - [X] Write "Goaltending and Depth" blog post
+      - [X] Analyze relationship between low-depth wins and goaltending
+      - [X] Create supporting visualizations
+      - [X] Draft narrative
 
 ### Sept. 6, 2025 - Keep on keepin on
 - [X] Write the demographics deep dive notebook file
