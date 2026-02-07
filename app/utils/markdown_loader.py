@@ -52,6 +52,7 @@ def _load_post_from_path(path: Path, slug: str):
         "keywords": post.get("keywords", ""),
         "content": html_content,
         "data_source": post.get("data_source", None),
+        "published": post.get("published", True),
     }
 
 def load_deep_dive(slug: str):
@@ -76,6 +77,7 @@ def load_all_deep_dives():
         except Exception:
             # Skip unreadable/malformed files instead of crashing
             continue
-
+    
+    posts = [p for p in posts if p.get("published", True)]
     posts.sort(key=lambda p: p["date"], reverse=True)
     return posts

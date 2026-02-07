@@ -8,7 +8,18 @@ summary: An exploration of how team demographic makeups predict winning in the N
 description: ""
 keywords: "NHL statistics, hockey analytics, demographics, age, tenure, height, weight hockey data analysis, sports analytics, depth"
 data_source: "NHL API"
+published: false
 ---
+
+
+I found this article that claims youth is trumping experience which is pretty wrong https://mayorsmanor.com/2025/11/how-young-nhl-talent-is-reshaping-the-next-era-of-hockey/
+
+Also this https://hockey-graphs.com/wp-content/uploads/2019/09/ritsac-2019-1.pdf
+
+Most analysis focuses on the individual level but I want to focus on the makeup of a team
+
+
+
 
 Trying to understand why one team wins and another loses is a perennial focus of sports analytics and punditry. When trying to explain matchup outcomes, commentators and fans alike often move past what we can directly observe and into the world of "intangibles." Concepts like “momentum,” “chemistry,” or "depth” that go beyond simple statistics like shot counts, goals, or points. Researchers have even shown that these constructs can influence outcomes, yet they remain notoriously difficult to define and measure.
 
