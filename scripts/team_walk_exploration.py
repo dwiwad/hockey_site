@@ -1,13 +1,15 @@
 import pandas as pd
-import s3fs
+import matplotlib
 
-s3 = s3fs.S3FileSystem(anon=False)
-df = pd.read_parquet('s3://hockey-decoded/depth_scores/depth_scores.parquet', filesystem=s3)
+df = pd.read_parquet(
+    's3://hockey-decoded/depth_scores/depth_scores.parquet',
+    engine='fastparquet'
+)
 
 print(df.columns.tolist())
 print(f"Total rows: {len(df)}")
 
-season_prefix = "202502"  # 2025-26 regular season
+season_prefix = "202402"  # 2025-26 regular season
 df_season = df[df['game_id'].astype(str).str.startswith(season_prefix)].copy()
 
 print(f"Rows: {len(df_season)}")
@@ -15,7 +17,7 @@ print(f"Games: {df_season['game_id'].nunique()}")
 df_season.head(4)
 
 
-season_prefix = "202502"
+season_prefix = "202402"
 df_season = df[df['game_id'].astype(str).str.startswith(season_prefix)].copy()
 
 # Calculate GSAx (goals saved above expected) for each team
