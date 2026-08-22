@@ -46,15 +46,8 @@ I'm beginning to think about database management. Right now there is no database
   - [ ] **Game Dashboard Improvements**
     - [ ] Add game rosters to dashboard
       - [ ] Display both team rosters
-        - [ ] With depth contributions as a descending bar chart, cycle through. xG, SOG, CF, TOI by player
       - [ ] Include basic player stats (GP, goals, assists, etc.)?
       - [ ] Style roster tables
-    - [ ] Add player-level depth contributions
-      - [ ] Calculate individual player contribution to each depth metric
-      - [ ] Create visualization (bar chart or table)
-      - [ ] Add to detailed depth breakdown page
-    - [ ] Move Depth Evolution charts?
-      - [ ] Perhaps they would be better on just a single dash page, decommision the secondary page for now?
 
   - [ ] **Season Analysis Enhancements**
     - [ ] Add season dropdown to quadrant chart (Depth vs Goaltending)
@@ -70,10 +63,10 @@ I'm beginning to think about database management. Right now there is no database
 	- [ ] Add team-season walk element selector to quadrant chart
 
   - [ ] **UI/UX Polish**
-    - [ ] Fix deep dive cards layout
-      - [ ] Make cards 3-wide on laptop
-      - [ ] Reduce spacing between cards
-      - [ ] Ensure responsive on tablet
+    - [X] Fix deep dive cards layout
+      - [X] Make cards 3-wide on laptop
+      - [X] Reduce spacing between cards
+      - [X] Ensure responsive on tablet
     - [X] Add header images to blog posts
       - [X] Design/source images for existing posts
       - [ ] Add image support to markdown template
@@ -87,18 +80,12 @@ I'm beginning to think about database management. Right now there is no database
     - [ ] Add structured data (JSON-LD) for blog posts
     - [ ] Create sitemap.xml
     - [ ] Add robots.txt
-    - [ ] Set up Google Search Console
+    - [X] Set up Google Search Console
     - [ ] Add more descriptive meta descriptions per page
-
-  - [ ] **Performance Optimizations**
-    - [ ] Add CDN for static assets (logos, images)
-    - [ ] Implement browser caching headers
-    - [ ] Compress images (logos currently unoptimized?)
-    - [ ] Consider lazy loading for Plotly charts
-    - [ ] Profile slow page loads in production
 
   - [ ] **Additional Features**
     - [ ] Add "Share" buttons to blog posts (Twitter, LinkedIn, Reddit)
+    - [ ] Add ability to sign up with email to get notifications of new posts
     - [ ] Add "Last updated" timestamp to dashboards
     - [ ] Consider adding team filter to league-wide charts
     - [ ] Add search functionality for blog posts
@@ -107,7 +94,6 @@ I'm beginning to think about database management. Right now there is no database
 
   - [ ] **Historical Data & Archives**
     - [ ] Get old team logos for historical games
-    - [ ] Add "Game Archive" page to browse past games
     - [ ] Consider adding season summaries
 
 ### Low Priority - Future Considerations
@@ -119,33 +105,21 @@ I'm beginning to think about database management. Right now there is no database
     - [ ] Document API data dependencies
     - [ ] Consider rate limiting for API endpoints
 
-  - [ ] **Tech Debt**
-    - [ ] Clean up `style.css` - migrate to separate files
-    - [ ] Generalize depth functions (reduce duplication)
-    - [ ] Add type hints throughout Python code
-    - [ ] Write unit tests for core calculations
-    - [ ] Document environment variables and config
-
   - [ ] **Content Pipeline**
-    - [ ] Create template for new blog posts
-    - [ ] Add markdown frontmatter validation
-    - [ ] Consider adding draft/published workflow
-    - [ ] Plan out next 3-5 blog post topics:
+    - [X] Create template for new blog posts
+    - [X] Add markdown frontmatter validation
+    - [X] Consider adding draft/published workflow
+    - [X] Plan out next 3-5 blog post topics:
       - [ ] Career tenure over time
       - [ ] Distances flown by team - inequality analysis
       - [ ] Quantifying generational talent
-      - [ ] [Your choice]
 
   - [ ] **Advanced Features (Dream List)**
     - [ ] Player comparison tool
     - [ ] Team stats lookup/dashboard
-    - [ ] Interactive depth calculator (user can input hypothetical distributions)
     - [ ] Email newsletter signups
     - [ ] Add more granular game events to timeline (goals, penalties)
     - [ ] Consider adding shot maps with depth overlay
-
-Tech Debt
-- [ ] Clean up style.css; Maybe migrate to separate files.
 
 Website launch. Right now (July 1, 2025) I'm thinking I will launch and make live when I have:
 - [ ] Five deep dive posts:
