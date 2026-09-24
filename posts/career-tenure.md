@@ -2,7 +2,7 @@
 title: "Career Tenure Over the History of the NHL"
 short_title: NHL Career Tenure | Hockey Decoded"
 date: "2026-09-24"
-image: "/static/images/deep-dives/total-depth-index/fig21_senior_share_by_season.png"
+image: "/static/images/deep-dives/career-tenure/fig21_senior_share_by_season.png"
 tag: "Historical"
 summary: An exploration of how team demographic makeups predict winning in the NHL.
 description: ""
