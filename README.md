@@ -119,7 +119,7 @@ I'm beginning to think about database management. Right now there is no database
     - [ ] Team stats lookup/dashboard
     - [ ] Email newsletter signups
     - [ ] Add more granular game events to timeline (goals, penalties)
-    - [ ] Consider adding shot maps with depth overlay
+    - [ ] Consider adding shot maps with depth overlay I wgit s
 
 Website launch. Right now (July 1, 2025) I'm thinking I will launch and make live when I have:
 - [ ] Five deep dive posts:

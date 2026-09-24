@@ -1671,3 +1671,56 @@ for r in ORDER:
     v = M.loc[M.result == r, "exp"]
     print(f"  {r:>18} n={len(v):>4}  mean {v.mean():.2f}  median {v.median():.2f}  "
           f"IQR {v.quantile(.25):.2f}-{v.quantile(.75):.2f}")
+    
+# %% FIG 39 - who is leaving: exit rate by tenure, with bands
+# Complements fig 30. "Leaving" here is a player's last observed season
+# (flow_ps.ext), not a missed next season, so a player who sits out a year and
+# comes back is not counted as gone. That makes the latest seasons read slightly
+# HIGH - their comebacks haven't happened yet - so the recent fall in veteran
+# exits is, if anything, understated.
+# Each point pools exits / player-seasons over a centred 5-season window, with a
+# Wilson 95% band on the pooled counts. Starts at 1967: six-team rosters are too
+# small for a readable rate.
+EX_WIN, EX_START = 5, 1967
+EX_GROUPS = [("Rookie", flow_ps.ten == 1, GRAY),
+             ("4th-9th season", flow_ps.ten.between(4, 9), BLUE_PALE),
+             ("10th season or later", flow_ps.ten >= 10, ORANGE)]
+
+
+def wilson(k, n, z=1.96):
+    p = k / n
+    d = 1 + z**2 / n
+    c = (p + z**2 / (2 * n)) / d
+    h = z * np.sqrt(p * (1 - p) / n + z**2 / (4 * n**2)) / d
+    return c - h, c + h
+
+
+fig, ax = plt.subplots(figsize=(12, 7))
+EXR = {}
+for lbl, mask, colour in EX_GROUPS:
+    g = (flow_ps[mask & (flow_ps.yr < LASTY)]
+         .drop_duplicates(["playerId", "yr"])
+         .groupby("yr").ext.agg(["sum", "size"]))
+    r = g.rolling(EX_WIN, center=True, min_periods=EX_WIN).sum().dropna()
+    r = r[r.index >= EX_START]
+    EXR[lbl] = r["sum"] / r["size"]
+    lo, hi = wilson(r["sum"], r["size"])
+    ax.fill_between(r.index, lo, hi, color=colour, alpha=.15, lw=0)
+    ax.plot(r.index, EXR[lbl], color=colour, lw=3, label=lbl)
+
+vet = EXR["10th season or later"]
+peak = vet.loc[1990:].idxmax()
+ax.annotate(f"{vet[peak]:.0%}", (peak, vet[peak]), xytext=(0, 38),
+            textcoords="offset points", ha="center", fontsize=13, color=ORANGE,
+            arrowprops=dict(arrowstyle="-", color=ORANGE, lw=1))
+ax.annotate(f"{vet.iloc[-1]:.0%}", (vet.index[-1], vet.iloc[-1]), xytext=(8, 0),
+            textcoords="offset points", va="center", fontsize=13, color=ORANGE)
+ax.set_ylim(0, None)
+ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:.0%}"))
+ax.set_xlabel("Season", fontsize=FS_XAXIS_LABEL)
+ax.set_ylabel("Share who never play another NHL season", fontsize=FS_AXIS_LABEL)
+hd_legend(ax, loc="upper right")
+finish(fig, ax, "Veterans are staying longer. Rookies aren't",
+       f"Players in their 10th season or later left at {vet[peak]:.0%} a year around {peak}; now it is {vet.iloc[-1]:.0%}. Rookies still wash out at about {EXR['Rookie'].iloc[-1]:.0%}.",
+       f"Data: NHL Stats API. {EX_WIN}-season centred rolling rate; shaded band = 95% CI. Seasons since {EX_START}",
+       "fig39_exit_rate_by_tenure.png")
