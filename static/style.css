@@ -242,13 +242,13 @@ sup {
 .markdown-body {
   line-height: 1.2;
   font-size: 1rem;
-  max-width: 60%;
+  max-width: min(60%, 880px);
   margin: 0 auto;
   text-align: left;
 }
 
 .post-title {
-  width: 75vw;
+  width: min(75vw, 1100px); 
   margin: 3rem auto 0.25rem auto;
   font-size: 3.5rem;
   color: var(--blue-dark);
@@ -291,11 +291,15 @@ sup {
 }
 
 .markdown-body img {
-  max-width: 100%;
-  height: auto;
-  margin: 2rem auto;
-  display: block
-}
+    display: block;
+    height: auto;
+    width: min(calc(100% + 12rem), calc(100vw - 2rem)); 
+    max-width: none;
+    margin: 2rem 0;
+    position: relative;
+    left: 50%; 
+    transform: translateX(-50%);
+  }
 
 /* ==========================================================================
    SITE NAV HEADER STYLES
@@ -1209,7 +1213,10 @@ body {
     }
 
     .markdown-body img {
-      margin: 1rem 0;
+    margin: 1rem 0;
+    width: 100%;
+    left: 0;
+    transform: none;
     }
 
     /* Dashboard game cards - fix centering and text wrapping */
